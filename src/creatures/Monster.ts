@@ -14,6 +14,6 @@ export class Monster extends Creature {
 
   randomDropItem() {
     const itemType = this.dropItems[Math.floor(Math.random() * this.dropItems.length)].key;
-		return generateItem(itemType);
+		return generateItem(itemType); 
   }
 }

@@ -31,6 +31,7 @@ export class Creature {
   type: CreatureType;
   level: number;
   individualStrength: number;
+  maxHealth: number;
   health: number;
   ability: Ability;
   status: CreatureStatus[];
@@ -63,6 +64,7 @@ export class Creature {
     this.status = [];
 
     this.health = this.ability.con * 10 + this.ability.siz * 5;
+    this.maxHealth = this.health;
     this.actions = creatureConfigs[this.type].actions;
 
   }

@@ -26,6 +26,7 @@ export const creatureConfigs: Record<string, creatureData> = {
     actions: [
       { actionKey: "powerfulDigAttackAction", weight: 0.1 },
       { actionKey: "attackAction", weight: 1 },
+      { actionKey: "captureAction", weight: 0.1 },
     ],
     dropItems: [],
   },

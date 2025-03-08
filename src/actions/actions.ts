@@ -1,6 +1,8 @@
 import { Action, ActionType, ActionResult } from "./Action";
 import { Creature } from "../creatures/Creature";
 import { CreatureStatusType } from "../creatures/CreatureStatus";
+import { Player } from "../creatures/Player";
+import { type Monster } from "../creatures/Monster";
 
 export const actionConfigs: Record<string, Action> = {
   dazedAction: {
@@ -106,6 +108,48 @@ export const actionConfigs: Record<string, Action> = {
         return `${actor.name}冲过来咬了${target.name}一口`;
       } else {
         return `${target.name}躲过了${actor.name}的撕咬`;
+      }
+    },
+  },
+
+  // 捕捉
+  captureAction: {
+    name: "尝试捕捉",
+    description: "这不是神奇宝贝，你得用绞技而不是精灵球",
+    type: ActionType.Attack,
+    coeff: {
+      str: 1,
+      int: 0,
+      con: 0,
+      siz: 0,
+      app: 0,
+      dex: 0,
+    },
+    extraEffect: (actor: Creature, target: Creature) => {
+      // actor不是玩家，则不进行任何操作
+      if (!(actor instanceof Player)) {
+        return;
+      }
+      if (target.health < 1) {
+        actor.addLog(`${target.name}已经死了，无法捕获`);
+        return;
+      }
+      // 否则进行两次概率判定
+      const dexSuccessRate = (actor.ability.dex / target.ability.dex) * (actor.ability.siz / target.ability.siz) / (10 * target.health / target.maxHealth);
+      const strSuccessRate = (actor.ability.str / target.ability.str) * (actor.ability.siz / target.ability.siz) / (10 * target.health / target.maxHealth);
+      if (Math.random() < strSuccessRate && Math.random() < dexSuccessRate) {
+        target.health = 0.9;
+        actor.capturedMonster.push({name: target.name, level: target.level});
+        actor.addLog(`你成功捕获了${target.name}`);
+      } else {
+        actor.addLog(`你尝试捕获${target.name}，但是失败了`);
+      }
+    },
+    messageGenerator: (actor: Creature, target: Creature, result: ActionResult) => {
+      if (result === ActionResult.Success) {
+        return `${actor.name}尝试通过绞住${target.name}，让${target.name}失去行动力`;
+      } else {
+        return `${target.name}躲过了${actor.name}的绞技`;
       }
     },
   },

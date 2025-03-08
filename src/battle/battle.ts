@@ -1,7 +1,7 @@
-import { Player } from "../creatures/Player";
-import { Monster } from "../creatures/Monster";
 import { Action, ActionCoeff, ActionType, ActionResult } from "../actions/Action";
 import { Ability } from "../creatures/Creature";
+import { Player } from "../creatures/Player";
+import { Monster } from "../creatures/Monster";
 
 
 function calculatePower(coeff: ActionCoeff, ability: Ability) {
@@ -17,17 +17,19 @@ function calculateDamage(power: number, armor: number) {
 function attackAgainstAttack(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action) {
   const playerPower = calculatePower(playerAction.coeff, player.ability);
   const enemyPower = calculatePower(enemyAction.coeff, enemy.ability);
-  player.addLog(player.name + "使用了" + playerAction.name + "掷出了<span style=\"color: blue;\">" + Math.round(playerPower) + "</span>，" + enemy.name + "使用了" + enemyAction.name + "掷出了<span style=\"color: orange;\">" + Math.round(enemyPower) + "</span>");
+  player.addTempLog(player.name + "使用了" + playerAction.name + "掷出了<span style=\"color: blue;\">" + Math.round(playerPower) + "</span>，" + enemy.name + "使用了" + enemyAction.name + "掷出了<span style=\"color: orange;\">" + Math.round(enemyPower) + "</span>");
   if (playerPower >= enemyPower) {
     const damage = calculateDamage(playerPower, enemy.ability.armor);
     enemy.health -= damage;
-    player.addLog(player.name + "使用了" + playerAction.name + "弹开了" + enemy.name + "的" + enemyAction.name + "(attack vs attack)");
-    player.addLog(playerAction.messageGenerator(player, enemy, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+    player.addTempLog(player.name + "使用了" + playerAction.name + "弹开了" + enemy.name + "的" + enemyAction.name + "(attack vs attack)");
+    player.addTempLog(playerAction.messageGenerator(player, enemy, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+    playerAction.extraEffect ? playerAction.extraEffect(player, enemy) : null;
   } else {
     const damage = calculateDamage(enemyPower, player.ability.armor);
     player.health -= damage;
-    player.addLog(enemy.name + "使用了" + enemyAction.name + "弹开了" + player.name + "的" + playerAction.name);
-    player.addLog(enemyAction.messageGenerator(enemy, player, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+    player.addTempLog(enemy.name + "使用了" + enemyAction.name + "弹开了" + player.name + "的" + playerAction.name);
+    player.addTempLog(enemyAction.messageGenerator(enemy, player, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+    enemyAction.extraEffect ? enemyAction.extraEffect(enemy, player) : null;
   }
 }
 
@@ -46,16 +48,20 @@ function attackAgainstNoAction(player: Player, enemy: Monster, playerAction: Act
   }
 
   const power = calculatePower(action.coeff, actor.ability);
-  player.addLog(actor.name + "使用了" + action.name + "掷出了<span style=\"color: blue;\">" + Math.round(power) + "</span>)");
-  player.addLog(target.name + "被打了个措手不及(attack vs none)");
+  player.addTempLog(actor.name + "使用了" + action.name + "掷出了<span style=\"color: blue;\">" + Math.round(power) + "</span>)");
+  player.addTempLog(target.name + "被打了个措手不及(attack vs none)");
   const damage = calculateDamage(power, target.ability.armor);
   target.health -= damage;
   player.addLog(action.messageGenerator(actor, target, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+  action.extraEffect ? action.extraEffect(actor, target) : null;
 }
 
 export function handleAction(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action) {
   if (playerAction.type === ActionType.Attack && enemyAction.type === ActionType.Attack) {
     attackAgainstAttack(player, enemy, playerAction, enemyAction);
+  }
+  if ((playerAction.type === ActionType.Attack && enemyAction.type === ActionType.NoAction) || (playerAction.type === ActionType.NoAction && enemyAction.type === ActionType.Attack)) {
+    attackAgainstNoAction(player, enemy, playerAction, enemyAction);
   }
 }
 
@@ -64,8 +70,8 @@ export function statusCheck(player: Player, enemy: Monster) {
     player.addLog(player.name + "撑不住了");
     return "die";
   }
-  if (enemy.health <= 0) {
-    player.addLog(enemy.name + "死了");
+  if (enemy.health < 1) {
+    player.addLog(player.name + "击败了" + enemy.name);
     return "win";
   }
   return "continue";

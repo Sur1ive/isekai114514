@@ -136,33 +136,68 @@ export function renderMainMenu(): void {
 `;
 
   document.getElementById('battle-btn')?.addEventListener('click', () => {player.startAdventure(); testBattle()});
-  document.getElementById('status-btn')?.addEventListener('click', () => {renderPackPage(player)});
+  document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
   document.getElementById('restart-btn')?.addEventListener('click', () => {
-    localStorage.removeItem("playerData");
-    renderStartPage();
+    if (window.confirm("你确定要remake吗?")) {
+      localStorage.removeItem("playerData");
+      renderStartPage();
+    }
   });
 }
 
-// 渲染背包界面
-function renderPackPage(player: Player): void {
+// 渲染状态界面
+function renderStatusPage(player: Player): void {
   const appElement = getAppElement();
 
   const packInstance : Item[] = player.pack.map(item => getItemInstance(item));
 
   appElement.innerHTML = `
-    <h2>背包</h2>
-    <p>${player.name} 的背包</p>
-    <div id="pack">
-      ${packInstance.map(item => {
-        if (item.identifier.type.category === "consumable") {
-          return `<button id="use-btn${item.identifier.id}">${item.name}</button>`;
-        } else {
-          return `<button id="useless-btn${item.identifier.id}">${item.name}</button>`;
-        }
-      }).join('')}
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">状态</h2>
+
+    <!-- 宠物区域 -->
+    <div class="row mb-4">
+      <div class="col">
+        <h4>${player.name} 的宠物</h4>
+        <div id="pet" class="border rounded p-3 bg-light">
+          ${
+            player.capturedMonster.length > 0
+              ? player.capturedMonster.map(monster => `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="fw-bold">${monster.name}</span>
+                  <span class="text-muted">Lv. ${monster.level}</span>
+                </div>
+              `).join('')
+              : '<p class="text-muted">暂无宠物</p>'
+          }
+        </div>
+      </div>
     </div>
-    <button id="back-btn">返回主菜单</button>
-  `;
+
+    <!-- 背包区域 -->
+    <div class="row mb-4">
+      <div class="col">
+        <h4>${player.name} 的背包</h4>
+        <div id="pack" class="d-flex flex-wrap gap-2">
+          ${
+            packInstance.length > 0
+              ? packInstance.map(item => {
+                  const btnClass = (item.identifier.type.category === "consumable") ? "btn-success" : "btn-secondary";
+                  return `<button id="use-btn${item.identifier.id}" class="btn ${btnClass}">${item.name}</button>`;
+                }).join('')
+              : '<p class="text-muted">背包为空</p>'
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- 返回主菜单按钮 -->
+    <div class="text-center">
+      <button id="back-btn" class="btn btn-primary">返回主菜单</button>
+    </div>
+  </div>
+`;
+
   document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu()});
   // 使用消耗品
   for (const item of packInstance) {
@@ -171,7 +206,7 @@ function renderPackPage(player: Player): void {
         item.useItem(player);
         player.addLog(player.name + "使用了" + item.name);
         saveGame(player);
-        renderPackPage(player);
+        renderStatusPage(player);
       });
     }
   }

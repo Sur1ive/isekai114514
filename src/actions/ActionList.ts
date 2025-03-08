@@ -1,6 +1,4 @@
-import { Action } from "./Action";
 import { actionConfigs } from "./actions";
-import { creatureConfigs } from "../creatures/CreatureType";
 
 export type ActionKey = keyof typeof actionConfigs;
 
