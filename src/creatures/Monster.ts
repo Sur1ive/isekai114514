@@ -4,10 +4,12 @@ import { CreatureType, creatureConfigs } from "./CreatureType";
 import { generateItem } from "../items/tools";
 
 export class Monster extends Creature {
+	description: string;
   dropItems: {key: ItemType, weight: number}[];
   constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
     super(name, type, level, individualStrength);
     this.dropItems = creatureConfigs[type].dropItems;
+		this.description = creatureConfigs[type].description;
   }
 
   randomDropItem() {

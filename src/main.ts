@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Player } from "./creatures/Player";
 import { getAppElement } from "./tools";
-import { testBattle } from "./battle/battle";
+import { testBattle } from "./battle/battlePage";
 import { loadPlayer, saveGame } from "./save";
 import { Consumable } from "./items/consumables";
 import { getItemInstance } from "./items/tools";
@@ -95,14 +95,38 @@ export function renderMainMenu(): void {
   const player = loadPlayer();
   console.log(player);
   appElement.innerHTML = `
-    <h1>异世界吴田所</h1>
-    <p>主菜单</p>
-    <button id="battle-btn">战斗</button>
-    <button id="status-btn">状态</button>
-    <button id="restart-btn">秽土转生</button>
-    <p>记录</p>
-    <p>${player.getLogs()}</p>
-  `;
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">主菜单</h2>
+    <div class="row g-3 justify-content-center">
+      <div class="col-12 col-md-4">
+        <button id="battle-btn" class="btn btn-primary w-100 py-3">战斗</button>
+      </div>
+      <div class="col-12 col-md-4">
+        <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>
+      </div>
+      <div class="col-12 col-md-4">
+        <button id="restart-btn" class="btn btn-danger w-100 py-3">秽土转生</button>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+        查看记录
+      </button>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">记录</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div style="max-height: 60vh; overflow-y: auto;">
+        <p>${player.getLastNLog(20)}</p>
+      </div>
+    </div>
+  </div>
+`;
 
   document.getElementById('battle-btn')?.addEventListener('click', () => {testBattle()});
   document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
@@ -135,10 +159,12 @@ function renderStatusPage(player: Player): void {
   `;
   document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu()});
   // 使用消耗品
-  for (const item of player.pack) {
+  for (const item of packInstance) {
     if (item instanceof Consumable) {
-      document.getElementById(`use-btn${item.id}`)?.addEventListener('click', () => {
+      document.getElementById(`use-btn${item.identifier.id}`)?.addEventListener('click', () => {
         item.useItem(player);
+        player.addLog(player.name + "使用了" + item.name);
+        saveGame(player);
         renderStatusPage(player);
       });
     }

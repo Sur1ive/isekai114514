@@ -19,4 +19,8 @@ export class Player extends Creature {
   getLogs(): string {
     return this.log.join("<br>");
   }
+
+  getLastNLog(n: number): string {
+    return this.log.slice(-n).join("<br>");
+  }
 }

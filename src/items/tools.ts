@@ -21,3 +21,7 @@ export function getItemInstance(identifier: ItemIdentifier) {
 		throw new Error("Invalid item category");
 	}
 }
+
+export function getItemName(identifier: ItemIdentifier) {
+  return identifier.prefix ? identifier.prefix + getItemInstance(identifier).name : getItemInstance(identifier).name;
+}

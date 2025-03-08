@@ -30,6 +30,7 @@ export enum ActionResult {
 
 export interface Action {
   name: string;
+  description: string;
   type: ActionType;
   coeff: ActionCoeff;   // 属性系数
   extraEffect?: (actor: Creature, target: Creature) => void;  // 额外效果

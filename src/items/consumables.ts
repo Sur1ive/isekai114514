@@ -23,6 +23,7 @@ export class Consumable extends Item {
   }
   useItem(target: Creature) {
     this.effect(target);
+    target.pack = target.pack.filter(item => item.id !== this.identifier.id);
   }
 }
 

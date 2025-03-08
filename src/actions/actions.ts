@@ -5,6 +5,7 @@ import { CreatureStatusType } from "../creatures/CreatureStatus";
 export const actionConfigs: Record<string, Action> = {
   dazedAction: {
     name: "失神",
+    description: "愣了一下",
     type: ActionType.NoAction,
     coeff: {
       str: 0,
@@ -19,6 +20,7 @@ export const actionConfigs: Record<string, Action> = {
 
   attackAction: {
     name: "攻击",
+    description: "用拳头或者用武器进行一般通过攻击",
     type: ActionType.Attack,
     coeff: {
       str: 1,
@@ -39,6 +41,7 @@ export const actionConfigs: Record<string, Action> = {
 
   powerfulDigAttackAction: {
     name: "狠狠地撅",
+    description: "1！1！4！5！1！4！",
     type: ActionType.Attack,
     coeff: {
       str: 10,
@@ -66,9 +69,10 @@ export const actionConfigs: Record<string, Action> = {
   // 横劈
   horizontalSlashAction: {
     name: "横劈",
+    description: "以迅猛之势横劈出一刀",
     type: ActionType.Attack,
     coeff: {
-      str: 5,
+      str: 4,
       int: 0,
       con: 0,
       siz: 0,
@@ -80,6 +84,28 @@ export const actionConfigs: Record<string, Action> = {
         return `${actor.name}以迅猛之势横劈出一刀`;
       } else {
         return `${target.name}躲过了${actor.name}的横劈`;
+      }
+    },
+  },
+
+  // 撕咬
+  biteAction: {
+    name: "撕咬",
+    description: "用嘴撕咬，一种原始的攻击方式",
+    type: ActionType.Attack,
+    coeff: {
+      str: 2,
+      int: 0,
+      con: 0,
+      siz: 1,
+      app: 0,
+      dex: 1,
+    },
+    messageGenerator: (actor: Creature, target: Creature, result: ActionResult) => {
+      if (result === ActionResult.Success) {
+        return `${actor.name}冲过来咬了${target.name}一口`;
+      } else {
+        return `${target.name}躲过了${actor.name}的撕咬`;
       }
     },
   },

@@ -47,6 +47,8 @@ export class Equipment extends Item {
       default:
         throw new Error("Invalid rarity");
     }
+    this.name = identifier.prefix ? identifier.prefix + data.name : data.name;
+    this.description = data.description;
     this.position = data.position;
     this.extraActions = data.extraActions;
     this.ability = data.ability;
