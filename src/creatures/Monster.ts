@@ -1,7 +1,7 @@
 import { Creature } from "./Creature";
 import { ItemType } from "../items/items";
 import { CreatureType, creatureConfigs } from "./CreatureType";
-import { generateItem } from "../items/items";
+import { generateItem } from "../items/tools";
 
 export class Monster extends Creature {
   dropItems: {key: ItemType, weight: number}[];

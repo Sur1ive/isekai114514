@@ -1,5 +1,5 @@
 import { Creature } from "../creatures/Creature";
-import { Item, ItemIdentifier, ItemType, Rarity } from "./items";
+import { Item, ItemIdentifier, Rarity } from "./items";
 import { generateRandomEquipment } from "./equipments";
 
 export class Consumable extends Item {

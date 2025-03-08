@@ -4,7 +4,8 @@ import { getAppElement } from "./tools";
 import { testBattle } from "./battle/battle";
 import { loadPlayer, saveGame } from "./save";
 import { Consumable } from "./items/consumables";
-import { getItemInstance, Item } from "./items/items";
+import { getItemInstance } from "./items/tools";
+import { Item } from "./items/items";
 
 // 渲染开始界面
 function renderStartPage(): void {
