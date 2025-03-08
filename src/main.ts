@@ -1,12 +1,10 @@
+import "reflect-metadata";
 import { Player } from "./creatures/Player";
-
-function getAppElement(): HTMLElement {
-  const el = document.getElementById('app');
-  if (!el) {
-    throw new Error("无法找到挂载点 #app");
-  }
-  return el;
-}
+import { getAppElement } from "./tools";
+import { testBattle } from "./battle/battle";
+import { loadPlayer, saveGame } from "./save";
+import { Consumable } from "./items/consumables";
+import { getItemInstance, Item } from "./items/items";
 
 // 渲染开始界面
 function renderStartPage(): void {
@@ -47,10 +45,10 @@ appElement.innerHTML = `
 
   // 给按钮添加点击事件，切换到对应的界面
   document.getElementById('left-btn')?.addEventListener('click', ()=>{
-    Math.random() > 0.2 ? renderStartPage() : renderStartPage2();
+    Math.random() > 0.3 ? renderStartPage() : renderStartPage2();
   });
   document.getElementById('right-btn')?.addEventListener('click', ()=>{
-    Math.random() > 0.2 ? renderStartPage() : renderStartPage2();
+    Math.random() > 0.3 ? renderStartPage() : renderStartPage2();
   });
 }
 
@@ -81,7 +79,9 @@ function renderStartPage3(): void {
     const playerName = nameInput.value.trim();
     if (playerName) {
       const player = new Player(playerName);
-      renderMainMenu(player);
+      console.log(player);
+      saveGame(player);
+      renderMainMenu();
     } else {
       alert("请输入你的名字！");
     }
@@ -89,29 +89,63 @@ function renderStartPage3(): void {
 }
 
 // 渲染主菜单
-function renderMainMenu(player: Player): void {
+export function renderMainMenu(): void {
   const appElement = getAppElement();
+  const player = loadPlayer();
+  console.log(player);
   appElement.innerHTML = `
     <h1>异世界吴田所</h1>
     <p>主菜单</p>
     <button id="battle-btn">战斗</button>
     <button id="status-btn">状态</button>
+    <p>记录</p>
+    <p>${player.log.getLogs()}</p>
   `;
 
-  document.getElementById('battle-btn')?.addEventListener('click', () => {renderStatusPage(player)});
+  document.getElementById('battle-btn')?.addEventListener('click', () => {testBattle()});
   document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
 }
 
 // 渲染状态界面
 function renderStatusPage(player: Player): void {
   const appElement = getAppElement();
+
+  const packInstance : Item[] = player.pack.map(item => getItemInstance(item));
+
   appElement.innerHTML = `
     <h2>状态界面</h2>
     <p>${player.name} 的状态</p>
+    <p>背包</p>
+    <div id="pack">
+      ${packInstance.map(item => {
+        if (item.identifier.type.category === "consumable") {
+          return `<button id="use-btn${item.identifier.id}">${item.name}</button>`;
+        } else {
+          return `<button id="useless-btn${item.identifier.id}">${item.name}</button>`;
+        }
+      }).join('')}
+    </div>
     <button id="back-btn">返回主菜单</button>
   `;
-  document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu(player)});
+  document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu()});
+  // 使用消耗品
+  for (const item of player.pack) {
+    if (item instanceof Consumable) {
+      document.getElementById(`use-btn${item.id}`)?.addEventListener('click', () => {
+        item.useItem(player);
+        renderStatusPage(player);
+      });
+    }
+  }
 }
 
 // 初始加载时显示主菜单
-document.addEventListener('DOMContentLoaded', renderStartPage);
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    loadPlayer();
+    renderMainMenu();
+  } catch (error) {
+    localStorage.removeItem("playerData");
+    renderStartPage();
+  }
+});

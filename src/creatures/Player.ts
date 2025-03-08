@@ -1,9 +1,12 @@
 import { Creature } from "./Creature";
-import { CreatureType } from "./CreatureType";
+import { Log } from "../log";
 
 export class Player extends Creature {
+  log: Log;
+
   constructor(name: string) {
-    super(name, CreatureType.Player, 0, 1);
+    super(name, "player", 0, 1);
+    this.log = new Log();
   }
 
   levelup() {
