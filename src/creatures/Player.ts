@@ -1,15 +1,22 @@
 import { Creature } from "./Creature";
-import { Log } from "../log";
 
 export class Player extends Creature {
-  log: Log;
+  log: string[];
 
   constructor(name: string) {
     super(name, "player", 0, 1);
-    this.log = new Log();
+    this.log = [];
   }
 
   levelup() {
     this.level++;
+  }
+
+  addLog(log: string): void {
+    this.log.push(log);
+  }
+
+  getLogs(): string {
+    return this.log.join("<br>");
   }
 }

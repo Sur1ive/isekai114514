@@ -39,7 +39,7 @@ export const creatureConfigs: Record<string, creatureData> = {
       armor: { base: 0, growth: 1 },
     },
     actions: [
-      { actionKey: "powerfulDigAttackAction", weight: 1 },
+      { actionKey: "attackAction", weight: 1 },
     ],
     dropItems: [
       {key: {category: "consumable", rarity: Rarity.Common, key: "brokenChest"}, weight: 1},

@@ -99,12 +99,17 @@ export function renderMainMenu(): void {
     <p>主菜单</p>
     <button id="battle-btn">战斗</button>
     <button id="status-btn">状态</button>
+    <button id="restart-btn">秽土转生</button>
     <p>记录</p>
-    <p>${player.log.getLogs()}</p>
+    <p>${player.getLogs()}</p>
   `;
 
   document.getElementById('battle-btn')?.addEventListener('click', () => {testBattle()});
   document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
+  document.getElementById('restart-btn')?.addEventListener('click', () => {
+    localStorage.removeItem("playerData");
+    renderStartPage();
+  });
 }
 
 // 渲染状态界面
@@ -144,9 +149,10 @@ function renderStatusPage(player: Player): void {
 document.addEventListener('DOMContentLoaded', () => {
   try {
     loadPlayer();
-    renderMainMenu();
   } catch (error) {
     localStorage.removeItem("playerData");
     renderStartPage();
+    return;
   }
+  renderMainMenu();
 });

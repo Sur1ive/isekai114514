@@ -19,15 +19,15 @@ function calculateDamage(power: number, armor: number) {
 function attackAgainstAttack(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action) {
   const playerPower = calculatePower(playerAction.coeff, player.ability);
   const enemyPower = calculatePower(enemyAction.coeff, enemy.ability);
-  player.log.addLog(player.name + "使用了" + playerAction.name + "掷出了" + Math.round(playerPower) + "，" + enemy.name + "使用了" + enemyAction.name + "掷出了" + Math.round(enemyPower));
+  player.addLog(player.name + "使用了" + playerAction.name + "掷出了" + Math.round(playerPower) + "，" + enemy.name + "使用了" + enemyAction.name + "掷出了" + Math.round(enemyPower));
   if (playerPower >= enemyPower) {
     const damage = calculateDamage(playerPower, enemy.ability.armor);
     enemy.health -= damage;
-    player.log.addLog(enemyAction.messageGenerator(enemy, player, ActionResult.Fail) + "，" + playerAction.messageGenerator(player, enemy, ActionResult.Success) + "造成了" + Math.round(damage) + "点伤害");
+    player.addLog(enemyAction.messageGenerator(enemy, player, ActionResult.Fail) + "，" + playerAction.messageGenerator(player, enemy, ActionResult.Success) + "造成了" + Math.round(damage) + "点伤害");
   } else {
     const damage = calculateDamage(enemyPower, player.ability.armor);
     player.health -= damage;
-    player.log.addLog(playerAction.messageGenerator(player, enemy, ActionResult.Fail) + "，" + enemyAction.messageGenerator(enemy, player, ActionResult.Success) + "造成了" + Math.round(damage) + "点伤害");
+    player.addLog(playerAction.messageGenerator(player, enemy, ActionResult.Fail) + "，" + enemyAction.messageGenerator(enemy, player, ActionResult.Success) + "造成了" + Math.round(damage) + "点伤害");
   }
 }
 
@@ -39,11 +39,11 @@ function handleAction(player: Player, enemy: Monster, playerAction: Action, enem
 
 function statusCheck(player: Player, enemy: Monster) {
   if (player.health <= 0) {
-    player.log.addLog(player.name + "死了");
+    player.addLog(player.name + "死了");
     return "die";
   }
   if (enemy.health <= 0) {
-    player.log.addLog(enemy.name + "死了");
+    player.addLog(enemy.name + "死了");
     return "win";
   }
   return "continue";
@@ -52,12 +52,12 @@ function statusCheck(player: Player, enemy: Monster) {
 function observeEnemyAction(player: Player, enemy: Monster, realAction: Action): string {
   if (Math.random() * player.ability.dex > Math.random() * enemy.ability.dex) {
     if (Math.random() * player.ability.int > Math.random() * enemy.ability.int) {
-      return "敌人看起来要" + realAction.name + "了";
+      return enemy.name + "看起来要" + realAction.name + "了";
     } else {
-      return "敌人看起来要" + enemy.getRandomAction().name + "了";
+      return enemy.name + "看起来要" + enemy.getRandomAction().name + "了";
     }
   } else {
-    return "你来不及观察敌人的行动";
+    return "你来不及观察" + enemy.name + "的行动";
   }
 }
 
@@ -83,7 +83,7 @@ function renderBattleStartPage(enemy: Monster): void {
     <button id="action2-btn">${action2.name}</button>
     <p> 记录 </p>
     <div id="log">
-      ${player.log.getLogs()}
+      ${player.getLogs()}
     </div>
   `;
 
@@ -125,7 +125,7 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, 
     <button id="action2-btn">${action2.name}</button>
     <p> 记录 </p>
     <div id="log">
-      ${player.log.getLogs()}
+      ${player.getLogs()}
     </div>
   `;
 
