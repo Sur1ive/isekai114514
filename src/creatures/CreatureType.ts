@@ -44,7 +44,7 @@ export const creatureConfigs: Record<string, creatureData> = {
     },
     actions: [
       { actionKey: "attackAction", weight: 1 },
-      { actionKey: "noAction", weight: 2 },
+      { actionKey: "dazedAction", weight: 2 },
     ],
     dropItems: [
       {key: {category: "consumable", rarity: Rarity.Common, key: "brokenChest"}, weight: 1},
@@ -86,6 +86,7 @@ export const creatureConfigs: Record<string, creatureData> = {
     },
     actions: [
       { actionKey: "biteAction", weight: 1 },
+      { actionKey: "dazedAction", weight: 0.5 },
     ],
     dropItems: [
       {key: {category: "consumable", rarity: Rarity.Common, key: "brokenChest"}, weight: 0.5},

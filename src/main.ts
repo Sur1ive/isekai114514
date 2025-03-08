@@ -80,7 +80,6 @@ function renderStartPage3(): void {
     const playerName = nameInput.value.trim();
     if (playerName) {
       const player = new Player(playerName);
-      console.log(player);
       saveGame(player);
       renderMainMenu();
     } else {
@@ -93,8 +92,16 @@ function renderStartPage3(): void {
 export function renderMainMenu(): void {
   const appElement = getAppElement();
   const player = loadPlayer();
+  player.backToTown();
   console.log(player);
+
   appElement.innerHTML = `
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h2>${player.name} lv ${player.level}</h2>
+      <div id="health-display" class="fs-4 mb-3">hp: </div>
+    </div>
+  </div>
   <div class="container mt-4">
     <h2 class="text-center mb-4">主菜单</h2>
     <div class="row g-3 justify-content-center">
@@ -128,24 +135,23 @@ export function renderMainMenu(): void {
   </div>
 `;
 
-  document.getElementById('battle-btn')?.addEventListener('click', () => {testBattle()});
-  document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
+  document.getElementById('battle-btn')?.addEventListener('click', () => {player.startAdventure(); testBattle()});
+  document.getElementById('status-btn')?.addEventListener('click', () => {renderPackPage(player)});
   document.getElementById('restart-btn')?.addEventListener('click', () => {
     localStorage.removeItem("playerData");
     renderStartPage();
   });
 }
 
-// 渲染状态界面
-function renderStatusPage(player: Player): void {
+// 渲染背包界面
+function renderPackPage(player: Player): void {
   const appElement = getAppElement();
 
   const packInstance : Item[] = player.pack.map(item => getItemInstance(item));
 
   appElement.innerHTML = `
-    <h2>状态界面</h2>
-    <p>${player.name} 的状态</p>
-    <p>背包</p>
+    <h2>背包</h2>
+    <p>${player.name} 的背包</p>
     <div id="pack">
       ${packInstance.map(item => {
         if (item.identifier.type.category === "consumable") {
@@ -165,7 +171,7 @@ function renderStatusPage(player: Player): void {
         item.useItem(player);
         player.addLog(player.name + "使用了" + item.name);
         saveGame(player);
-        renderStatusPage(player);
+        renderPackPage(player);
       });
     }
   }
@@ -173,12 +179,15 @@ function renderStatusPage(player: Player): void {
 
 // 初始加载时显示主菜单
 document.addEventListener('DOMContentLoaded', () => {
+  let player: Player;
   try {
-    loadPlayer();
+    player = loadPlayer();
   } catch (error) {
     localStorage.removeItem("playerData");
     renderStartPage();
     return;
   }
+  player.backToTown();
+  saveGame(player);
   renderMainMenu();
 });
