@@ -5,7 +5,7 @@ import { generateItem } from "../items/itemUtils";
 
 export class Monster extends Creature {
 	description: string;
-  dropItems: {key: ItemType, weight: number}[];
+  dropItems: {type: ItemType, weight: number}[];
 
   constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义
@@ -20,7 +20,7 @@ export class Monster extends Creature {
   }
 
   randomDropItem() {
-    const itemType = this.dropItems[Math.floor(Math.random() * this.dropItems.length)].key;
+    const itemType = this.dropItems[Math.floor(Math.random() * this.dropItems.length)].type;
 		return generateItem(itemType);
   }
 }

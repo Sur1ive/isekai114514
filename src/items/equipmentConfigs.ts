@@ -1,11 +1,18 @@
 import { EquipmentPosition, EquipmentData } from "./types";
 import { ActionCategory } from "../actions/types";
 import { ActionType } from "../actions/actionConfigs";
+import { Rarity } from "./types";
 
-export const commonEquipmentConfigs: Record<string, EquipmentData> = {
-  "sword": {
+export enum EquipmentType {
+  Sword = "Sword",
+  Katana = "Katana",
+}
+
+export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
+  [EquipmentType.Sword]: {
     name: "剑",
     description: "一把剑,平平无奇的武器",
+    rarity: Rarity.Common,
     position: EquipmentPosition.Hand,
     extraActions: [],
     ability: {},
@@ -16,12 +23,10 @@ export const commonEquipmentConfigs: Record<string, EquipmentData> = {
       },
     },
   },
-}
-
-export const rareEquipmentConfigs: Record<string, EquipmentData> = {
-  "katana": {
+  [EquipmentType.Katana]: {
     name: "太刀",
     description: "太好了，有了这个，你就可以做虾头太刀侠了",
+    rarity: Rarity.Rare,
     position: EquipmentPosition.Hand,
     extraActions: [{actionType: ActionType.HorizontalSlash, weight: 1}],
     ability: {

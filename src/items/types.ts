@@ -1,10 +1,13 @@
-import type { commonConsumableConfigs, rareConsumableConfigs } from "./consumableConfigs";
-import type { commonEquipmentConfigs, rareEquipmentConfigs } from "./equipmentConfigs";
+import type { ConsumableType } from "./consumableConfigs";
+import type { EquipmentType } from "./equipmentConfigs";
 import type { Ability } from "../creatures/types";
 import type { ActionCategory, WeightedActionType } from "../actions/types";
 import type { Creature } from "../creatures/Creature";
 
-export type ItemCategory = "consumable" | "equipment";
+export enum ItemCategory {
+  Consumable = "consumable",
+  Equipment = "equipment",
+}
 
 export enum Rarity {
 	Common = 0,
@@ -33,20 +36,7 @@ export enum EquipmentPosition {
   Accessory = "accessory",
 }
 
-export type ConsumableKey = keyof typeof commonConsumableConfigs | keyof typeof rareConsumableConfigs;
-export type EquipmentKey = keyof typeof commonEquipmentConfigs | keyof typeof rareEquipmentConfigs;
-
-export interface ItemType {
-	category: ItemCategory;
-	rarity: Rarity;
-	key: EquipmentKey | ConsumableKey;
-}
-
-export interface ItemIdentifier {
-	id: string;
-	type: ItemType;
-	prefix?: EquipmentPrefix;
-}
+export type ItemType = EquipmentType | ConsumableType;
 
 export type EquipmentAbility = Partial<Ability>;
 
@@ -55,6 +45,7 @@ export type EquipmentActionCoeff = Partial<Record<ActionCategory, EquipmentActio
 export interface EquipmentData {
   name: string;
   description: string;
+  rarity: Rarity;
   position: EquipmentPosition;
   extraActions: WeightedActionType[];
   ability: EquipmentAbility;
@@ -64,5 +55,6 @@ export interface EquipmentData {
 export interface ConsumableData {
   name: string;
   description: string;
+  rarity: Rarity;
   effect: (target: Creature) => void;
 }

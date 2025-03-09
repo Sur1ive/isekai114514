@@ -1,6 +1,6 @@
 import { creatureConfigs, CreatureType } from "./creatureConfigs";
 import type { Coefficient, Ability, CreatureStatus } from "./types";
-import type { ItemIdentifier } from "../items/types";
+import type { Item } from "../items/Item";
 import type { WeightedActionType } from "../actions/types";
 import { actionConfigs, ActionType } from "../actions/actionConfigs";
 import type { Action } from "../actions/Action";
@@ -14,7 +14,7 @@ export class Creature {
   health: number;
   ability: Ability;
   status: CreatureStatus[] = [];
-  pack: ItemIdentifier[] = [];
+  pack: Item[] = [];
   // equipments: Equipment[];
   actions: WeightedActionType[];
 

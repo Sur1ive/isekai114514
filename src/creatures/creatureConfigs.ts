@@ -1,13 +1,13 @@
-import { Rarity } from "../items/types";
+import { ConsumableType } from "../items/consumableConfigs";
 import type { CreatureData } from "./types";
 import { ActionType } from "../actions/actionConfigs";
 
 export enum CreatureType {
-  Player = "player",
-  Player114514 = "player114514",
-  Slime = "slime",
-  Dragon = "dragon",
-  Wolf = "wolf",
+  Player = "Player",
+  Player114514 = "Player114514",
+  Slime = "Slime",
+  Dragon = "Dragon",
+  Wolf = "Wolf",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -66,8 +66,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Dazed, weight: 2 },
     ],
     dropItems: [
-      {key: {category: "consumable", rarity: Rarity.Common, key: "brokenChest"}, weight: 1},
-      {key: {category: "consumable", rarity: Rarity.Rare, key: "silverChest"}, weight: 0.2},
+      {type: ConsumableType.BrokenChest, weight: 1},
+      {type: ConsumableType.SilverChest, weight: 0.2},
     ],
   },
 
@@ -87,7 +87,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Attack, weight: 1 },
     ],
     dropItems: [
-      {key: {category: "consumable", rarity: Rarity.Rare, key: "silverChest"}, weight: 1},
+      {type: ConsumableType.SilverChest, weight: 1},
     ],
   },
 
@@ -108,8 +108,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Dazed, weight: 0.5 },
     ],
     dropItems: [
-      {key: {category: "consumable", rarity: Rarity.Common, key: "brokenChest"}, weight: 0.5},
-      {key: {category: "consumable", rarity: Rarity.Rare, key: "silverChest"}, weight: 0.5},
+      {type: ConsumableType.BrokenChest, weight: 0.5},
+      {type: ConsumableType.SilverChest, weight: 0.5},
     ],
   }
 };

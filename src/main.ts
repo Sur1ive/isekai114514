@@ -4,8 +4,6 @@ import { getAppElement } from "./tools";
 import { testBattle } from "./battle/battlePage";
 import { loadPlayer, saveGame } from "./save";
 import { Consumable } from "./items/Consumable";
-import { getItemInstance } from "./items/itemUtils";
-import { Item } from "./items/Item";
 import { CreatureType } from "./creatures/creatureConfigs";
 import { setIntervals } from "./global";
 
@@ -207,8 +205,6 @@ export function renderMainMenu(player: Player): void {
 function renderStatusPage(player: Player): void {
   const appElement = getAppElement();
 
-  const packInstance : Item[] = player.pack.map(item => getItemInstance(item));
-
   appElement.innerHTML = `
   <div class="container mt-4">
     <h2 class="text-center mb-4">状态</h2>
@@ -238,10 +234,10 @@ function renderStatusPage(player: Player): void {
         <h4>${player.name} 的背包</h4>
         <div id="pack" class="d-flex flex-wrap gap-2">
           ${
-            packInstance.length > 0
-              ? packInstance.map(item => {
-                  const btnClass = (item.identifier.type.category === "consumable") ? "btn-success" : "btn-secondary";
-                  return `<button id="use-btn${item.identifier.id}" class="btn ${btnClass}">${item.name}</button>`;
+            player.pack.length > 0
+              ? player.pack.map(item => {
+                  const btnClass = (item instanceof Consumable) ? "btn-success" : "btn-secondary";
+                  return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">${item.name}</button>`;
                 }).join('')
               : '<p class="text-muted">背包为空</p>'
           }
@@ -258,9 +254,9 @@ function renderStatusPage(player: Player): void {
 
   document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu(player)});
   // 使用消耗品
-  for (const item of packInstance) {
+  for (const item of player.pack) {
     if (item instanceof Consumable) {
-      document.getElementById(`use-btn${item.identifier.id}`)?.addEventListener('click', () => {
+      document.getElementById(`use-btn${item.uuid}`)?.addEventListener('click', () => {
         item.useItem(player);
         player.addLog(player.name + "使用了" + item.name);
         saveGame(player);

@@ -5,8 +5,6 @@ import { saveGame } from "../save";
 import { getAppElement } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
-import type { Item } from "../items/Item";
-
 
 // 渲染战斗开始界面
 function renderBattleStartPage(player: Player, enemy: Monster): void {
@@ -16,7 +14,6 @@ function renderBattleStartPage(player: Player, enemy: Monster): void {
   const enemyActionObservation = observeEnemyAction(player, enemy, enemyAction);
   const action1 = player.getRandomAction();
   const action2 = player.getRandomAction();
-  console.log(enemy.getRandomAction(), player.getRandomAction(), enemy, player);
 
 	appElement.innerHTML = `
   <div class="container mt-4">
@@ -72,8 +69,6 @@ function renderBattleStartPage(player: Player, enemy: Monster): void {
   document.getElementById('action1-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action1, enemyAction)});
   document.getElementById('action2-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action2, enemyAction)});
 }
-
-import { getItemInstance } from "../items/itemUtils";
 
 // 渲染战斗界面
 function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action): void {
@@ -162,12 +157,10 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, 
 // 渲染战斗结算界面
 function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
 	const appElement = getAppElement();
-	let dropItemInstance: Item;
 
 	if (result) {
 		const dropItem = enemy.randomDropItem();
-		dropItemInstance = getItemInstance(dropItem);
-		player.addLog(enemy.name + "掉落了<span style='color: gold;'>" + dropItemInstance.name + "</span>");
+		player.addLog(enemy.name + "掉落了<span style='color: gold;'>" + dropItem.name + "</span>");
 		player.pack.push(dropItem);
 	} else {
 		player.health = 1;

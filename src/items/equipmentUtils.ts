@@ -1,6 +1,6 @@
-import { EquipmentPrefix, Rarity, ItemIdentifier, ItemType } from "./types";
-import { commonEquipmentConfigs, rareEquipmentConfigs } from "./equipmentConfigs";
-import { v4 as uuidv4 } from 'uuid';
+import { EquipmentPrefix, Rarity } from "./types";
+import { equipmentConfigs, EquipmentType } from "./equipmentConfigs";
+import { Equipment } from "./Equipment";
 
 // 生成随机前缀
 export function generateRandomPrefix() {
@@ -8,22 +8,10 @@ export function generateRandomPrefix() {
 }
 
 // 根据稀有度随机抽取装备类型
-export function generateRandomEquipment(rarity: Rarity) : ItemIdentifier {
-  const equipmentConfigs = rarity === Rarity.Common ? commonEquipmentConfigs : rareEquipmentConfigs;
-  const equipmentKeys = Object.keys(equipmentConfigs);
+export function generateRandomEquipment(rarity: Rarity) : Equipment {
+  // 筛选出稀有度为rarity的装备类型
+  const equipmentKeys = Object.keys(equipmentConfigs).filter((key) => equipmentConfigs[key as EquipmentType].rarity === rarity);
   const randomIndex = Math.floor(Math.random() * equipmentKeys.length);
   const randomEquipmentKey = equipmentKeys[randomIndex];
-  return {
-    type: {
-      category: "equipment",
-      rarity: rarity,
-      key: randomEquipmentKey,
-    },
-    prefix: generateRandomPrefix(),
-    id: uuidv4(),
-  };
-}
-
-export function generateEquipment(type: ItemType) {
-  return {id: uuidv4(), type: type, prefix: generateRandomPrefix()};
+  return new Equipment(randomEquipmentKey as EquipmentType);
 }
