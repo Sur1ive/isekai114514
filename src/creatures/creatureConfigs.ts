@@ -1,8 +1,16 @@
 import { Rarity } from "../items/types";
-import type { creatureData } from "./types";
+import type { CreatureData } from "./types";
 
-export const creatureConfigs: Record<string, creatureData> = {
-  "player": {
+export enum CreatureType {
+  Player = "player",
+  Player114514 = "player114514",
+  Slime = "slime",
+  Dragon = "dragon",
+  Wolf = "wolf",
+}
+
+export const creatureConfigs: Record<CreatureType, CreatureData> = {
+  [CreatureType.Player]: {
     typeName: "人类",
     description: "你",
     abilityCoeff: {
@@ -20,9 +28,9 @@ export const creatureConfigs: Record<string, creatureData> = {
     ],
     dropItems: [],
   },
-  "player114514": {
+  [CreatureType.Player114514]: {
     typeName: "野兽仙贝",
-    description: "吴田所",
+    description: "114514",
     abilityCoeff: {
       str: { base: 10, growth: 1 },
       int: { base: 10, growth: 0 },
@@ -40,7 +48,7 @@ export const creatureConfigs: Record<string, creatureData> = {
     dropItems: [],
   },
 
-  "slime": {
+  [CreatureType.Slime]: {
     typeName: "史莱姆",
     description: "一种行动缓慢的软体生物，武器打上去没有什么手感",
     abilityCoeff: {
@@ -62,7 +70,7 @@ export const creatureConfigs: Record<string, creatureData> = {
     ],
   },
 
-  "dragon": {
+  [CreatureType.Dragon]: {
     typeName: "龙",
     description: "森林食物链的顶端",
     abilityCoeff: {
@@ -82,7 +90,7 @@ export const creatureConfigs: Record<string, creatureData> = {
     ],
   },
 
-  "wolf": {
+  [CreatureType.Wolf]: {
     typeName: "孤狼",
     description: "一匹行动敏捷的孤狼，对于普通人来说，它是一种危险的生物",
     abilityCoeff: {

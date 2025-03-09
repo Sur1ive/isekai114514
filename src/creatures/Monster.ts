@@ -1,12 +1,12 @@
 import { Creature } from "./Creature";
 import type { ItemType } from "../items/types";
-import { creatureConfigs } from "./creatureConfigs";
+import { creatureConfigs, CreatureType } from "./creatureConfigs";
 import { generateItem } from "../items/itemUtils";
-import type { CreatureType } from "./types";
 
 export class Monster extends Creature {
 	description: string;
   dropItems: {key: ItemType, weight: number}[];
+
   constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
     super(name, type, level, individualStrength);
     this.dropItems = creatureConfigs[type].dropItems;

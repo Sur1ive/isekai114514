@@ -1,5 +1,5 @@
-import { creatureConfigs } from "./creatureConfigs";
-import type { Coefficient, Ability, CreatureType, CreatureStatus } from "./types";
+import { creatureConfigs, CreatureType } from "./creatureConfigs";
+import type { Coefficient, Ability, CreatureStatus } from "./types";
 import type { ItemIdentifier } from "../items/types";
 import type { WeightedActionKey } from "../actions/types";
 import { getAction } from "../actions/actionConfigs";
@@ -13,8 +13,8 @@ export class Creature {
   maxHealth: number;
   health: number;
   ability: Ability;
-  status: CreatureStatus[];
-  pack: ItemIdentifier[];
+  status: CreatureStatus[] = [];
+  pack: ItemIdentifier[] = [];
   // equipments: Equipment[];
   actions: WeightedActionKey[];
 
@@ -23,11 +23,7 @@ export class Creature {
     this.type = type;
     this.level = level;
     this.individualStrength = individualStrength;
-    this.pack = [];
-    if (!creatureConfigs[type]) {
-      throw new Error(`No configuration found for type "${type}"`);
-    }
-    const coeffs = creatureConfigs[type].abilityCoeff;
+    const coeffs = creatureConfigs[this.type].abilityCoeff;
     const calculateAbility = (coeff: Coefficient, level: number, individualStrength: number) => {
       const randomNumber = Math.random() ** 0.5;
       return coeff.base + coeff.growth * level * individualStrength * randomNumber;
@@ -42,8 +38,6 @@ export class Creature {
       dex: calculateAbility(coeffs.dex, level, individualStrength),
       armor: calculateAbility(coeffs.armor, level, individualStrength),
     }
-
-    this.status = [];
 
     this.health = this.ability.con * 10 + this.ability.siz * 5;
     this.maxHealth = this.health;

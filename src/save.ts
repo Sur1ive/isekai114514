@@ -11,9 +11,10 @@ export function loadPlayer(): Player {
   if (!data) {
     throw new Error("No player data found");
   }
-  const plainPlayer = JSON.parse(data);
-  console.log("Loaded player type:", plainPlayer.type);
-  const result = plainToInstance(Player, plainPlayer);
-  // 如果 result 是数组，则取第一个元素，否则直接返回
-  return Array.isArray(result) ? result[0] : result;
+  const plainPlayer: Record<string, any> = JSON.parse(data);
+  console.log(plainPlayer);
+  const player = plainToInstance(Player, plainPlayer, {
+    enableImplicitConversion: true,
+  });
+  return player;
 }

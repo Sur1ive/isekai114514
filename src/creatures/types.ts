@@ -1,6 +1,5 @@
 import type { WeightedActionKey } from "../actions/types";
 import type { ItemType } from "../items/types";
-import type { creatureConfigs } from "./creatureConfigs";
 
 export interface Range {
   min: number;
@@ -32,15 +31,13 @@ export interface Ability {
   armor: number;
   }
 
-export interface creatureData {
+export interface CreatureData {
     typeName: string;
     abilityCoeff: AbilityCoefficient;
     actions: WeightedActionKey[];
     dropItems: {key: ItemType, weight: number}[];
     description: string;
   }
-
-export type CreatureType = keyof typeof creatureConfigs;
 
 export enum CreatureStatusType {
   Poison = 'poison',

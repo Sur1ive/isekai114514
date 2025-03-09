@@ -53,7 +53,7 @@ function attackAgainstNoAction(player: Player, enemy: Monster, playerAction: Act
   player.addTempLog(target.name + "被打了个措手不及(attack vs none)");
   const damage = calculateDamage(power, target.ability.armor);
   target.health -= damage;
-  player.addLog(action.messageGenerator(actor, target, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+  player.addTempLog(action.messageGenerator(actor, target, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
   action.extraEffect ? action.extraEffect(actor, target) : null;
 }
 

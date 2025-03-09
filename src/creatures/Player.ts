@@ -1,21 +1,22 @@
 import { Creature } from "./Creature";
 import { saveGame } from "../save";
+import { CreatureType } from "./creatureConfigs";
 
 export class Player extends Creature {
-  log: string[];
-  tempLog: string[];
-  autoRecoverIntervalId: number;
-  autoSaveIntervalId: number;
+  log: string[] = [];
+  tempLog: string[] = [];
+  autoRecoverIntervalId: number = -1;
+  autoSaveIntervalId: number = -1;
+  capturedMonster: {name: string, level: number}[] = [];
 
-  capturedMonster: {name: string, level: number}[];
-
-  constructor(name: string, type: string) {
+  constructor(name: string, type: CreatureType) {
+    if (name === undefined) {
+      name = "吴田所";
+    }
+    if (type === undefined) {
+      type = CreatureType.Player;
+    }
     super(name, type, 0, 1);
-    this.log = [];
-    this.tempLog = [];
-    this.autoRecoverIntervalId = -1;
-    this.autoSaveIntervalId = -1;
-    this.capturedMonster = [];
   }
 
   getHealthDisplay(): string {

@@ -6,6 +6,7 @@ import { loadPlayer, saveGame } from "./save";
 import { Consumable } from "./items/Consumable";
 import { getItemInstance } from "./items/itemUtils";
 import { Item } from "./items/Item";
+import { CreatureType } from "./creatures/creatureConfigs";
 
 // 渲染开始界面
 function renderStartPage(): void {
@@ -33,12 +34,12 @@ function renderStartPage(): void {
   `;
 
   document.getElementById('action1-btn')?.addEventListener('click', () => {
-    const player = new Player("default", "player");
+    const player = new Player("吴田所", CreatureType.Player);
     renderStartPage1(player);
   });
 
   document.getElementById('action2-btn')?.addEventListener('click', () => {
-    const player = new Player("吴田所", "player114514");
+    const player = new Player("田所*二", CreatureType.Player114514);
     renderStartPage1(player);
   });
 }
@@ -98,11 +99,7 @@ function renderStartPage2(player: Player): void {
   `;
 
   document.getElementById('continue-btn')?.addEventListener('click', () => {
-    if (player.name === "default") {
       renderStartPage3(player);
-    } else {
-      renderStartPage4(player);
-    }
   });
 }
 
@@ -112,7 +109,7 @@ function renderStartPage3(player: Player): void {
   appElement.innerHTML = `
     <h1>???</h1>
     <p>请输入你的名字</p>
-    <input type="text" id="name-input" placeholder="请输入你的名字">
+    <input type="text" id="name-input" placeholder="${player.name}">
     <button id="continue-btn">继续</button>
   `;
 
@@ -144,7 +141,6 @@ function renderStartPage4(player: Player): void {
     renderMainMenu(player);
   });
 }
-
 
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {

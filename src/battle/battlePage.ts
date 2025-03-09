@@ -205,12 +205,12 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
   document.getElementById('main-menu-btn')?.addEventListener('click', () => {renderMainMenu(player)});
 }
 
-import { creatureConfigs } from "../creatures/creatureConfigs";
+import { creatureConfigs, CreatureType } from "../creatures/creatureConfigs";
 
 export function testBattle(player: Player): void {
-  let enemyType = Object.keys(creatureConfigs)[Math.floor(Math.random() * Object.keys(creatureConfigs).length)];
-	if (enemyType === "player") {
-		enemyType = "wolf";
+  let enemyType = Object.values(CreatureType)[Math.floor(Math.random() * Object.values(CreatureType).length)];
+  if (enemyType === CreatureType.Player || enemyType === CreatureType.Player114514) {
+		enemyType = CreatureType.Wolf;
 	}
 	const enemyLevel = Math.floor(Math.random() * 10) + 1;
 	const enemyIndividualStrength = Math.random() * 2;
