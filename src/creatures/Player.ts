@@ -9,7 +9,7 @@ export class Player extends Creature {
   isAtHome: boolean = true;
 
   constructor(name: string, type: CreatureType) {
-    // 为了使用class-transforme保存，设定默认值，默认值并没有意义
+    // 为了使用class-transformer保存，设定默认值，默认值并没有意义
     name = name || "吴田所";
     type = type || CreatureType.Player;
 

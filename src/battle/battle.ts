@@ -49,7 +49,7 @@ function attackAgainstNoAction(player: Player, enemy: Monster, playerAction: Act
   }
 
   const power = calculatePower(action.coeff, actor.ability);
-  player.addTempLog(actor.name + "使用了" + action.name + "掷出了<span style=\"color: blue;\">" + Math.round(power) + "</span>)");
+  player.addTempLog(actor.name + "使用了" + action.name + "掷出了<span style=\"color: blue;\">" + Math.round(power) + "</span>");
   player.addTempLog(target.name + "被打了个措手不及(attack vs none)");
   const damage = calculateDamage(power, target.ability.armor);
   target.health -= damage;
@@ -79,11 +79,21 @@ export function statusCheck(player: Player, enemy: Monster) {
 }
 
 export function observeEnemyAction(player: Player, enemy: Monster, realAction: Action): string {
+  function generateMsg(enemy: Monster, action: Action) {
+    if (action.category === ActionCategory.Attack) {
+      return enemy.name + "看起来要" + action.name + "了";
+    } else if (action.category === ActionCategory.NoAction) {
+      return enemy.name + "看起来还没反应过来";
+    } else {
+      return enemy.name + "看起来要" + action.name + "了";
+    }
+  }
+
   if (Math.random() * player.ability.dex > Math.random() * enemy.ability.dex) {
     if (Math.random() * player.ability.int > Math.random() * enemy.ability.int) {
-      return enemy.name + "看起来要" + realAction.name + "了";
+      return generateMsg(enemy, realAction);
     } else {
-      return enemy.name + "看起来要" + enemy.getRandomAction().name + "了";
+      return generateMsg(enemy, enemy.getRandomAction());
     }
   } else {
     return "你来不及观察" + enemy.name + "的行动";
