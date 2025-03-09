@@ -152,6 +152,7 @@ export function renderMainMenu(player: Player): void {
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
       <h2>${player.name} lv ${player.level}</h2>
+      <div>${player.type === CreatureType.Player114514 ? "野兽" : "人类"}</div>
       <div id="health-display" class="fs-4 mb-3">${player.getHealthDisplay()}</div>
     </div>
   </div>
@@ -159,7 +160,7 @@ export function renderMainMenu(player: Player): void {
     <h2 class="text-center mb-4">主菜单</h2>
     <div class="row g-3 justify-content-center">
       <div class="col-12 col-md-4">
-        <button id="battle-btn" class="btn btn-primary w-100 py-3">战斗</button>
+        <button id="battle-btn" class="btn btn-primary w-100 py-3">${player.type === CreatureType.Player114514 ? "救世啊！" : "战斗"}</button>
       </div>
       <div class="col-12 col-md-4">
         <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>
