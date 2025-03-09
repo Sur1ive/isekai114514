@@ -1,32 +1,5 @@
-import { Creature } from "../creatures/Creature";
-
-export enum ActionType {
-  Attack = "attack",
-  Defend = "defend",
-  Dodge = "dodge",
-  DexAction = "dexAction",
-  StrAction = "strAction",
-  IntAction = "intAction",
-  ConAction = "conAction",
-  SizAction = "sizAction",
-  AppAction = "appAction",
-  NoAction = "noAction",
-}
-
-export interface ActionCoeff {
-  str: number;
-  int: number;
-  con: number;
-  siz: number;
-  app: number;
-  dex: number;
-}
-
-export enum ActionResult {
-  Success = "success",
-  Fail = "fail",
-  Miss = "miss",
-}
+import type { Creature } from "../creatures/Creature";
+import { ActionType, ActionResult, ActionCoeff } from "./types";
 
 export interface Action {
   name: string;

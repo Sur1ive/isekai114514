@@ -1,7 +1,8 @@
-import { Consumable } from "./consumables";
-import { Equipment, generateEquipment } from "./equipments";
+import { Consumable } from "./Consumable";
+import { Equipment } from "./Equipment";
 import { v4 as uuidv4 } from 'uuid';
-import { ItemType, ItemIdentifier } from "./items";
+import type { ItemType, ItemIdentifier } from "./types";
+import { generateEquipment } from "./equipmentUtils";
 
 export function generateItem(type: ItemType) : ItemIdentifier {
   switch (type.category) {

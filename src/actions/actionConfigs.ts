@@ -1,7 +1,8 @@
-import { Action, ActionType, ActionResult } from "./Action";
-import { Creature } from "../creatures/Creature";
-import { CreatureStatusType } from "../creatures/CreatureStatus";
+import type { Action } from "./Action";
+import type { Creature } from "../creatures/Creature";
 import { Player } from "../creatures/Player";
+import { CreatureStatusType } from "../creatures/types";
+import { ActionType, ActionResult, ActionKey } from "./types";
 
 export const actionConfigs: Record<string, Action> = {
   dazedAction: {
@@ -152,6 +153,8 @@ export const actionConfigs: Record<string, Action> = {
       }
     },
   },
-
 }
 
+export function getAction(key: ActionKey) {
+  return actionConfigs[key];
+}

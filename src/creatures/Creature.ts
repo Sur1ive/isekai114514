@@ -1,30 +1,9 @@
-import { CreatureStatus } from "./CreatureStatus";
-import { creatureConfigs, CreatureType } from "./CreatureType";
-import { Coefficient } from "./baseTypes";
-import { ItemIdentifier } from "../items/items";
-import { WeightedActionKey } from "../actions/ActionList";
-import { getAction } from "../actions/ActionList";
-import { Action } from "../actions/Action";
-
-export interface AbilityCoefficient {
-  str: Coefficient;
-  int: Coefficient;
-  con: Coefficient;
-  siz: Coefficient;
-  app: Coefficient;
-  dex: Coefficient;
-  armor: Coefficient;
-}
-
-export interface Ability {
-  str: number;
-  int: number;
-  con: number;
-  siz: number;
-  app: number;
-  dex: number;
-  armor: number;
-  }
+import { creatureConfigs } from "./creatureConfigs";
+import type { Coefficient, Ability, CreatureType, CreatureStatus } from "./types";
+import type { ItemIdentifier } from "../items/types";
+import type { WeightedActionKey } from "../actions/types";
+import { getAction } from "../actions/actionConfigs";
+import type { Action } from "../actions/Action";
 
 export class Creature {
   name: string;
@@ -45,6 +24,9 @@ export class Creature {
     this.level = level;
     this.individualStrength = individualStrength;
     this.pack = [];
+    if (!creatureConfigs[type]) {
+      throw new Error(`No configuration found for type "${type}"`);
+    }
     const coeffs = creatureConfigs[type].abilityCoeff;
     const calculateAbility = (coeff: Coefficient, level: number, individualStrength: number) => {
       const randomNumber = Math.random() ** 0.5;

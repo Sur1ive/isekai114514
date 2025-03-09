@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "tsc && vite build; gh-pages -d dist",
     "preview": "vite preview"
   },
   "devDependencies": {

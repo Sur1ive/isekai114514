@@ -3,12 +3,47 @@ import { Player } from "./creatures/Player";
 import { getAppElement } from "./tools";
 import { testBattle } from "./battle/battlePage";
 import { loadPlayer, saveGame } from "./save";
-import { Consumable } from "./items/consumables";
-import { getItemInstance } from "./items/tools";
-import { Item } from "./items/items";
+import { Consumable } from "./items/Consumable";
+import { getItemInstance } from "./items/itemUtils";
+import { Item } from "./items/Item";
 
 // 渲染开始界面
 function renderStartPage(): void {
+  const appElement = getAppElement();
+  appElement.innerHTML = `
+    <h1>你是谁？</h1>
+    <div class="row mb-4">
+      <div class="col-6">
+        <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
+          <div class="card-body text-center">
+            <h5 class="card-title">普通人</h5>
+            <p class="card-text">你是一个正准备去上班/上学的普通人</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
+          <div class="card-body text-center">
+            <h5 class="card-title">野兽仙贝</h5>
+            <p class="card-text">你是野兽先辈，一番劳累过后，正准备返回自家天台晒日光浴</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('action1-btn')?.addEventListener('click', () => {
+    const player = new Player("default", "player");
+    renderStartPage1(player);
+  });
+
+  document.getElementById('action2-btn')?.addEventListener('click', () => {
+    const player = new Player("吴田所", "player114514");
+    renderStartPage1(player);
+  });
+}
+
+function renderStartPage1(player: Player): void {
   const appElement = getAppElement();
 
 // 生成 0 到 3 的随机整数，每个方向各 25% 概率
@@ -46,15 +81,15 @@ appElement.innerHTML = `
 
   // 给按钮添加点击事件，切换到对应的界面
   document.getElementById('left-btn')?.addEventListener('click', ()=>{
-    Math.random() > 0.3 ? renderStartPage() : renderStartPage2();
+    Math.random() > 0.3 ? renderStartPage1(player) : renderStartPage2(player);
   });
   document.getElementById('right-btn')?.addEventListener('click', ()=>{
-    Math.random() > 0.3 ? renderStartPage() : renderStartPage2();
+    Math.random() > 0.3 ? renderStartPage1(player) : renderStartPage2(player);
   });
 }
 
 // 渲染开始界面2
-function renderStartPage2(): void {
+function renderStartPage2(player: Player): void {
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>躲避大卡车</h1>
@@ -62,11 +97,17 @@ function renderStartPage2(): void {
     <button id="continue-btn">继续</button>
   `;
 
-  document.getElementById('continue-btn')?.addEventListener('click', renderStartPage3);
+  document.getElementById('continue-btn')?.addEventListener('click', () => {
+    if (player.name === "default") {
+      renderStartPage3(player);
+    } else {
+      renderStartPage4(player);
+    }
+  });
 }
 
 // 渲染开始界面3
-function renderStartPage3(): void {
+function renderStartPage3(player: Player): void {
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>???</h1>
@@ -79,14 +120,31 @@ function renderStartPage3(): void {
     const nameInput = document.getElementById('name-input') as HTMLInputElement;
     const playerName = nameInput.value.trim();
     if (playerName) {
-      const player = new Player(playerName);
-      saveGame(player);
-      renderMainMenu(player);
+      player.name = playerName;
+      renderStartPage4(player);
     } else {
       alert("请输入你的名字！");
     }
   });
 }
+
+// 渲染开始界面4
+function renderStartPage4(player: Player): void {
+  const appElement = getAppElement();
+  appElement.innerHTML = `
+    <h1>???</h1>
+    <p>你睁开了眼睛，发现自己好像身处森林之中</p>
+    <p>周围的一切都显得那么陌生，充满了异世界风情</p>
+    <p>看着远处地上缓慢蠕动的史莱姆，你总算相信自己穿越了</p>
+    <button id="continue-btn">继续</button>
+  `;
+
+  document.getElementById('continue-btn')?.addEventListener('click', () => {
+    saveGame(player);
+    renderMainMenu(player);
+  });
+}
+
 
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {
@@ -217,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     player = loadPlayer();
   } catch (error) {
+    console.log(error);
     localStorage.removeItem("playerData");
     renderStartPage();
     return;

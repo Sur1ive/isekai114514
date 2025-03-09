@@ -1,7 +1,8 @@
 import { Creature } from "./Creature";
-import { ItemType } from "../items/items";
-import { CreatureType, creatureConfigs } from "./CreatureType";
-import { generateItem } from "../items/tools";
+import type { ItemType } from "../items/types";
+import { creatureConfigs } from "./creatureConfigs";
+import { generateItem } from "../items/itemUtils";
+import type { CreatureType } from "./types";
 
 export class Monster extends Creature {
 	description: string;
@@ -14,6 +15,6 @@ export class Monster extends Creature {
 
   randomDropItem() {
     const itemType = this.dropItems[Math.floor(Math.random() * this.dropItems.length)].key;
-		return generateItem(itemType); 
+		return generateItem(itemType);
   }
 }

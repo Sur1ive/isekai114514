@@ -9,8 +9,8 @@ export class Player extends Creature {
 
   capturedMonster: {name: string, level: number}[];
 
-  constructor(name: string) {
-    super(name, "player", 0, 1);
+  constructor(name: string, type: string) {
+    super(name, type, 0, 1);
     this.log = [];
     this.tempLog = [];
     this.autoRecoverIntervalId = -1;

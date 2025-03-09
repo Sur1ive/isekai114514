@@ -1,14 +1,5 @@
-import { AbilityCoefficient } from "./Creature";
-import { WeightedActionKey } from "../actions/ActionList";
-import { ItemType, Rarity } from "../items/items";
-
-interface creatureData {
-  typeName: string;
-  abilityCoeff: AbilityCoefficient;
-  actions: WeightedActionKey[];
-  dropItems: {key: ItemType, weight: number}[];
-  description: string;
-}
+import { Rarity } from "../items/types";
+import type { creatureData } from "./types";
 
 export const creatureConfigs: Record<string, creatureData> = {
   "player": {
@@ -24,8 +15,26 @@ export const creatureConfigs: Record<string, creatureData> = {
       armor: { base: 0, growth: 0 },
     },
     actions: [
-      { actionKey: "powerfulDigAttackAction", weight: 0.1 },
       { actionKey: "attackAction", weight: 1 },
+      { actionKey: "captureAction", weight: 0.1 },
+    ],
+    dropItems: [],
+  },
+  "player114514": {
+    typeName: "野兽仙贝",
+    description: "吴田所",
+    abilityCoeff: {
+      str: { base: 10, growth: 1 },
+      int: { base: 10, growth: 0 },
+      con: { base: 15, growth: 2 }, // 小麦色的健康肤色
+      siz: { base: 10, growth: 1 }, // 24岁是学生，还在长身体很合理吧
+      app: { base: 15, growth: 0 }, // 没有魅力怎么能吸引后辈
+      dex: { base: 10, growth: 0 },
+      armor: { base: 0, growth: 0 },
+    },
+    actions: [
+      { actionKey: "powerfulDigAttackAction", weight: 0.1 },
+      { actionKey: "attackAction", weight: 0.9 },
       { actionKey: "captureAction", weight: 0.1 },
     ],
     dropItems: [],
@@ -96,4 +105,3 @@ export const creatureConfigs: Record<string, creatureData> = {
   }
 };
 
-export type CreatureType = keyof typeof creatureConfigs;

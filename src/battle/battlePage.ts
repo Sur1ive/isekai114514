@@ -1,10 +1,12 @@
 import { Monster } from "../creatures/Monster";
 import { observeEnemyAction, handleAction, statusCheck } from "./battle";
 import { renderMainMenu } from "../main";
-import { loadPlayer, saveGame } from "../save";
+import { saveGame } from "../save";
 import { getAppElement } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
+import type { Item } from "../items/Item";
+
 
 // 渲染战斗开始界面
 function renderBattleStartPage(player: Player, enemy: Monster): void {
@@ -70,7 +72,7 @@ function renderBattleStartPage(player: Player, enemy: Monster): void {
   document.getElementById('action2-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action2, enemyAction)});
 }
 
-import { getItemInstance } from "../items/tools";
+import { getItemInstance } from "../items/itemUtils";
 
 // 渲染战斗界面
 function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action): void {
@@ -156,8 +158,6 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, 
   document.getElementById('action2-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action2, enemyAction)});
 }
 
-import { Item } from "../items/items";
-
 // 渲染战斗结算界面
 function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
 	const appElement = getAppElement();
@@ -205,7 +205,7 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
   document.getElementById('main-menu-btn')?.addEventListener('click', () => {renderMainMenu(player)});
 }
 
-import { creatureConfigs } from "../creatures/CreatureType";
+import { creatureConfigs } from "../creatures/creatureConfigs";
 
 export function testBattle(player: Player): void {
   let enemyType = Object.keys(creatureConfigs)[Math.floor(Math.random() * Object.keys(creatureConfigs).length)];

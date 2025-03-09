@@ -1,5 +1,6 @@
-import { Action, ActionCoeff, ActionType, ActionResult } from "../actions/Action";
-import { Ability } from "../creatures/Creature";
+import { ActionCoeff, ActionType, ActionResult } from "../actions/types";
+import type { Action } from "../actions/Action";
+import type { Ability } from "../creatures/types";
 import { Player } from "../creatures/Player";
 import { Monster } from "../creatures/Monster";
 
