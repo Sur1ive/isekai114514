@@ -7,10 +7,9 @@ import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 
 // 渲染战斗开始界面
-function renderBattleStartPage(enemy: Monster): void {
+function renderBattleStartPage(player: Player, enemy: Monster): void {
   const appElement = getAppElement();
 
-  const player = loadPlayer();
   const enemyAction = enemy.getRandomAction();
   const enemyActionObservation = observeEnemyAction(player, enemy, enemyAction);
   const action1 = player.getRandomAction();
@@ -203,12 +202,12 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
 
 	player.clearTempLogs();
 	saveGame(player);
-  document.getElementById('main-menu-btn')?.addEventListener('click', () => {renderMainMenu()});
+  document.getElementById('main-menu-btn')?.addEventListener('click', () => {renderMainMenu(player)});
 }
 
 import { creatureConfigs } from "../creatures/CreatureType";
 
-export function testBattle(): void {
+export function testBattle(player: Player): void {
   let enemyType = Object.keys(creatureConfigs)[Math.floor(Math.random() * Object.keys(creatureConfigs).length)];
 	if (enemyType === "player") {
 		enemyType = "wolf";
@@ -216,5 +215,5 @@ export function testBattle(): void {
 	const enemyLevel = Math.floor(Math.random() * 10) + 1;
 	const enemyIndividualStrength = Math.random() * 2;
   const enemy = new Monster(creatureConfigs[enemyType].typeName, enemyType, enemyLevel, enemyIndividualStrength);
-  renderBattleStartPage(enemy);
+  renderBattleStartPage(player, enemy);
 }

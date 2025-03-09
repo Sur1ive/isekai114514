@@ -18,11 +18,14 @@ export class Player extends Creature {
     this.capturedMonster = [];
   }
 
+  getHealthDisplay(): string {
+    return `hp: ${this.health.toFixed(2)} / ${this.maxHealth.toFixed(0)} + ${(1/100 * this.maxHealth).toFixed(2)}/s`;
+  }
   // 更新生命值显示
-  updateHealthDisplay(player: Player): void {
+  updateHealthDisplay(): void {
     const healthElement = document.getElementById('health-display');
     if (healthElement) {
-      healthElement.innerText = `hp: ${player.health.toFixed(2)} / ${player.maxHealth.toFixed(0)} + ${(1/100 * player.maxHealth).toFixed(2)}/s`;
+      healthElement.innerText = this.getHealthDisplay();
     }
   }
 
@@ -42,7 +45,7 @@ export class Player extends Creature {
     clearInterval(this.autoSaveIntervalId);
     this.autoRecoverIntervalId = setInterval(() => {
       this.recoverHealth(1/100 * this.maxHealth);
-      this.updateHealthDisplay(this);
+      this.updateHealthDisplay();
     }, 1000);
     this.autoSaveIntervalId = setInterval(() => {
       saveGame(this);

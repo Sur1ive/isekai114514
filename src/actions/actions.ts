@@ -2,7 +2,6 @@ import { Action, ActionType, ActionResult } from "./Action";
 import { Creature } from "../creatures/Creature";
 import { CreatureStatusType } from "../creatures/CreatureStatus";
 import { Player } from "../creatures/Player";
-import { type Monster } from "../creatures/Monster";
 
 export const actionConfigs: Record<string, Action> = {
   dazedAction: {
@@ -17,7 +16,7 @@ export const actionConfigs: Record<string, Action> = {
       app: 0,
       dex: 0,
     },
-    messageGenerator: (actor: Creature, target: Creature, result: ActionResult) => `${actor.name} 愣了一下，什么也没做`,
+    messageGenerator: (actor: Creature, _target: Creature, _result: ActionResult) => `${actor.name} 愣了一下，什么也没做`,
   },
 
   attackAction: {
@@ -53,7 +52,7 @@ export const actionConfigs: Record<string, Action> = {
       app: 10,
       dex: 0,
     },
-    extraEffect: (actor: Creature, target: Creature) => {
+    extraEffect: (_actor: Creature, target: Creature) => {
       target.status.push({
         type: CreatureStatusType.Pain,
         duration: 10,

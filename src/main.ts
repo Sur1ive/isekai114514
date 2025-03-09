@@ -81,7 +81,7 @@ function renderStartPage3(): void {
     if (playerName) {
       const player = new Player(playerName);
       saveGame(player);
-      renderMainMenu();
+      renderMainMenu(player);
     } else {
       alert("请输入你的名字！");
     }
@@ -89,9 +89,8 @@ function renderStartPage3(): void {
 }
 
 // 渲染主菜单
-export function renderMainMenu(): void {
+export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
-  const player = loadPlayer();
   player.backToTown();
   console.log(player);
 
@@ -99,7 +98,7 @@ export function renderMainMenu(): void {
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
       <h2>${player.name} lv ${player.level}</h2>
-      <div id="health-display" class="fs-4 mb-3">hp: </div>
+      <div id="health-display" class="fs-4 mb-3">${player.getHealthDisplay()}</div>
     </div>
   </div>
   <div class="container mt-4">
@@ -135,7 +134,7 @@ export function renderMainMenu(): void {
   </div>
 `;
 
-  document.getElementById('battle-btn')?.addEventListener('click', () => {player.startAdventure(); testBattle()});
+  document.getElementById('battle-btn')?.addEventListener('click', () => {player.startAdventure(); testBattle(player)});
   document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
   document.getElementById('restart-btn')?.addEventListener('click', () => {
     if (window.confirm("你确定要remake吗?")) {
@@ -198,7 +197,7 @@ function renderStatusPage(player: Player): void {
   </div>
 `;
 
-  document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu()});
+  document.getElementById('back-btn')?.addEventListener('click', () => {renderMainMenu(player)});
   // 使用消耗品
   for (const item of packInstance) {
     if (item instanceof Consumable) {
@@ -222,7 +221,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStartPage();
     return;
   }
-  player.backToTown();
-  saveGame(player);
-  renderMainMenu();
+  renderMainMenu(player);
 });

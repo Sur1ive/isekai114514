@@ -27,7 +27,7 @@ function attackAgainstAttack(player: Player, enemy: Monster, playerAction: Actio
   } else {
     const damage = calculateDamage(enemyPower, player.ability.armor);
     player.health -= damage;
-    player.addTempLog(enemy.name + "使用了" + enemyAction.name + "弹开了" + player.name + "的" + playerAction.name);
+    player.addTempLog(enemy.name + "使用了" + enemyAction.name + "弹开了" + player.name + "的" + playerAction.name + "(attack vs attack)");
     player.addTempLog(enemyAction.messageGenerator(enemy, player, ActionResult.Success) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
     enemyAction.extraEffect ? enemyAction.extraEffect(enemy, player) : null;
   }

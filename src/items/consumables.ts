@@ -55,6 +55,6 @@ export const rareConsumableConfigs: Record<string, ConsumableData> = {
   },
 }
 
-export function openChest(chestLevel: number, rarity: Rarity) {
+export function openChest(_chestLevel: number, rarity: Rarity) {
 	return generateRandomEquipment(rarity);
 }
