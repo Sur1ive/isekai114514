@@ -3,6 +3,7 @@ import type { Creature } from "../creatures/Creature";
 import { Player } from "../creatures/Player";
 import { CreatureStatusType } from "../creatures/types";
 import { ActionCategory, ActionResult } from "./types";
+import type { Monster } from "../creatures/Monster";
 
 export enum ActionType {
   Dazed = "Dazed",
@@ -148,7 +149,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       const strSuccessRate = (actor.ability.str / target.ability.str) * (actor.ability.siz / target.ability.siz) / (10 * target.health / target.maxHealth);
       if (Math.random() < strSuccessRate && Math.random() < dexSuccessRate) {
         target.health = 0.9;
-        actor.capturedMonster.push({name: target.name, level: target.level});
+        actor.capturedMonster.push(target as Monster);
         actor.addLog(`你成功捕获了${target.name}`);
       } else {
         actor.addLog(`你尝试捕获${target.name}，但是失败了`);

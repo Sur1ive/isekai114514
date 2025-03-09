@@ -1,21 +1,20 @@
 import { Creature } from "./Creature";
 import { saveGame } from "../save";
 import { CreatureType } from "./creatureConfigs";
+import { Monster } from "./Monster";
 
 export class Player extends Creature {
   log: string[] = [];
   tempLog: string[] = [];
   autoRecoverIntervalId: number = -1;
   autoSaveIntervalId: number = -1;
-  capturedMonster: {name: string, level: number}[] = [];
+  capturedMonster: Monster[] = [];
 
   constructor(name: string, type: CreatureType) {
-    if (name === undefined) {
-      name = "吴田所";
-    }
-    if (type === undefined) {
-      type = CreatureType.Player;
-    }
+    // 为了使用class-transforme保存，设定默认值，默认值并没有意义
+    name = name || "吴田所";
+    type = type || CreatureType.Player;
+
     super(name, type, 0, 1);
   }
 

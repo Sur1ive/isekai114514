@@ -103,7 +103,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       dex: { base: 20, growth: 3 },
       armor: { base: 0, growth: 1 },
     },
-    actions: [  
+    actions: [
       { actionType: ActionType.Bite, weight: 1 },
       { actionType: ActionType.Dazed, weight: 0.5 },
     ],

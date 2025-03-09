@@ -12,7 +12,6 @@ export function loadPlayer(): Player {
     throw new Error("No player data found");
   }
   const plainPlayer: Record<string, any> = JSON.parse(data);
-  console.log(plainPlayer);
   const player = plainToInstance(Player, plainPlayer, {
     enableImplicitConversion: true,
   });

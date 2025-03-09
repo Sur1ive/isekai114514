@@ -146,6 +146,7 @@ function renderStartPage4(player: Player): void {
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
   player.backToTown();
+  saveGame(player);
   console.log(player);
 
   appElement.innerHTML = `

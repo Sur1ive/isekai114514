@@ -30,6 +30,7 @@ export enum EquipmentPosition {
   Body = "body",
   Hand = "hand",
   Foot = "foot",
+  Accessory = "accessory",
 }
 
 export type ConsumableKey = keyof typeof commonConsumableConfigs | keyof typeof rareConsumableConfigs;
