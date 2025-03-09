@@ -1,6 +1,6 @@
-import type { actionConfigs } from "./actionConfigs";
+import type { ActionType } from "./actionConfigs";
 
-export enum ActionType {
+export enum ActionCategory {
   Attack = "attack",
   Defend = "defend",
   Dodge = "dodge",
@@ -28,9 +28,7 @@ export enum ActionResult {
   Miss = "miss",
 }
 
-export type ActionKey = keyof typeof actionConfigs;
-
-export interface WeightedActionKey {
-  actionKey: ActionKey;
+export interface WeightedActionType {
+  actionType: ActionType;
   weight: number;
 }

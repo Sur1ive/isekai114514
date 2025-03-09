@@ -1,4 +1,4 @@
-import type { WeightedActionKey } from "../actions/types";
+import type { WeightedActionType } from "../actions/types";
 import type { ItemType } from "../items/types";
 
 export interface Range {
@@ -34,7 +34,7 @@ export interface Ability {
 export interface CreatureData {
     typeName: string;
     abilityCoeff: AbilityCoefficient;
-    actions: WeightedActionKey[];
+    actions: WeightedActionType[];
     dropItems: {key: ItemType, weight: number}[];
     description: string;
   }

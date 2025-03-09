@@ -1,7 +1,7 @@
 import type { commonConsumableConfigs, rareConsumableConfigs } from "./consumableConfigs";
 import type { commonEquipmentConfigs, rareEquipmentConfigs } from "./equipmentConfigs";
 import type { Ability } from "../creatures/types";
-import type { ActionType, WeightedActionKey } from "../actions/types";
+import type { ActionCategory, WeightedActionType } from "../actions/types";
 import type { Creature } from "../creatures/Creature";
 
 export type ItemCategory = "consumable" | "equipment";
@@ -49,13 +49,13 @@ export interface ItemIdentifier {
 
 export type EquipmentAbility = Partial<Ability>;
 
-export type EquipmentActionCoeff = Partial<Record<ActionType, EquipmentActionCoeffValue>>;
+export type EquipmentActionCoeff = Partial<Record<ActionCategory, EquipmentActionCoeffValue>>;
 
 export interface EquipmentData {
   name: string;
   description: string;
   position: EquipmentPosition;
-  extraActions: WeightedActionKey[];
+  extraActions: WeightedActionType[];
   ability: EquipmentAbility;
   actionCoeff: EquipmentActionCoeff;
 }

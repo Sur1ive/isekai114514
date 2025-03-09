@@ -2,13 +2,22 @@ import type { Action } from "./Action";
 import type { Creature } from "../creatures/Creature";
 import { Player } from "../creatures/Player";
 import { CreatureStatusType } from "../creatures/types";
-import { ActionType, ActionResult, ActionKey } from "./types";
+import { ActionCategory, ActionResult } from "./types";
 
-export const actionConfigs: Record<string, Action> = {
-  dazedAction: {
+export enum ActionType {
+  Dazed = "Dazed",
+  Attack = "Attack",
+  PowerfulDigAttack = "PowerfulDigAttack",
+  HorizontalSlash = "HorizontalSlash",
+  Bite = "Bite",
+  Capture = "Capture",
+}
+
+export const actionConfigs: Record<ActionType, Action> = {
+  [ActionType.Dazed]: {
     name: "失神",
-    description: "愣了一下",
-    type: ActionType.NoAction,
+    description: "来不及反应",
+    category: ActionCategory.NoAction,
     coeff: {
       str: 0,
       int: 0,
@@ -17,13 +26,13 @@ export const actionConfigs: Record<string, Action> = {
       app: 0,
       dex: 0,
     },
-    messageGenerator: (actor: Creature, _target: Creature, _result: ActionResult) => `${actor.name} 愣了一下，什么也没做`,
+    messageGenerator: (actor: Creature, _target: Creature, _result: ActionResult) => `${actor.name} 来不及反应`,
   },
 
-  attackAction: {
+  [ActionType.Attack]: {
     name: "攻击",
     description: "用拳头或者用武器进行一般通过攻击",
-    type: ActionType.Attack,
+    category: ActionCategory.Attack,
     coeff: {
       str: 1,
       int: 0,
@@ -41,10 +50,10 @@ export const actionConfigs: Record<string, Action> = {
     },
   },
 
-  powerfulDigAttackAction: {
+  [ActionType.PowerfulDigAttack]: {
     name: "狠狠地撅",
     description: "1！1！4！5！1！4！",
-    type: ActionType.Attack,
+    category: ActionCategory.Attack,
     coeff: {
       str: 10,
       int: 0,
@@ -69,10 +78,10 @@ export const actionConfigs: Record<string, Action> = {
   },
 
   // 横劈
-  horizontalSlashAction: {
+  [ActionType.HorizontalSlash]: {
     name: "横劈",
     description: "以迅猛之势横劈出一刀",
-    type: ActionType.Attack,
+    category: ActionCategory.Attack,
     coeff: {
       str: 4,
       int: 0,
@@ -91,10 +100,10 @@ export const actionConfigs: Record<string, Action> = {
   },
 
   // 撕咬
-  biteAction: {
+  [ActionType.Bite]: {
     name: "撕咬",
     description: "用嘴撕咬，一种原始的攻击方式",
-    type: ActionType.Attack,
+    category: ActionCategory.Attack,
     coeff: {
       str: 2,
       int: 0,
@@ -113,10 +122,10 @@ export const actionConfigs: Record<string, Action> = {
   },
 
   // 捕捉
-  captureAction: {
+  [ActionType.Capture]: {
     name: "尝试捕捉",
     description: "这不是神奇宝贝，你得用绞技而不是精灵球",
-    type: ActionType.Attack,
+    category: ActionCategory.Attack,
     coeff: {
       str: 1,
       int: 0,
@@ -153,8 +162,4 @@ export const actionConfigs: Record<string, Action> = {
       }
     },
   },
-}
-
-export function getAction(key: ActionKey) {
-  return actionConfigs[key];
 }

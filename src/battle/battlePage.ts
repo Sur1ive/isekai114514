@@ -16,6 +16,7 @@ function renderBattleStartPage(player: Player, enemy: Monster): void {
   const enemyActionObservation = observeEnemyAction(player, enemy, enemyAction);
   const action1 = player.getRandomAction();
   const action2 = player.getRandomAction();
+  console.log(enemy.getRandomAction(), player.getRandomAction(), enemy, player);
 
 	appElement.innerHTML = `
   <div class="container mt-4">

@@ -1,8 +1,8 @@
 import { creatureConfigs, CreatureType } from "./creatureConfigs";
 import type { Coefficient, Ability, CreatureStatus } from "./types";
 import type { ItemIdentifier } from "../items/types";
-import type { WeightedActionKey } from "../actions/types";
-import { getAction } from "../actions/actionConfigs";
+import type { WeightedActionType } from "../actions/types";
+import { actionConfigs, ActionType } from "../actions/actionConfigs";
 import type { Action } from "../actions/Action";
 
 export class Creature {
@@ -16,7 +16,7 @@ export class Creature {
   status: CreatureStatus[] = [];
   pack: ItemIdentifier[] = [];
   // equipments: Equipment[];
-  actions: WeightedActionKey[];
+  actions: WeightedActionType[];
 
   constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
     this.name = name;
@@ -44,7 +44,7 @@ export class Creature {
     this.actions = creatureConfigs[this.type].actions;
 
   }
-
+  // 按照权重随机返回一个动作
   getRandomAction(): Action {
     const random = Math.random();
     const totalWeight = this.actions.reduce((sum, wa) => sum + wa.weight, 0);
@@ -52,10 +52,10 @@ export class Creature {
     for (const wa of this.actions) {
       cumulativeWeight += wa.weight;
       if (random < cumulativeWeight / totalWeight) {
-        return getAction(wa.actionKey);
+        return actionConfigs[wa.actionType];
       }
     }
-    return getAction("dazedAction");
+    return actionConfigs[ActionType.Dazed];
   }
 
   // getAbility(ability: keyof CreatureAbility): number {

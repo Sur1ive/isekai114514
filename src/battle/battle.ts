@@ -1,4 +1,4 @@
-import { ActionCoeff, ActionType, ActionResult } from "../actions/types";
+import { ActionCoeff, ActionResult, ActionCategory } from "../actions/types";
 import type { Action } from "../actions/Action";
 import type { Ability } from "../creatures/types";
 import { Player } from "../creatures/Player";
@@ -38,7 +38,7 @@ function attackAgainstNoAction(player: Player, enemy: Monster, playerAction: Act
   let actor;
   let target;
   let action;
-  if (enemyAction.type === ActionType.NoAction) {
+  if (enemyAction.category === ActionCategory.NoAction) {
     actor = player;
     target = enemy;
     action = playerAction;
@@ -58,10 +58,10 @@ function attackAgainstNoAction(player: Player, enemy: Monster, playerAction: Act
 }
 
 export function handleAction(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action) {
-  if (playerAction.type === ActionType.Attack && enemyAction.type === ActionType.Attack) {
+  if (playerAction.category === ActionCategory.Attack && enemyAction.category === ActionCategory.Attack) {
     attackAgainstAttack(player, enemy, playerAction, enemyAction);
   }
-  if ((playerAction.type === ActionType.Attack && enemyAction.type === ActionType.NoAction) || (playerAction.type === ActionType.NoAction && enemyAction.type === ActionType.Attack)) {
+  if ((playerAction.category === ActionCategory.Attack && enemyAction.category === ActionCategory.NoAction) || (playerAction.category === ActionCategory.NoAction && enemyAction.category === ActionCategory.Attack)) {
     attackAgainstNoAction(player, enemy, playerAction, enemyAction);
   }
 }

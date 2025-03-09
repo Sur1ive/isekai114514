@@ -1,5 +1,6 @@
 import { EquipmentPosition, EquipmentData } from "./types";
-import { ActionType } from "../actions/types";
+import { ActionCategory } from "../actions/types";
+import { ActionType } from "../actions/actionConfigs";
 
 export const commonEquipmentConfigs: Record<string, EquipmentData> = {
   "sword": {
@@ -9,7 +10,7 @@ export const commonEquipmentConfigs: Record<string, EquipmentData> = {
     extraActions: [],
     ability: {},
     actionCoeff: {
-      [ActionType.Attack]: {
+      [ActionCategory.Attack]: {
         plus: 1,
         multiply: 1,
       },
@@ -22,17 +23,21 @@ export const rareEquipmentConfigs: Record<string, EquipmentData> = {
     name: "太刀",
     description: "太好了，有了这个，你就可以做虾头太刀侠了",
     position: EquipmentPosition.Hand,
-    extraActions: [{actionKey: "horizontalSlashAction", weight: 1}],
+    extraActions: [{actionType: ActionType.HorizontalSlash, weight: 1}],
     ability: {
       str: 1,
       dex: -1,
     },
     actionCoeff: {
-      [ActionType.Attack]: {
+      [ActionCategory.Attack]: {
         plus: 2,
         multiply: 1,
       },
-      [ActionType.Dodge]: {
+      [ActionCategory.Dodge]: {
+        plus: -2,
+        multiply: 1,
+      },
+      [ActionCategory.DexAction]: {
         plus: -2,
         multiply: 1,
       },

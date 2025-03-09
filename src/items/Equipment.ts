@@ -1,11 +1,11 @@
 import { Item } from "./Item";
-import type { WeightedActionKey } from "../actions/types";
+import type { WeightedActionType } from "../actions/types";
 import { EquipmentPosition, EquipmentAbility, EquipmentActionCoeff, EquipmentData, EquipmentPrefix, Rarity, ItemIdentifier } from "./types";
 import { commonEquipmentConfigs, rareEquipmentConfigs } from "./equipmentConfigs";
 
 export class Equipment extends Item {
   position: EquipmentPosition;
-  extraActions: WeightedActionKey[];
+  extraActions: WeightedActionType[];
   ability: EquipmentAbility;
   actionCoeff: EquipmentActionCoeff;
   prefix: EquipmentPrefix;
