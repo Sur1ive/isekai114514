@@ -7,6 +7,7 @@ import { Consumable } from "./items/Consumable";
 import { getItemInstance } from "./items/itemUtils";
 import { Item } from "./items/Item";
 import { CreatureType } from "./creatures/creatureConfigs";
+import { setIntervals } from "./global";
 
 // 渲染开始界面
 function renderStartPage(): void {
@@ -35,11 +36,13 @@ function renderStartPage(): void {
 
   document.getElementById('action1-btn')?.addEventListener('click', () => {
     const player = new Player("吴田所", CreatureType.Player);
+    setIntervals(player);
     renderStartPage1(player);
   });
 
   document.getElementById('action2-btn')?.addEventListener('click', () => {
     const player = new Player("田所*二", CreatureType.Player114514);
+    setIntervals(player);
     renderStartPage1(player);
   });
 }
@@ -145,7 +148,7 @@ function renderStartPage4(player: Player): void {
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
-  player.backToTown();
+  player.isAtHome = true;
   saveGame(player);
   console.log(player);
 
@@ -190,12 +193,12 @@ export function renderMainMenu(player: Player): void {
   </div>
 `;
 
-  document.getElementById('battle-btn')?.addEventListener('click', () => {player.startAdventure(); testBattle(player)});
+  document.getElementById('battle-btn')?.addEventListener('click', () => {player.isAtHome = false; testBattle(player)});
   document.getElementById('status-btn')?.addEventListener('click', () => {renderStatusPage(player)});
   document.getElementById('restart-btn')?.addEventListener('click', () => {
     if (window.confirm("你确定要remake吗?")) {
-      localStorage.removeItem("playerData");
-      renderStartPage();
+      localStorage.clear();
+      window.location.reload();
     }
   });
 }
@@ -274,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     player = loadPlayer();
   } catch (error) {
     console.log(error);
-    localStorage.removeItem("playerData");
+    localStorage.clear();
     renderStartPage();
     return;
   }

@@ -1,5 +1,6 @@
 import { Player } from "./creatures/Player";
 import { instanceToPlain, plainToInstance } from "class-transformer";
+import { setIntervals } from "./global";
 
 export function saveGame(player: Player) {
   const plainPlayer = instanceToPlain(player);
@@ -15,5 +16,6 @@ export function loadPlayer(): Player {
   const player = plainToInstance(Player, plainPlayer, {
     enableImplicitConversion: true,
   });
+  setIntervals(player);
   return player;
 }

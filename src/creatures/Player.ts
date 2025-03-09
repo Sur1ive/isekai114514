@@ -1,14 +1,12 @@
 import { Creature } from "./Creature";
-import { saveGame } from "../save";
 import { CreatureType } from "./creatureConfigs";
 import { Monster } from "./Monster";
 
 export class Player extends Creature {
   log: string[] = [];
   tempLog: string[] = [];
-  autoRecoverIntervalId: number = -1;
-  autoSaveIntervalId: number = -1;
   capturedMonster: Monster[] = [];
+  isAtHome: boolean = true;
 
   constructor(name: string, type: CreatureType) {
     // 为了使用class-transforme保存，设定默认值，默认值并没有意义
@@ -21,6 +19,7 @@ export class Player extends Creature {
   getHealthDisplay(): string {
     return `hp: ${this.health.toFixed(2)} / ${this.maxHealth.toFixed(0)} + ${(1/100 * this.maxHealth).toFixed(2)}/s`;
   }
+
   // 更新生命值显示
   updateHealthDisplay(): void {
     const healthElement = document.getElementById('health-display');
@@ -33,25 +32,6 @@ export class Player extends Creature {
     this.health = Math.min(this.health + amount, this.maxHealth);
   }
 
-  startAdventure(): void {
-    clearInterval(this.autoRecoverIntervalId);
-    clearInterval(this.autoSaveIntervalId);
-    this.autoRecoverIntervalId = -1;
-    this.autoSaveIntervalId = -1;
-  }
-
-  backToTown(): void {
-    clearInterval(this.autoRecoverIntervalId);
-    clearInterval(this.autoSaveIntervalId);
-    this.autoRecoverIntervalId = setInterval(() => {
-      this.recoverHealth(1/100 * this.maxHealth);
-      this.updateHealthDisplay();
-    }, 1000);
-    this.autoSaveIntervalId = setInterval(() => {
-      saveGame(this);
-    }, 10000);
-  }
-
   levelup() {
     this.level++;
   }
@@ -62,6 +42,10 @@ export class Player extends Creature {
 
   getLogs(): string {
     return this.log.join("<br>");
+  }
+
+  getLastNLog(n: number): string {
+    return this.log.slice(-n).join("<br>");
   }
 
   addTempLog(log: string): void {
@@ -79,9 +63,5 @@ export class Player extends Creature {
   joinTempLogs(): void {
     this.log.push(this.tempLog.join("<br>"));
     this.tempLog = [];
-  }
-
-  getLastNLog(n: number): string {
-    return this.log.slice(-n).join("<br>");
   }
 }
