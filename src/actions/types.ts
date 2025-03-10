@@ -22,12 +22,6 @@ export interface ActionCoeff {
   dex: number;
 }
 
-export enum ActionResult {
-  Success = "success",
-  Fail = "fail",
-  Miss = "miss",
-}
-
 export interface WeightedActionType {
   actionType: ActionType;
   weight: number;

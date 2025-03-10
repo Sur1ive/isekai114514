@@ -1,6 +1,7 @@
-import { EquipmentPrefix, Rarity } from "./types";
+import { EquipmentPrefix } from "./types";
 import { equipmentConfigs, EquipmentType } from "./equipmentConfigs";
 import { Equipment } from "./Equipment";
+import type { Rarity } from "../types";
 
 // 生成随机前缀
 export function generateRandomPrefix() {

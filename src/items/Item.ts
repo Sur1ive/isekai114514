@@ -1,4 +1,5 @@
-import { ItemCategory, Rarity, ItemType } from "./types";
+import { ItemCategory, ItemType } from "./types";
+import type { Rarity } from "../types";
 
 export abstract class Item {
 	name: string;

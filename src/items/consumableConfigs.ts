@@ -1,5 +1,6 @@
 import type { Creature } from "../creatures/Creature";
-import { Rarity, ConsumableData } from "./types";
+import { Rarity } from "../types";
+import { ConsumableData } from "./types";
 import { openChest } from "./consumableUtils";
 
 export enum ConsumableType {

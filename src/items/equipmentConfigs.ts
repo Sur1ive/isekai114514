@@ -1,7 +1,7 @@
 import { EquipmentPosition, EquipmentData } from "./types";
 import { ActionCategory } from "../actions/types";
 import { ActionType } from "../actions/actionConfigs";
-import { Rarity } from "./types";
+import { Rarity } from "../types";
 
 export enum EquipmentType {
   Sword = "Sword",

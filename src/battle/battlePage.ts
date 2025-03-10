@@ -1,85 +1,26 @@
 import { Monster } from "../creatures/Monster";
-import { observeEnemyAction, handleAction, statusCheck } from "./battle";
+import { observeEnemyAction, handleAction, calculateMaxPower } from "./battle";
 import { renderMainMenu } from "../main";
 import { saveGame } from "../save";
 import { getAppElement } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 
-// 渲染战斗开始界面
-function renderBattleStartPage(player: Player, enemy: Monster): void {
-  const appElement = getAppElement();
-
-  const enemyAction = enemy.getRandomAction();
-  const enemyActionObservation = observeEnemyAction(player, enemy, enemyAction);
-  const action1 = player.getRandomAction();
-  const action2 = player.getRandomAction();
-
-	appElement.innerHTML = `
-  <div class="container mt-4">
-    <h2 class="text-center mb-3">战斗</h2>
-
-    <!-- 敌人信息 -->
-    <div class="card mb-3">
-      <div class="card-header bg-danger text-white">
-        <h4 class="mb-0">${enemy.name}</h4>
-      </div>
-      <div class="card-body">
-        <p class="card-text fst-italic">"${enemy.description}"</p>
-        <p class="card-text">${enemyActionObservation}</p>
-        <p class="card-text">HP: <strong>${Math.ceil(enemy.health)}</strong></p>
-      </div>
-    </div>
-
-    <!-- 分割线 -->
-    <hr>
-
-    <!-- 玩家信息 -->
-    <div class="card mb-4">
-      <div class="card-header bg-success text-white">
-        <h4 class="mb-0">${player.name}</h4>
-      </div>
-      <div class="card-body">
-        <p class="card-text">HP: <strong>${Math.ceil(player.health)}</strong></p>
-      </div>
-    </div>
-
-    <!-- 动作选择 -->
-    <div class="row mb-4">
-      <div class="col-6">
-        <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
-          <div class="card-body text-center">
-            <h5 class="card-title">${action1.name}</h5>
-            <p class="card-text">${action1.description}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
-          <div class="card-body text-center">
-            <h5 class="card-title">${action2.name}</h5>
-            <p class="card-text">${action2.description}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-`;
-
-  document.getElementById('action1-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action1, enemyAction)});
-  document.getElementById('action2-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action2, enemyAction)});
-}
-
 // 渲染战斗界面
-function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, enemyAction: Action): void {
+function renderBattlePage(player: Player, enemy: Monster, playerAction: Action | null, enemyAction: Action | null): void {
   const appElement = getAppElement();
 
-  handleAction(player, enemy, playerAction, enemyAction);
-  const status = statusCheck(player, enemy);
-  if (status === "die") {
+  if (playerAction && enemyAction) {
+    handleAction(player, enemy, playerAction, enemyAction);
+  }
+
+  if (player.health <= 0) {
+    player.addLog(player.name + "撑不住了");
     renderBattleEndPage(player, enemy, false);
     return;
-  } else if (status === "win") {
+  }
+  if (enemy.health < 1) {
+    player.addLog(player.name + "击败了" + enemy.name);
     renderBattleEndPage(player, enemy, true);
     return;
   }
@@ -123,7 +64,7 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, 
       <div class="col-6">
         <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
           <div class="card-body text-center">
-            <h5 class="card-title">${action1.name}</h5>
+            <h5 class="card-title">${action1.name}${`(0~${Math.round(calculateMaxPower(action1.coeff, player.ability))})`}</h5>
             <p class="card-text">${action1.description}</p>
           </div>
         </div>
@@ -131,7 +72,7 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action, 
       <div class="col-6">
         <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
           <div class="card-body text-center">
-            <h5 class="card-title">${action2.name}</h5>
+            <h5 class="card-title">${action2.name}${`(0~${Math.round(calculateMaxPower(action2.coeff, player.ability))})`}</h5>
             <p class="card-text">${action2.description}</p>
           </div>
         </div>
@@ -209,5 +150,5 @@ export function testBattle(player: Player): void {
 	const enemyLevel = Math.floor(Math.random() * 10) + 1;
 	const enemyIndividualStrength = Math.random() * 2;
   const enemy = new Monster(creatureConfigs[enemyType].typeName, enemyType, enemyLevel, enemyIndividualStrength);
-  renderBattleStartPage(player, enemy);
+  renderBattlePage(player, enemy, null, null);
 }

@@ -24,8 +24,9 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       armor: { base: 0, growth: 0 },
     },
     actions: [
-      { actionType: ActionType.Attack, weight: 1 },
+      { actionType: ActionType.Attack, weight: 0.7 },
       { actionType: ActionType.Capture, weight: 0.1 },
+      { actionType: ActionType.Defend, weight: 0.2 },
     ],
     dropItems: [],
   },
@@ -43,8 +44,9 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     },
     actions: [
       { actionType: ActionType.PowerfulDigAttack, weight: 0.1 },
-      { actionType: ActionType.Attack, weight: 0.9 },
+      { actionType: ActionType.Attack, weight: 0.7 },
       { actionType: ActionType.Capture, weight: 0.1 },
+      { actionType: ActionType.Defend, weight: 0.2 },
     ],
     dropItems: [],
   },

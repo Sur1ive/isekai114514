@@ -3,17 +3,10 @@ import type { EquipmentType } from "./equipmentConfigs";
 import type { Ability } from "../creatures/types";
 import type { ActionCategory, WeightedActionType } from "../actions/types";
 import type { Creature } from "../creatures/Creature";
-
+import type { Rarity } from "../types";
 export enum ItemCategory {
   Consumable = "consumable",
   Equipment = "equipment",
-}
-
-export enum Rarity {
-	Common = 0,
-  Rare = 1,
-  Epic = 2,
-  Legendary = 3,
 }
 
 export interface EquipmentActionCoeffValue {
