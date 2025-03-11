@@ -262,7 +262,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   },
 
   [ActionType.SpinAttack]: {
-    name: "回旋斩",
+    name: "回旋击",
     description: "闪避后趁敌人重心不稳发起攻击",
     rarity: Rarity.Rare,
     hits: [
@@ -274,7 +274,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       {
         category: ActionCategory.Attack,
         coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
-        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 进行了回旋斩`,
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 进行了回旋击`,
       },
     ],
   },

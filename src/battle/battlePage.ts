@@ -64,16 +64,24 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
       <div class="col-6">
         <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
           <div class="card-body text-center">
-            <h5 class="card-title">${action1.name}${`(0~${Math.round(calculateMaxPower(action1.coeff, player.ability))})`}</h5>
+            <h5 class="card-title">${action1.name}</h5>
             <p class="card-text">${action1.description}</p>
+            <p class="card-text">${
+              action1.hits.map(hit => `(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>')
+            }
+            </p>
           </div>
         </div>
       </div>
       <div class="col-6">
         <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
           <div class="card-body text-center">
-            <h5 class="card-title">${action2.name}${`(0~${Math.round(calculateMaxPower(action2.coeff, player.ability))})`}</h5>
+            <h5 class="card-title">${action2.name}</h5>
             <p class="card-text">${action2.description}</p>
+            <p class="card-text">${
+              action2.hits.map(hit => `(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>')
+            }
+            </p>
           </div>
         </div>
       </div>
