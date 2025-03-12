@@ -24,6 +24,10 @@ export enum ActionType {
   Counter = "Counter",
   GodStrike = "GodStrike",
   ShredFlower = "ShredFlower",
+  PsyKick = "PsyKick",
+  PsyExplosion = "PsyExplosion",
+  PsyInvisibleSword = "PsyInvisibleSword",
+  PsyDodge = "PsyDodge",
 }
 
 export const NoHit: Hit = {
@@ -170,7 +174,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: ActionCategory.Capture,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
         extraEffect: (actor: Creature, target: Creature) => {
           // actor不是玩家，则不进行任何操作
@@ -261,6 +265,24 @@ export const actionConfigs: Record<ActionType, Action> = {
     ],
   },
 
+  [ActionType.PsyDodge]: {
+    name: "瞬移",
+    description: "念力的一种用法",
+    rarity: Rarity.Legendary,
+    hits: [
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.Dodge,
+        coeff: { str: 0, int: 12, con: 0, siz: 0, app: 0, dex: 3 },
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 的身影瞬间到了别处`,
+      },
+    ],
+  },
+
   [ActionType.SpinAttack]: {
     name: "回旋击",
     description: "闪避后趁敌人重心不稳发起攻击",
@@ -282,7 +304,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.DragonBreath]: {
     name: "巨龙吐息",
     description: "据说巨龙的吐息足以融化钢铁",
-    rarity: Rarity.Unique,
+    rarity: Rarity.Legendary,
     hits: [
       {
         category: ActionCategory.Attack,
@@ -309,7 +331,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     hits: [
       {
         category: ActionCategory.Attack,
-        coeff: { str: 12, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 12, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) => `神明的愤怒降临于${target.name}`,
       },
     ],
@@ -333,17 +355,101 @@ export const actionConfigs: Record<ActionType, Action> = {
       {
         category: ActionCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
-        messageGenerator: (_actor: Creature, _target: Creature) => `只有残影`,
+        messageGenerator: (_actor: Creature, _target: Creature) => `空气中只有残影`,
       },
       {
         category: ActionCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
-        messageGenerator: (_actor: Creature, _target: Creature) => `更多的残影`,
+        messageGenerator: (_actor: Creature, _target: Creature) => `空气中只有更多的残影`,
       },
       {
         category: ActionCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 3 },
         messageGenerator: (_actor: Creature, target: Creature) => `${target.name} 同花瓣一同破碎`,
+      },
+    ],
+  },
+
+  [ActionType.PsyKick]: {
+    name: "念动力踢击",
+    description: "通过念力完成的隔空踢击，力道十足又难以防备",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 2, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, target: Creature) => `${target.name}凭空被踢了一脚`,
+      },
+    ],
+  },
+
+  [ActionType.PsyExplosion]: {
+    name: "不可视爆裂",
+    description: "不可视的念力凝聚成万吨重锤从天而降",
+    rarity: Rarity.Legendary,
+    hits: [
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 4, int: 12, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, target: Creature) => `${target.name}所在的位置发生了大爆炸`,
+      },
+    ],
+  },
+
+  [ActionType.PsyInvisibleSword]: {
+    name: "\"不可视之剑\"",
+    description: "无数看不见的剑刺向敌人，流淌的血勾勒出它们的形状",
+    rarity: Rarity.Unique,
+    hits: [
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 0, int: 2, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, target: Creature) => `看不见的剑贯穿${target.name}`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 0, int: 4, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, target: Creature) => `更多看不见的剑贯穿${target.name}`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 0, int: 8, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, target: Creature) => `极多看不见的剑贯穿${target.name}`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 0, int: 16, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, target: Creature) => `无数看不见的剑贯穿${target.name}`,
       },
     ],
   },

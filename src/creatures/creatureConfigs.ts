@@ -10,6 +10,8 @@ export enum CreatureType {
   AngryDragon = "AngryDragon",
   WeakDragon = "WeakDragon",
   Wolf = "Wolf",
+  DiscardedGolem = "DiscardedGolem",
+  Ayulsa = "Ayulsa",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -19,7 +21,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },
       int: { base: 5, growth: 0.1 },
-      con: { base: 5, growth: 0.1 },
+      con: { base: 5, growth: 0.2 },
       siz: { base: 5, growth: 0 },
       app: { base: 5, growth: 0 },
       dex: { base: 5, growth: 0.1 },
@@ -27,9 +29,9 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     },
     actions: [
       { actionType: ActionType.Attack, weight: 0.5 },
-      { actionType: ActionType.PowerAttack, weight: 0.2 },
       { actionType: ActionType.Capture, weight: 0.1 },
       { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
     ],
     dropItems: [],
   },
@@ -39,7 +41,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     abilityCoeff: {
       str: { base: 5, growth: 0.2 },
       int: { base: 5, growth: 0 },
-      con: { base: 7, growth: 0.1 }, // 小麦色的健康肤色
+      con: { base: 7, growth: 0.2 }, // 小麦色的健康肤色
       siz: { base: 5, growth: 0.1 }, // 24岁是学生，还在长身体很合理吧
       app: { base: 7, growth: 0 }, // 没有魅力怎么能吸引后辈
       dex: { base: 5, growth: 0 },
@@ -47,10 +49,10 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     },
     actions: [
       { actionType: ActionType.PowerfulDigAttack, weight: 0.2 },
-      { actionType: ActionType.Attack, weight: 0.7 },
-      { actionType: ActionType.PowerAttack, weight: 0.2 },
+      { actionType: ActionType.Attack, weight: 0.5 },
       { actionType: ActionType.Capture, weight: 0.1 },
       { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
     ],
     dropItems: [],
   },
@@ -61,7 +63,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     abilityCoeff: {
       str: { base: 3, growth: 0.05 },
       int: { base: 0, growth: 0 },
-      con: { base: 3, growth: 0.05 },
+      con: { base: 3, growth: 0.1 },
       siz: { base: 2, growth: 0 },
       app: { base: 0, growth: 0 },
       dex: { base: 1, growth: 0.05 },
@@ -73,18 +75,19 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Dazed, weight: 2 },
     ],
     dropItems: [
-      {type: ConsumableType.BrokenChest, weight: 1},
-      {type: ConsumableType.SilverChest, weight: 0.1},
+      { type: ConsumableType.BrokenChest, weight: 0.98 },
+      { type: ConsumableType.WoodenChest, weight: 0.02 },
+      { type: ConsumableType.SilverChest, weight: 0.001 },
     ],
   },
 
   [CreatureType.Dragon]: {
     typeName: "龙",
-    description: "生态位的顶端，人类在它面前就像一只蝼蚁",
+    description: "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗",
     abilityCoeff: {
       str: { base: 10, growth: 0.2 },
       int: { base: 4, growth: 0.1 },
-      con: { base: 20, growth: 0.2 },
+      con: { base: 20, growth: 0.8 },
       siz: { base: 20, growth: 0.2 },
       app: { base: 4, growth: 0.1 },
       dex: { base: 4, growth: 0.1 },
@@ -107,7 +110,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     abilityCoeff: {
       str: { base: 15, growth: 0.3 },
       int: { base: 3, growth: 0.05 },
-      con: { base: 10, growth: 0.1 },
+      con: { base: 10, growth: 0.4 },
       siz: { base: 20, growth: 0.2 },
       app: { base: 2, growth: 0.05 },
       dex: { base: 6, growth: 0.15 },
@@ -128,7 +131,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },
       int: { base: 6, growth: 0.15 },
-      con: { base: 5, growth: 0.05 },
+      con: { base: 5, growth: 0.2 },
       siz: { base: 20, growth: 0.2 },
       app: { base: 2, growth: 0.05 },
       dex: { base: 4, growth: 0.1 },
@@ -140,7 +143,11 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.DragonBreath, weight: 0.2 },
       { actionType: ActionType.Defend, weight: 0.3 },
     ],
-    dropItems: [],
+    dropItems: [
+      { type: ConsumableType.SilverChest, weight: 0.98 },
+      { type: ConsumableType.GoldChest, weight: 0.02 },
+      { type: ConsumableType.DiamondChest, weight: 0.001 },
+    ],
   },
 
   [CreatureType.Wolf]: {
@@ -149,7 +156,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },
       int: { base: 2, growth: 0.05 },
-      con: { base: 5, growth: 0.1 },
+      con: { base: 5, growth: 0.15 },
       siz: { base: 4, growth: 0.05 },
       app: { base: 2, growth: 0 },
       dex: { base: 6, growth: 0.15 },
@@ -157,13 +164,61 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     },
     actions: [
       { actionType: ActionType.Bite, weight: 1 },
-      { actionType: ActionType.Dazed, weight: 1 },
       { actionType: ActionType.QuickAttack, weight: 0.5 },
       { actionType: ActionType.SpinAttack, weight: 0.5 },
     ],
     dropItems: [
-      {type: ConsumableType.BrokenChest, weight: 0.5},
-      {type: ConsumableType.SilverChest, weight: 0.5},
+      { type: ConsumableType.BrokenChest, weight: 0.5 },
+      { type: ConsumableType.WoodenChest, weight: 0.5 },
+      { type: ConsumableType.SilverChest, weight: 0.01 },
+      { type: ConsumableType.GoldChest, weight: 0.001 },
+    ],
+  },
+
+  [CreatureType.DiscardedGolem]: {
+    typeName: "废弃的岩石魔像",
+    description: "一尊不知何时被废弃的岩石魔像，在风雨的侵蚀下，它的巨大的身躯上布满了裂痕和苔藓。它不该会动呀？",
+    abilityCoeff: {
+      str: { base: 15, growth: 0.3 },
+      int: { base: 0, growth: 0 },
+      con: { base: 10, growth: 0.4 },
+      siz: { base: 15, growth: 0 },
+      app: { base: 0, growth: 0 },
+      dex: { base: 0, growth: 0 },
+      armor: { base: 100, growth: 0 },
+    },
+    actions: [
+      { actionType: ActionType.Dazed, weight: 2 },
+      { actionType: ActionType.Defend, weight: 1 },
+      { actionType: ActionType.PowerAttack, weight: 0.5 },
+      { actionType: ActionType.Counter, weight: 0.5 },
+    ],
+    dropItems: [
+      { type: ConsumableType.BrokenChest, weight: 0.2 },
+      { type: ConsumableType.WoodenChest, weight: 0.8 },
+      { type: ConsumableType.SilverChest, weight: 0.04 },
+      { type: ConsumableType.GoldChest, weight: 0.004 },
+    ],
+  },
+
+  [CreatureType.Ayulsa]: {
+    typeName: "???",
+    description: "好像并不来自于这个世界",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.2 },
+      int: { base: 50, growth: 0.2 },
+      con: { base: 5, growth: 0.4 },
+      siz: { base: 5, growth: 0.2 },
+      app: { base: 5, growth: 0.2 },
+      dex: { base: 5, growth: 0.2 },
+      armor: { base: 0, growth: 0.2 },
+    },
+    actions: [
+      { actionType: ActionType.GodStrike, weight: 1 },
+      { actionType: ActionType.ShredFlower, weight: 1 },
+    ],
+    dropItems: [
+      { type: ConsumableType.DiamondChest, weight: 1 },
     ],
   }
 };

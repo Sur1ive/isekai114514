@@ -67,7 +67,7 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
             <h5 class="card-title">${action1.name}</h5>
             <p class="card-text">${action1.description}</p>
             <p class="card-text">${
-              action1.hits.map(hit => `(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>')
+              action1.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>')
             }
             </p>
           </div>
@@ -79,7 +79,7 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
             <h5 class="card-title">${action2.name}</h5>
             <p class="card-text">${action2.description}</p>
             <p class="card-text">${
-              action2.hits.map(hit => `(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>')
+              action2.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>')
             }
             </p>
           </div>

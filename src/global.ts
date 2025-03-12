@@ -15,7 +15,7 @@ export function setIntervals(player: Player) {
 
   recoverInterval = setInterval(() => {
     if (player.isAtHome) {
-      player.recoverHealth(1/100 * player.maxHealth);
+      player.autoRecoverHpDot();
       player.updateHealthDisplay();
     }
   }, 1000);

@@ -89,6 +89,9 @@ export function handleAction(player: Player, enemy: Monster, playerAction: Actio
   while (playerAction.hits[i] || enemyAction.hits[i]) {
     const playerHit = playerAction.hits[i] || NoHit;
     const enemyHit = enemyAction.hits[i] || NoHit;
+    if (playerHit.category === ActionCategory.Capture) {
+      playerHit.category = ActionCategory.Attack;
+    }
     if (playerHit.category === ActionCategory.Attack && enemyHit.category === ActionCategory.Attack) {
       attackAgainstAttack(player, enemy, playerHit, enemyHit);
     }
@@ -104,7 +107,7 @@ export function handleAction(player: Player, enemy: Monster, playerAction: Actio
 
 export function observeEnemyAction(player: Player, enemy: Monster, realAction: Action): string {
   function generateMsg(enemy: Monster, action: Action) {
-    return enemy.name + "看起来似乎会" + action.name; // 加个bootstrap的tooltips
+    return enemy.name + "看起来似乎会" + action.name + "<br>" + action.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>');
   }
 
   if (Math.random() * player.ability.dex > Math.random() * enemy.ability.dex) {

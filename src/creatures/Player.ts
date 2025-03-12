@@ -17,7 +17,8 @@ export class Player extends Creature {
   }
 
   getHealthDisplay(): string {
-    return `hp: ${this.health.toFixed(2)} / ${this.maxHealth.toFixed(0)} + ${(1/100 * this.maxHealth).toFixed(2)}/s`;
+    const amount = this.ability.con / 5 * this.maxHealth / 900;
+    return `hp: ${this.health.toFixed(2)} / ${this.maxHealth.toFixed(0)} + ${(amount).toFixed(2)}/s`;
   }
 
   // 更新生命值显示
@@ -28,11 +29,13 @@ export class Player extends Creature {
     }
   }
 
-  recoverHealth(amount: number): void {
+  autoRecoverHpDot(): void {
+    const amount = this.ability.con / 5 * this.maxHealth / 900;
     this.health = Math.min(this.health + amount, this.maxHealth);
   }
 
   levelup() {
+    // 升级会回血
     this.level++;
   }
 

@@ -4,6 +4,7 @@ export enum ActionCategory {
   Attack = "attack",
   Defend = "defend",
   Dodge = "dodge",
+  Capture = "capture",
   DexAction = "dexAction",
   StrAction = "strAction",
   IntAction = "intAction",
