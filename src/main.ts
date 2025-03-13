@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/custom.css';
 import * as bootstrap from 'bootstrap';
 import { Player } from "./creatures/Player";
-import { getAppElement, getRarityColor, getItemIcon } from "./tools";
+import { getAppElement, getRarityColor, getItemIcon, generateItemTooltipContent } from "./tools";
 import { testBattle } from "./battle/battlePage";
 import { loadPlayer, saveGame } from "./save";
 import { Consumable } from "./items/Consumable";
@@ -232,7 +233,6 @@ function renderStatusPage(player: Player): void {
       }
     });
   }
-
   disposeTooltips();
 
   appElement.innerHTML = `
@@ -256,7 +256,7 @@ function renderStatusPage(player: Player): void {
                       <span class="fw-bold">${position}</span>
                       ${
                         equipment
-                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" data-bs-toggle="tooltip" data-bs-placement="top" title="${equipment.description || ""}">${equipment.name}</span>`
+                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${generateItemTooltipContent(equipment).replace(/"/g, '&quot;')}">${equipment.name}</span>`
                           : '<span class="badge bg-secondary">空</span>'
                       }
                     </div>
@@ -282,7 +282,12 @@ function renderStatusPage(player: Player): void {
                     ? player.pack
                         .map((item) => {
                           const btnClass = `btn-${getRarityColor(item.rarity)}`;
-                          return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.description}">${getItemIcon(item)}${item.name}</button>`;
+                          // 如果 item 属于 Consumable 或 Equipment，则调用 generateItemTooltipContent，否则使用 item.description
+                          const tooltipContent =
+                            item instanceof Consumable || item instanceof Equipment
+                              ? generateItemTooltipContent(item)
+                              : item.description;
+                          return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${tooltipContent.replace(/"/g, '&quot;')}">${getItemIcon(item)}${item.name}</button>`;
                         })
                         .join("")
                     : '<p class="text-muted">背包为空</p>'
@@ -336,45 +341,38 @@ function renderStatusPage(player: Player): void {
   // 为背包中的道具绑定点击事件
   for (const item of player.pack) {
     if (item instanceof Consumable) {
-      document
-        .getElementById(`use-btn${item.uuid}`)
-        ?.addEventListener("click", () => {
-          item.useItem(player);
-          player.addLog(`${player.name} 使用了 ${item.name}`);
-          saveGame(player);
-          renderStatusPage(player);
-        });
+      document.getElementById(`use-btn${item.uuid}`)?.addEventListener("click", () => {
+        item.useItem(player);
+        player.addLog(`${player.name} 使用了 ${item.name}`);
+        saveGame(player);
+        renderStatusPage(player);
+      });
     }
     if (item instanceof Equipment) {
-      document
-        .getElementById(`use-btn${item.uuid}`)
-        ?.addEventListener("click", () => {
-          player.wearEquipment(item);
-          saveGame(player);
-          renderStatusPage(player);
-        });
+      document.getElementById(`use-btn${item.uuid}`)?.addEventListener("click", () => {
+        player.wearEquipment(item);
+        saveGame(player);
+        renderStatusPage(player);
+      });
     }
   }
 
   // 为装备栏中的装备绑定点击事件（点击时卸下装备）
   for (const [position, equipment] of Object.entries(player.equipments)) {
     if (equipment) {
-      document
-        .getElementById(`equipment-slot-${position}`)
-        ?.addEventListener("click", () => {
-          player.removeEquipment(equipment.position);
-          saveGame(player);
-          renderStatusPage(player);
-        });
+      document.getElementById(`equipment-slot-${position}`)?.addEventListener("click", () => {
+        player.removeEquipment(equipment.position);
+        saveGame(player);
+        renderStatusPage(player);
+      });
     }
   }
 
   // 初始化 Bootstrap Tooltip
-    const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.forEach((tooltipTriggerEl) => {
-      // 这里需要确保 Bootstrap 的 Tooltip 构造函数可用（确保已引入 Bootstrap 的 JS）
-      new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+  const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.forEach((tooltipTriggerEl) => {
+    new bootstrap.Tooltip(tooltipTriggerEl, { placement: "top", html: true });
+  });
 }
 
 // 初始加载时显示主菜单

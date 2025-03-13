@@ -1,0 +1,23 @@
+/* tooltip 内部整体控制 */
+.tooltip-inner {
+  max-width: 300px;
+  padding: 0.5rem;
+}
+
+/* 标题和描述部分居中 */
+.tooltip-inner .tooltip-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+/* 其他额外部分居左 */
+.tooltip-inner .tooltip-extra {
+  text-align: left;
+  margin-bottom: 0.25rem;
+	margin-left: 2rem;
+	margin-right: 2rem;
+}
+
+.tooltip-inner p {
+  margin-bottom: 0.5rem;
+}
