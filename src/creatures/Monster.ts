@@ -20,7 +20,15 @@ export class Monster extends Creature {
   }
 
   randomDropItem() {
-    const itemType = this.dropItems[Math.floor(Math.random() * this.dropItems.length)].type;
-		return generateItem(itemType);
+    // 按照权重随机返回一个物品
+    const totalWeight = this.dropItems.reduce((sum, item) => sum + item.weight, 0);
+    let random = Math.random() * totalWeight;
+    for (const item of this.dropItems) {
+      if (random < item.weight) {
+        return generateItem(item.type);
+      }
+      random -= item.weight;
+    }
+		return generateItem(this.dropItems[this.dropItems.length - 1].type);
   }
 }

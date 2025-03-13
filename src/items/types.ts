@@ -5,8 +5,8 @@ import type { ActionCategory, WeightedActionType } from "../actions/types";
 import type { Creature } from "../creatures/Creature";
 import type { Rarity } from "../types";
 export enum ItemCategory {
-  Consumable = "consumable",
-  Equipment = "equipment",
+  Consumable = "Consumable",
+  Equipment = "Equipment",
 }
 
 export interface EquipmentActionCoeffValue {

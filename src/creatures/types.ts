@@ -1,5 +1,7 @@
 import type { WeightedActionType } from "../actions/types";
 import type { ItemType } from "../items/types";
+import type { Equipment } from "../items/Equipment";
+import type { EquipmentPosition } from "../items/types";
 
 export interface Range {
   min: number;
@@ -51,4 +53,12 @@ export enum CreatureStatusType {
 export interface CreatureStatus {
 	type: CreatureStatusType;
 	duration: number;
+}
+
+export interface EquipmentBar {
+  head: Equipment | null;
+  body: Equipment | null;
+  hand: Equipment | null;
+  foot: Equipment | null;
+  accessory: Equipment | null;
 }

@@ -4,6 +4,9 @@ import type { Item } from "../items/Item";
 import type { WeightedActionType } from "../actions/types";
 import { actionConfigs, ActionType } from "../actions/actionConfigs";
 import type { Action } from "../actions/Action";
+import type { EquipmentBar } from "./types";
+import { Equipment } from "../items/Equipment";
+import type { EquipmentPosition } from "../items/types";
 
 export class Creature {
   name: string;
@@ -15,7 +18,7 @@ export class Creature {
   ability: Ability;
   status: CreatureStatus[] = [];
   pack: Item[] = [];
-  // equipments: Equipment[];
+  equipments: EquipmentBar = { head: null, body: null, hand: null, foot: null, accessory: null };
   actions: WeightedActionType[];
 
   constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
@@ -56,6 +59,21 @@ export class Creature {
       }
     }
     return actionConfigs[ActionType.Dazed];
+  }
+
+  wearEquipment(equipment: Equipment): void {
+    if (this.equipments[equipment.position]) {
+      this.removeEquipment(equipment.position);
+    }
+    this.equipments[equipment.position] = equipment;
+    this.pack.splice(this.pack.indexOf(equipment), 1);
+  }
+
+  removeEquipment(position: EquipmentPosition): void {
+    if (this.equipments[position]) {
+      this.pack.push(this.equipments[position] as Equipment);
+      this.equipments[position] = null;
+    }
   }
 
   // getAbility(ability: keyof CreatureAbility): number {
