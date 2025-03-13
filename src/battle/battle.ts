@@ -326,7 +326,7 @@ export function observeEnemyAction(
   function generateMsg(enemy: Monster, action: Action) {
     return (
       enemy.name +
-      "看起来似乎会" +
+      "看起来似乎会释放" +
       action.name +
       "<br>" +
       action.hits
