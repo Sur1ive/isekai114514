@@ -71,7 +71,7 @@ function attackAgainstDefend(player: Player, enemy: Monster, playerHit: Hit, ene
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
   player.addTempLog(player.name + "<span style=\"color: blue;\">" + Math.round(playerPower) + "</span>" + enemy.name + "<span style=\"color: orange;\">" + Math.round(enemyPower) + "</span>");
 
-  const isPlayerAttack = playerHit.category === ActionCategory.Defend ? false : true;
+  const isPlayerAttack = playerHit.category === ActionCategory.Attack ? true : false;
   const attacker = isPlayerAttack ? player : enemy;
   const defender = isPlayerAttack ? enemy : player;
   const attackerAction = isPlayerAttack ? playerHit : enemyHit;
@@ -85,6 +85,30 @@ function attackAgainstDefend(player: Player, enemy: Monster, playerHit: Hit, ene
     player.addTempLog(defenderAction.messageGenerator(defender, attacker) + "," + attackerAction.messageGenerator(attacker, defender) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
   } else {
     player.addTempLog(defenderAction.messageGenerator(defender, attacker) + "," + attackerAction.messageGenerator(attacker, defender) + "但没有造成伤害");
+  }
+}
+
+function attackAgainstDodge(player: Player, enemy: Monster, playerHit: Hit, enemyHit: Hit): string {
+  const playerPower = calculatePower(playerHit.coeff, player.getAbility());
+  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
+  player.addTempLog(player.name + "<span style=\"color: blue;\">" + Math.round(playerPower) + "</span>" + enemy.name + "<span style=\"color: orange;\">" + Math.round(enemyPower) + "</span>");
+
+  const isPlayerAttack = playerHit.category === ActionCategory.Attack ? true : false;
+  const attacker = isPlayerAttack ? player : enemy;
+  const dodger = isPlayerAttack ? enemy : player;
+  const attackerAction = isPlayerAttack ? playerHit : enemyHit;
+  const dodgerAction = isPlayerAttack ? enemyHit : playerHit;
+  const attackerPower = calculatePower(attackerAction.coeff, attacker.getAbility());
+  const dodgerPower = calculatePower(dodgerAction.coeff, dodger.getAbility());
+
+  if (attackerPower > dodgerPower) {
+    const damage = calculateDamage(attackerPower, dodger.getAbility().armor);
+    dodger.health -= damage;
+    player.addTempLog(attackerAction.messageGenerator(attacker, dodger) + "对" + dodger.name + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
+    return ""
+  } else {
+    player.addTempLog(dodgerAction.messageGenerator(dodger, attacker) + "," + attacker.name + "失衡了");
+    return attacker instanceof Player ? "player" : "enemy";
   }
 }
 
@@ -106,6 +130,14 @@ export function handleAction(player: Player, enemy: Monster, playerAction: Actio
     }
     if (playerHit.category === ActionCategory.Attack && enemyHit.category === ActionCategory.Defend || playerHit.category === ActionCategory.Defend && enemyHit.category === ActionCategory.Attack) {
       attackAgainstDefend(player, enemy, playerHit, enemyHit);
+    }
+    if (playerHit.category === ActionCategory.Dodge && enemyHit.category === ActionCategory.Attack || playerHit.category === ActionCategory.Attack && enemyHit.category === ActionCategory.Dodge) {
+      const result = attackAgainstDodge(player, enemy, playerHit, enemyHit);
+      if (result === "player" && playerAction.hits[i + 1]) {
+        playerAction.hits[i + 1] = NoHit;
+      } else if (result === "enemy" && enemyAction.hits[i + 1]) {
+        enemyAction.hits[i + 1] = NoHit;
+      }
     }
     i++;
   }
