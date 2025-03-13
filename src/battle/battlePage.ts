@@ -160,7 +160,7 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
               ? '<span class="text-success">胜利</span>'
               : '<span class="text-danger">失败</span>'
           }
-          ${dropItem ? `<span class="text-${getRarityColor(dropItem.rarity)}">获得物品：${dropItem.name}</span>` : ""}
+          ${dropItem ? `<p class="text-${getRarityColor(dropItem.rarity)}">获得物品：${dropItem.name}</p>` : ""}
         </h4>
         <hr>
         <h5>记录</h5>
