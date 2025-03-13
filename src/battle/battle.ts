@@ -22,19 +22,23 @@ function calculateDamage(power: number, armor: number) {
 }
 
 function attackAgainstAttack(player: Player, enemy: Monster, playerHit: Hit, enemyHit: Hit) {
-  const playerPower = calculatePower(playerHit.coeff, player.ability);
-  const enemyPower = calculatePower(enemyHit.coeff, enemy.ability);
+  const playerPower = calculatePower(playerHit.coeff, player.getAbility());
+  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
   player.addTempLog(player.name + "<span style=\"color: blue;\">" + Math.round(playerPower) + "</span>" + enemy.name + "<span style=\"color: orange;\">" + Math.round(enemyPower) + "</span>");
   if (playerPower >= enemyPower) {
-    const damage = calculateDamage(playerPower, enemy.ability.armor);
+    const damage = calculateDamage(playerPower, enemy.getAbility().armor);
     enemy.health -= damage;
     player.addTempLog(playerHit.messageGenerator(player, enemy) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
-    playerHit.extraEffect ? playerHit.extraEffect(player, enemy) : null;
+    if (playerHit.extraEffect) {
+      playerHit.extraEffect(player, enemy);
+    }
   } else {
-    const damage = calculateDamage(enemyPower, player.ability.armor);
+    const damage = calculateDamage(enemyPower, player.getAbility().armor);
     player.health -= damage;
     player.addTempLog(enemyHit.messageGenerator(enemy, player) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
-    enemyHit.extraEffect ? enemyHit.extraEffect(enemy, player) : null;
+    if (enemyHit.extraEffect) {
+      enemyHit.extraEffect(enemy, player);
+    }
   }
 }
 
@@ -52,17 +56,19 @@ function attackAgainstNoAction(player: Player, enemy: Monster, playerHit: Hit, e
     action = enemyHit;
   }
 
-  const power = calculatePower(action.coeff, actor.ability);
+  const power = calculatePower(action.coeff, actor.getAbility());
   player.addTempLog(actor.name + "<span style=\"color: blue;\">" + Math.round(power) + "</span>" + target.name + "无动作");
-  const damage = calculateDamage(power, target.ability.armor);
+  const damage = calculateDamage(power, target.getAbility().armor);
   target.health -= damage;
   player.addTempLog(action.messageGenerator(actor, target) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
-  action.extraEffect ? action.extraEffect(actor, target) : null;
+  if (action.extraEffect) {
+    action.extraEffect(actor, target);
+  }
 }
 
 function attackAgainstDefend(player: Player, enemy: Monster, playerHit: Hit, enemyHit: Hit) {
-  const playerPower = calculatePower(playerHit.coeff, player.ability);
-  const enemyPower = calculatePower(enemyHit.coeff, enemy.ability);
+  const playerPower = calculatePower(playerHit.coeff, player.getAbility());
+  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
   player.addTempLog(player.name + "<span style=\"color: blue;\">" + Math.round(playerPower) + "</span>" + enemy.name + "<span style=\"color: orange;\">" + Math.round(enemyPower) + "</span>");
 
   const isPlayerAttack = playerHit.category === ActionCategory.Defend ? false : true;
@@ -73,7 +79,7 @@ function attackAgainstDefend(player: Player, enemy: Monster, playerHit: Hit, ene
   const attackerPower = isPlayerAttack ? playerPower : enemyPower;
   const defenderPower = isPlayerAttack ? enemyPower : playerPower;
   const power = attackerPower - defenderPower > 0 ? attackerPower - defenderPower : 0;
-  const damage = calculateDamage(power, defender.ability.armor);
+  const damage = calculateDamage(power, defender.getAbility().armor);
   defender.health -= damage;
   if (power > 0) {
     player.addTempLog(defenderAction.messageGenerator(defender, attacker) + "," + attackerAction.messageGenerator(attacker, defender) + "造成了<span style=\"color: red;\">" + Math.round(damage) + "</span>点伤害");
@@ -107,11 +113,11 @@ export function handleAction(player: Player, enemy: Monster, playerAction: Actio
 
 export function observeEnemyAction(player: Player, enemy: Monster, realAction: Action): string {
   function generateMsg(enemy: Monster, action: Action) {
-    return enemy.name + "看起来似乎会" + action.name + "<br>" + action.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, player.ability))})`).join('<br>');
+    return enemy.name + "看起来似乎会" + action.name + "<br>" + action.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, enemy.getAbility()))})`).join('<br>');
   }
 
-  if (Math.random() * player.ability.dex > Math.random() * enemy.ability.dex) {
-    if (Math.random() * player.ability.int > Math.random() * enemy.ability.int) {
+  if (Math.random() * player.getAbility().dex > Math.random() * enemy.getAbility().dex) {
+    if (Math.random() * player.getAbility().int > Math.random() * enemy.getAbility().int) {
       return generateMsg(enemy, realAction);
     } else {
       return generateMsg(enemy, enemy.getRandomAction());

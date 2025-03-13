@@ -129,7 +129,7 @@ export const actionConfigs: Record<ActionType, Action> = {
           });
         },
         messageGenerator: (actor: Creature, target: Creature) => {
-          return `${actor.name}狠狠地撅了${target.name}一下，${target.name}痛苦难耐\n\/\/ 哼哼啊啊啊啊啊啊啊啊啊啊 `;
+          return `${actor.name}狠狠地撅了${target.name}一下，${target.name}痛苦难耐\n// 哼哼啊啊啊啊啊啊啊啊啊啊 `;
         },
       },
     ],

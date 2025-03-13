@@ -1,7 +1,6 @@
 import type { WeightedActionType } from "../actions/types";
 import type { ItemType } from "../items/types";
 import type { Equipment } from "../items/Equipment";
-import type { EquipmentPosition } from "../items/types";
 
 export interface Range {
   min: number;
