@@ -20,8 +20,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Common,
     position: EquipmentPosition.Hand,
     extraActions: [
-      {actionType: ActionType.Attack, weight: 0.3},
-      {actionType: ActionType.PowerAttack, weight: 0.2}
+      { actionType: ActionType.Attack, weight: 0.3 },
+      { actionType: ActionType.PowerAttack, weight: 0.2 },
     ],
     ability: {},
     actionCoeff: {
@@ -36,9 +36,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     description: "绳索,看起来很适合用来捕捉",
     rarity: Rarity.Common,
     position: EquipmentPosition.Hand,
-    extraActions: [
-      {actionType: ActionType.Capture, weight: 0.2},
-    ],
+    extraActions: [{ actionType: ActionType.Capture, weight: 0.2 }],
     ability: {},
     actionCoeff: {
       [ActionCategory.Attack]: {
@@ -56,7 +54,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     description: "太好了，有了这个，你就可以做虾头太刀侠了",
     rarity: Rarity.Rare,
     position: EquipmentPosition.Hand,
-    extraActions: [{actionType: ActionType.HorizontalSlash, weight: 1}],
+    extraActions: [{ actionType: ActionType.HorizontalSlash, weight: 1 }],
     ability: {
       str: 1,
       dex: -1,
@@ -82,9 +80,9 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Epic,
     position: EquipmentPosition.Hand,
     extraActions: [
-      {actionType: ActionType.QuickAttack, weight: 0.4},
-      {actionType: ActionType.Dodge, weight: 0.2},
-      {actionType: ActionType.SpinAttack, weight: 0.4},
+      { actionType: ActionType.QuickAttack, weight: 0.4 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
+      { actionType: ActionType.SpinAttack, weight: 0.4 },
     ],
     ability: {
       dex: 2,
@@ -110,10 +108,10 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Epic,
     position: EquipmentPosition.Hand,
     extraActions: [
-      {actionType: ActionType.DefenseSlash, weight: 0.4},
-      {actionType: ActionType.Defend, weight: 0.2},
-      {actionType: ActionType.Counter, weight: 0.4},
-      {actionType: ActionType.PowerAttack, weight: 0.2},
+      { actionType: ActionType.DefenseSlash, weight: 0.4 },
+      { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.Counter, weight: 0.4 },
+      { actionType: ActionType.PowerAttack, weight: 0.2 },
     ],
     ability: {
       str: 1,
@@ -136,8 +134,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Legendary,
     position: EquipmentPosition.Hand,
     extraActions: [
-      {actionType: ActionType.HorizontalSlash, weight: 1},
-      {actionType: ActionType.DragonBreath, weight: 0.5},
+      { actionType: ActionType.HorizontalSlash, weight: 1 },
+      { actionType: ActionType.DragonBreath, weight: 0.5 },
     ],
     ability: {
       str: 1,
@@ -156,10 +154,10 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Unique,
     position: EquipmentPosition.Hand,
     extraActions: [
-      {actionType: ActionType.PsyKick, weight: 0.2},
-      {actionType: ActionType.PsyExplosion, weight: 1},
-      {actionType: ActionType.PsyInvisibleSword, weight: 0.2},
-      {actionType: ActionType.PsyDodge, weight: 0.6},
+      { actionType: ActionType.PsyKick, weight: 0.2 },
+      { actionType: ActionType.PsyExplosion, weight: 1 },
+      { actionType: ActionType.PsyInvisibleSword, weight: 0.2 },
+      { actionType: ActionType.PsyDodge, weight: 0.6 },
     ],
     ability: {
       int: 2,
@@ -167,4 +165,4 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     },
     actionCoeff: {},
   },
-}
+};

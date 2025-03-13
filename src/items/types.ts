@@ -33,7 +33,9 @@ export type ItemType = EquipmentType | ConsumableType;
 
 export type EquipmentAbility = Partial<Ability>;
 
-export type EquipmentActionCoeff = Partial<Record<ActionCategory, EquipmentActionCoeffValue>>;
+export type EquipmentActionCoeff = Partial<
+  Record<ActionCategory, EquipmentActionCoeffValue>
+>;
 
 export interface EquipmentData {
   name: string;

@@ -23,5 +23,6 @@ export function setIntervals(player: Player) {
   saveInterval = setInterval(() => {
     if (player.isAtHome) {
       saveGame(player);
-    }}, 10000);
+    }
+  }, 10000);
 }

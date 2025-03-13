@@ -10,7 +10,7 @@ export interface Range {
 export interface Coefficient {
   base: number;
   growth: number;
-  }
+}
 
 export interface AbilityCoefficient {
   str: Coefficient;
@@ -30,28 +30,28 @@ export interface Ability {
   app: number;
   dex: number;
   armor: number;
-  }
+}
 
 export interface CreatureData {
-    typeName: string;
-    abilityCoeff: AbilityCoefficient;
-    actions: WeightedActionType[];
-    dropItems: {type: ItemType, weight: number}[];
-    description: string;
-  }
+  typeName: string;
+  abilityCoeff: AbilityCoefficient;
+  actions: WeightedActionType[];
+  dropItems: { type: ItemType; weight: number }[];
+  description: string;
+}
 
 export enum CreatureStatusType {
-  Poison = 'poison',
-  Sleep = 'sleep',
-  Stun = 'stun',
-  Confuse = 'confuse',
-  Paralyze = 'paralyze',
-	Pain = 'pain',
+  Poison = "poison",
+  Sleep = "sleep",
+  Stun = "stun",
+  Confuse = "confuse",
+  Paralyze = "paralyze",
+  Pain = "pain",
 }
 
 export interface CreatureStatus {
-	type: CreatureStatusType;
-	duration: number;
+  type: CreatureStatusType;
+  duration: number;
 }
 
 export interface EquipmentBar {

@@ -17,20 +17,20 @@ export class Player extends Creature {
   }
 
   getHealthDisplay(): string {
-    const amount = this.ability.con / 5 * this.maxHealth / 900;
-    return `hp: ${this.health.toFixed(2)} / ${this.maxHealth.toFixed(0)} + ${(amount).toFixed(2)}/s`;
+    const amount = ((this.ability.con / 5) * this.maxHealth) / 900;
+    return `hp: ${this.health.toFixed(2)} / ${this.maxHealth.toFixed(0)} + ${amount.toFixed(2)}/s`;
   }
 
   // 更新生命值显示
   updateHealthDisplay(): void {
-    const healthElement = document.getElementById('health-display');
+    const healthElement = document.getElementById("health-display");
     if (healthElement) {
       healthElement.innerText = this.getHealthDisplay();
     }
   }
 
   autoRecoverHpDot(): void {
-    const amount = this.ability.con / 5 * this.maxHealth / 900;
+    const amount = ((this.ability.con / 5) * this.maxHealth) / 900;
     this.health = Math.min(this.health + amount, this.maxHealth);
   }
 

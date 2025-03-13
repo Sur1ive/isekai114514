@@ -4,10 +4,15 @@ import { creatureConfigs, CreatureType } from "./creatureConfigs";
 import { generateItem } from "../items/itemUtils";
 
 export class Monster extends Creature {
-	description: string;
-  dropItems: {type: ItemType, weight: number}[];
+  description: string;
+  dropItems: { type: ItemType; weight: number }[];
 
-  constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
+  constructor(
+    name: string,
+    type: CreatureType,
+    level: number,
+    individualStrength: number,
+  ) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义
     name = name || "怪物";
     type = type || CreatureType.Slime;
@@ -16,12 +21,15 @@ export class Monster extends Creature {
 
     super(name, type, level, individualStrength);
     this.dropItems = creatureConfigs[type].dropItems;
-		this.description = creatureConfigs[type].description;
+    this.description = creatureConfigs[type].description;
   }
 
   randomDropItem() {
     // 按照权重随机返回一个物品
-    const totalWeight = this.dropItems.reduce((sum, item) => sum + item.weight, 0);
+    const totalWeight = this.dropItems.reduce(
+      (sum, item) => sum + item.weight,
+      0,
+    );
     let random = Math.random() * totalWeight;
     for (const item of this.dropItems) {
       if (random < item.weight) {
@@ -29,6 +37,6 @@ export class Monster extends Creature {
       }
       random -= item.weight;
     }
-		return generateItem(this.dropItems[this.dropItems.length - 1].type);
+    return generateItem(this.dropItems[this.dropItems.length - 1].type);
   }
 }

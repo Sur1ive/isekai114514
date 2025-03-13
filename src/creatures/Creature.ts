@@ -18,19 +18,36 @@ export class Creature {
   ability: Ability;
   status: CreatureStatus[] = [];
   pack: Item[] = [];
-  equipments: EquipmentBar = { head: null, body: null, hand: null, foot: null, accessory: null };
+  equipments: EquipmentBar = {
+    head: null,
+    body: null,
+    hand: null,
+    foot: null,
+    accessory: null,
+  };
   actions: WeightedActionType[];
 
-  constructor(name: string, type: CreatureType, level: number, individualStrength: number) {
+  constructor(
+    name: string,
+    type: CreatureType,
+    level: number,
+    individualStrength: number,
+  ) {
     this.name = name;
     this.type = type;
     this.level = level;
     this.individualStrength = individualStrength;
     const coeffs = creatureConfigs[this.type].abilityCoeff;
-    const calculateAbility = (coeff: Coefficient, level: number, individualStrength: number) => {
+    const calculateAbility = (
+      coeff: Coefficient,
+      level: number,
+      individualStrength: number,
+    ) => {
       const randomNumber = Math.random() ** 0.5;
-      return coeff.base + coeff.growth * level * individualStrength * randomNumber;
-    }
+      return (
+        coeff.base + coeff.growth * level * individualStrength * randomNumber
+      );
+    };
 
     this.ability = {
       str: calculateAbility(coeffs.str, level, individualStrength),
@@ -40,12 +57,11 @@ export class Creature {
       app: calculateAbility(coeffs.app, level, individualStrength),
       dex: calculateAbility(coeffs.dex, level, individualStrength),
       armor: calculateAbility(coeffs.armor, level, individualStrength),
-    }
+    };
 
     this.health = this.ability.con * 10 + this.ability.siz * 5;
     this.maxHealth = this.health;
     this.actions = creatureConfigs[this.type].actions;
-
   }
   // 按照权重随机返回一个动作
   getRandomAction(): Action {
@@ -107,7 +123,7 @@ export class Creature {
 
   // 获取装备加成后的行动列表
   getActions(): WeightedActionType[] {
-    const actions = [ ...this.actions ];
+    const actions = [...this.actions];
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
         actions.push(...equipment.extraActions);

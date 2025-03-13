@@ -83,7 +83,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.Dragon]: {
     typeName: "龙",
-    description: "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗",
+    description:
+      "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗",
     abilityCoeff: {
       str: { base: 10, growth: 0.2 },
       int: { base: 4, growth: 0.1 },
@@ -106,7 +107,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.AngryDragon]: {
     typeName: "愤怒的龙",
-    description: "龙彻底被激怒了，一只蝼蚁居然让它受了伤。它有些虚弱，但是攻击更加狂暴了",
+    description:
+      "龙彻底被激怒了，一只蝼蚁居然让它受了伤。它有些虚弱，但是攻击更加狂暴了",
     abilityCoeff: {
       str: { base: 15, growth: 0.3 },
       int: { base: 3, growth: 0.05 },
@@ -177,7 +179,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.DiscardedGolem]: {
     typeName: "废弃的岩石魔像",
-    description: "一尊不知何时被废弃的岩石魔像，在风雨的侵蚀下，它的巨大的身躯上布满了裂痕和苔藓。它不该会动呀？",
+    description:
+      "一尊不知何时被废弃的岩石魔像，在风雨的侵蚀下，它的巨大的身躯上布满了裂痕和苔藓。它不该会动呀？",
     abilityCoeff: {
       str: { base: 15, growth: 0.3 },
       int: { base: 0, growth: 0 },
@@ -217,9 +220,6 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.GodStrike, weight: 1 },
       { actionType: ActionType.ShredFlower, weight: 1 },
     ],
-    dropItems: [
-      { type: ConsumableType.DiamondChest, weight: 1 },
-    ],
-  }
+    dropItems: [{ type: ConsumableType.DiamondChest, weight: 1 }],
+  },
 };
-

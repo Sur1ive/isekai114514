@@ -2,15 +2,21 @@ import { Monster } from "../creatures/Monster";
 import { observeEnemyAction, handleAction, calculateMaxPower } from "./battle";
 import { renderMainMenu } from "../main";
 import { saveGame } from "../save";
-import { getAppElement } from "../tools";
+import { getAppElement, getHitIcon, getRarityColor } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 
 // 渲染战斗界面
-function renderBattlePage(player: Player, enemy: Monster, playerAction: Action | null, enemyAction: Action | null): void {
+function renderBattlePage(
+  player: Player,
+  enemy: Monster,
+  playerAction: Action | null,
+  enemyAction: Action | null,
+): void {
   const appElement = getAppElement();
 
   if (playerAction && enemyAction) {
+    player.addTempLog("--------------------------回合-----------------------------");
     handleAction(player, enemy, playerAction, enemyAction);
   }
 
@@ -30,7 +36,7 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
   const action1 = player.getRandomAction();
   const action2 = player.getRandomAction();
 
-	appElement.innerHTML = `
+  appElement.innerHTML = `
   <div class="container mt-4">
     <h2 class="text-center mb-3">战斗</h2>
 
@@ -66,9 +72,12 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
           <div class="card-body text-center">
             <h5 class="card-title">${action1.name}</h5>
             <p class="card-text">${action1.description}</p>
-            <p class="card-text">${
-              action1.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, player.getAbility()))})`).join('<br>')
-            }
+            <p class="card-text">${action1.hits
+              .map(
+                (hit) =>
+                  `${getHitIcon(hit)}(0~${Math.round(calculateMaxPower(hit.coeff, player.getAbility()))})`,
+              )
+              .join("<br>")}
             </p>
           </div>
         </div>
@@ -78,9 +87,12 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
           <div class="card-body text-center">
             <h5 class="card-title">${action2.name}</h5>
             <p class="card-text">${action2.description}</p>
-            <p class="card-text">${
-              action2.hits.map(hit => `${hit.category}(0~${Math.round(calculateMaxPower(hit.coeff, player.getAbility()))})`).join('<br>')
-            }
+            <p class="card-text">${action2.hits
+              .map(
+                (hit) =>
+                  `${getHitIcon(hit)}(0~${Math.round(calculateMaxPower(hit.coeff, player.getAbility()))})`,
+              )
+              .join("<br>")}
             </p>
           </div>
         </div>
@@ -99,25 +111,39 @@ function renderBattlePage(player: Player, enemy: Monster, playerAction: Action |
   </div>
 `;
 
-  document.getElementById('action1-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action1, enemyAction)});
-  document.getElementById('action2-btn')?.addEventListener('click', () => {renderBattlePage(player, enemy, action2, enemyAction)});
+  document.getElementById("action1-btn")?.addEventListener("click", () => {
+    renderBattlePage(player, enemy, action1, enemyAction);
+  });
+  document.getElementById("action2-btn")?.addEventListener("click", () => {
+    renderBattlePage(player, enemy, action2, enemyAction);
+  });
 }
 
 // 渲染战斗结算界面
 function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
-	const appElement = getAppElement();
+  const appElement = getAppElement();
 
-	if (result) {
-		const dropItem = enemy.randomDropItem();
-		player.addLog(enemy.name + "掉落了<span style='color: gold;'>" + dropItem.name + "</span>");
-		player.pack.push(dropItem);
-	} else {
-		player.health = 1;
-		player.addLog(player.name + "拼死从" + enemy.name + "的手中逃了出来，拖着残破的身躯，回到了城镇");
-	}
+  let dropItem = null;
+  if (result) {
+    dropItem = enemy.randomDropItem();
+    player.addLog(
+      enemy.name +
+        "掉落了<span style='color: gold;'>" +
+        dropItem.name +
+        "</span>",
+    );
+    player.pack.push(dropItem);
+  } else {
+    player.health = 1;
+    player.addLog(
+      player.name +
+        "拼死从" +
+        enemy.name +
+        "的手中逃了出来，拖着残破的身躯，回到了城镇",
+    );
+  }
 
-
-	appElement.innerHTML = `
+  appElement.innerHTML = `
   <div class="container mt-4">
     <div class="card text-center shadow">
       <div class="card-header bg-dark text-white">
@@ -126,9 +152,12 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
       <div class="card-body">
         <h4 class="card-title">
           ${player.name}
-          ${result
-            ? '<span class="text-success">胜利</span>'
-            : '<span class="text-danger">失败</span>'}
+          ${
+            result
+              ? '<span class="text-success">胜利</span>'
+              : '<span class="text-danger">失败</span>'
+          }
+          ${dropItem ? `<span class="text-${getRarityColor(dropItem.rarity)}">获得物品：${dropItem.name}</span>` : ""}
         </h4>
         <hr>
         <h5>记录</h5>
@@ -143,20 +172,33 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
   </div>
 `;
 
-	player.clearTempLogs();
-	saveGame(player);
-  document.getElementById('main-menu-btn')?.addEventListener('click', () => {renderMainMenu(player)});
+  player.clearTempLogs();
+  saveGame(player);
+  document.getElementById("main-menu-btn")?.addEventListener("click", () => {
+    renderMainMenu(player);
+  });
 }
 
 import { creatureConfigs, CreatureType } from "../creatures/creatureConfigs";
 
 export function testBattle(player: Player): void {
-  let enemyType = Object.values(CreatureType)[Math.floor(Math.random() * Object.values(CreatureType).length)];
-  if (enemyType === CreatureType.Player || enemyType === CreatureType.Player114514) {
-		enemyType = CreatureType.Wolf;
-	}
-	const enemyLevel = Math.floor(Math.random() * 10) + 1;
-	const enemyIndividualStrength = Math.random() * 2;
-  const enemy = new Monster(creatureConfigs[enemyType].typeName, enemyType, enemyLevel, enemyIndividualStrength);
+  let enemyType =
+    Object.values(CreatureType)[
+      Math.floor(Math.random() * Object.values(CreatureType).length)
+    ];
+  if (
+    enemyType === CreatureType.Player ||
+    enemyType === CreatureType.Player114514
+  ) {
+    enemyType = CreatureType.Wolf;
+  }
+  const enemyLevel = Math.floor(Math.random() * 10) + 1;
+  const enemyIndividualStrength = Math.random() * 2;
+  const enemy = new Monster(
+    creatureConfigs[enemyType].typeName,
+    enemyType,
+    enemyLevel,
+    enemyIndividualStrength,
+  );
   renderBattlePage(player, enemy, null, null);
 }
