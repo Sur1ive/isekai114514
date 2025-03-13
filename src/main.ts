@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import * as bootstrap from 'bootstrap';
 import { Player } from "./creatures/Player";
 import { getAppElement, getRarityColor, getItemIcon } from "./tools";
 import { testBattle } from "./battle/battlePage";
@@ -7,6 +9,7 @@ import { Consumable } from "./items/Consumable";
 import { CreatureType } from "./creatures/creatureConfigs";
 import { setIntervals } from "./global";
 import { Equipment } from "./items/Equipment";
+
 
 // 渲染开始界面
 function renderStartPage(): void {
@@ -219,6 +222,19 @@ export function renderMainMenu(player: Player): void {
 function renderStatusPage(player: Player): void {
   const appElement = getAppElement();
 
+  // 在渲染前清理所有 Tooltip 实例
+  function disposeTooltips(): void {
+    const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipElements.forEach((el) => {
+      const tooltipInstance = bootstrap.Tooltip.getInstance(el);
+      if (tooltipInstance) {
+        tooltipInstance.dispose();
+      }
+    });
+  }
+
+  disposeTooltips();
+
   appElement.innerHTML = `
     <div class="container mt-4">
       <h2 class="text-center mb-4">状态</h2>
@@ -228,7 +244,7 @@ function renderStatusPage(player: Player): void {
         <div class="col-md-6 mb-4">
           <div class="card">
             <div class="card-header">
-              <h4 class="card-title">${player.name} 的装备栏</h4>
+              <h4 class="card-title">${player.name} 的装备</h4>
             </div>
             <div class="card-body">
               <div id="equipment-bar" class="list-group">
@@ -240,12 +256,12 @@ function renderStatusPage(player: Player): void {
                       <span class="fw-bold">${position}</span>
                       ${
                         equipment
-                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" title="${equipment.description || ""}">${equipment.name}</span>`
+                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" data-bs-toggle="tooltip" data-bs-placement="top" title="${equipment.description || ""}">${equipment.name}</span>`
                           : '<span class="badge bg-secondary">空</span>'
                       }
                     </div>
                   </div>
-                `,
+                `
                   )
                   .join("")}
               </div>
@@ -266,7 +282,7 @@ function renderStatusPage(player: Player): void {
                     ? player.pack
                         .map((item) => {
                           const btnClass = `btn-${getRarityColor(item.rarity)}`;
-                          return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" title="${item.description}">${getItemIcon(item)}${item.name}</button>`;
+                          return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.description}">${getItemIcon(item)}${item.name}</button>`;
                         })
                         .join("")
                     : '<p class="text-muted">背包为空</p>'
@@ -295,7 +311,7 @@ function renderStatusPage(player: Player): void {
                           <span class="fw-bold">${monster.name}</span>
                           <span class="text-muted">Lv. ${monster.level}</span>
                         </div>
-                      `,
+                      `
                         )
                         .join("")
                     : '<p class="text-muted">暂无宠物</p>'
@@ -352,6 +368,13 @@ function renderStatusPage(player: Player): void {
         });
     }
   }
+
+  // 初始化 Bootstrap Tooltip
+    const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      // 这里需要确保 Bootstrap 的 Tooltip 构造函数可用（确保已引入 Bootstrap 的 JS）
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 }
 
 // 初始加载时显示主菜单
