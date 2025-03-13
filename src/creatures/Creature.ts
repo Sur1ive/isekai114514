@@ -96,26 +96,21 @@ export class Creature {
   // 获取装备加成后的能力值
   getAbility(): Ability {
     const ability = { ...this.ability };
+    const keys: (keyof Ability)[] = ['str', 'int', 'con', 'siz', 'app', 'dex', 'armor'];
+    // 累加装备的基础属性，若不存在则默认 0
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
-        ability.str += equipment.ability.str;
-        ability.int += equipment.ability.int;
-        ability.con += equipment.ability.con;
-        ability.siz += equipment.ability.siz;
-        ability.app += equipment.ability.app;
-        ability.dex += equipment.ability.dex;
-        ability.armor += equipment.ability.armor;
+        keys.forEach(key => {
+          ability[key] += equipment.ability?.[key] ?? 0;
+        });
       }
     }
+    // 乘以装备的行动系数，若不存在则默认 1
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
-        ability.str *= equipment.actionCoeff.str.multiply;
-        ability.int *= equipment.actionCoeff.int.multiply;
-        ability.con *= equipment.actionCoeff.con.multiply;
-        ability.siz *= equipment.actionCoeff.siz.multiply;
-        ability.app *= equipment.actionCoeff.app.multiply;
-        ability.dex *= equipment.actionCoeff.dex.multiply;
-        ability.armor *= equipment.actionCoeff.armor.multiply;
+        keys.forEach(key => {
+          ability[key] *= equipment.actionCoeff?.[key]?.multiply ?? 1;
+        });
       }
     }
     return ability;

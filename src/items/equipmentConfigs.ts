@@ -41,7 +41,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     actionCoeff: {
       [ActionCategory.Attack]: {
         plus: -1,
-        multiply: 0,
+        multiply: 0.9,
       },
       [ActionCategory.Capture]: {
         plus: 2,

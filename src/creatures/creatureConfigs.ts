@@ -75,7 +75,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Dazed, weight: 2 },
     ],
     dropItems: [
-      { type: ConsumableType.BrokenChest, weight: 0.98 },
+      { type: null, weight: 0.6 },
+      { type: ConsumableType.BrokenChest, weight: 0.4 },
       { type: ConsumableType.WoodenChest, weight: 0.02 },
       { type: ConsumableType.SilverChest, weight: 0.001 },
     ],
@@ -170,9 +171,9 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.SpinAttack, weight: 0.5 },
     ],
     dropItems: [
-      { type: ConsumableType.BrokenChest, weight: 0.5 },
-      { type: ConsumableType.WoodenChest, weight: 0.5 },
-      { type: ConsumableType.SilverChest, weight: 0.01 },
+      { type: ConsumableType.BrokenChest, weight: 0.7 },
+      { type: ConsumableType.WoodenChest, weight: 0.3 },
+      { type: ConsumableType.SilverChest, weight: 0.015 },
       { type: ConsumableType.GoldChest, weight: 0.001 },
     ],
   },
@@ -219,6 +220,10 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     actions: [
       { actionType: ActionType.GodStrike, weight: 1 },
       { actionType: ActionType.ShredFlower, weight: 1 },
+      { actionType: ActionType.PsyKick, weight: 1 },
+      { actionType: ActionType.PsyExplosion, weight: 1 },
+      { actionType: ActionType.PsyInvisibleSword, weight: 1 },
+      { actionType: ActionType.PsyDodge, weight: 1 },
     ],
     dropItems: [{ type: ConsumableType.DiamondChest, weight: 1 }],
   },
