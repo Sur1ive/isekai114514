@@ -5,7 +5,7 @@ import { generateItem } from "../items/itemUtils";
 
 export class Monster extends Creature {
   description: string;
-  dropItems: { type: ItemType; weight: number }[];
+  dropItems: { type: ItemType | null; weight: number }[];
 
   constructor(
     name: string,
@@ -32,11 +32,11 @@ export class Monster extends Creature {
     );
     let random = Math.random() * totalWeight;
     for (const item of this.dropItems) {
-      if (random < item.weight) {
+      if (random < item.weight && item.type) {
         return generateItem(item.type);
       }
       random -= item.weight;
     }
-    return generateItem(this.dropItems[this.dropItems.length - 1].type);
+    return null;
   }
 }

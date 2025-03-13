@@ -18,6 +18,7 @@ function renderBattlePage(
   if (playerAction && enemyAction) {
     player.addTempLog("--------------------------回合-----------------------------");
     handleAction(player, enemy, playerAction, enemyAction);
+    saveGame(player);
   }
 
   if (player.health <= 0) {
@@ -129,10 +130,12 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
     player.addLog(
       enemy.name +
         "掉落了<span style='color: gold;'>" +
-        dropItem.name +
+        (dropItem?.name ?? "无") +
         "</span>",
     );
-    player.pack.push(dropItem);
+    if (dropItem) {
+      player.pack.push(dropItem);
+    }
   } else {
     player.health = 1;
     player.addLog(

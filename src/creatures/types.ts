@@ -36,7 +36,7 @@ export interface CreatureData {
   typeName: string;
   abilityCoeff: AbilityCoefficient;
   actions: WeightedActionType[];
-  dropItems: { type: ItemType; weight: number }[];
+  dropItems: { type: ItemType | null; weight: number }[];
   description: string;
 }
 
