@@ -6,6 +6,7 @@ import { generateItem } from "../items/itemUtils";
 export class Monster extends Creature {
   description: string;
   dropItems: { type: ItemType | null; weight: number }[];
+  giveExp: number = 0;
 
   constructor(
     name: string,
@@ -22,6 +23,7 @@ export class Monster extends Creature {
     super(name, type, level, individualStrength);
     this.dropItems = creatureConfigs[type].dropItems;
     this.description = creatureConfigs[type].description;
+    this.giveExp = Math.floor(this.maxHealth) * (1 + this.level / 10);
   }
 
   randomDropItem() {

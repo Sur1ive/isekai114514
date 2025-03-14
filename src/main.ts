@@ -169,6 +169,7 @@ export function renderMainMenu(player: Player): void {
       <h2>${player.name} lv ${player.level}</h2>
       <div>${player.type === CreatureType.Player114514 ? "野兽" : "人类"}</div>
       <div id="health-display" class="fs-4 mb-3">${player.getHealthDisplay()}</div>
+      <div id="exp-display" class="fs-4 mb-3">${player.getExpDisplay()}</div>
     </div>
   </div>
   <div class="container mt-4">

@@ -37,32 +37,29 @@ export class Creature {
     this.type = type;
     this.level = level;
     this.individualStrength = individualStrength;
-    const coeffs = creatureConfigs[this.type].abilityCoeff;
-    const calculateAbility = (
-      coeff: Coefficient,
-      level: number,
-      individualStrength: number,
-    ) => {
-      const randomNumber = Math.random() ** 0.5;
-      return (
-        coeff.base + coeff.growth * level * individualStrength * randomNumber
-      );
-    };
-
-    this.ability = {
-      str: calculateAbility(coeffs.str, level, individualStrength),
-      int: calculateAbility(coeffs.int, level, individualStrength),
-      con: calculateAbility(coeffs.con, level, individualStrength),
-      siz: calculateAbility(coeffs.siz, level, individualStrength),
-      app: calculateAbility(coeffs.app, level, individualStrength),
-      dex: calculateAbility(coeffs.dex, level, individualStrength),
-      armor: calculateAbility(coeffs.armor, level, individualStrength),
-    };
-
-    this.health = this.ability.con * 10 + this.ability.siz * 5;
-    this.maxHealth = this.health;
+    this.ability = this.calculateAbility();
+    this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
+    this.health = this.maxHealth;
     this.actions = creatureConfigs[this.type].actions;
   }
+
+  calculateAbility(): Ability {
+    const coeffs = creatureConfigs[this.type].abilityCoeff;
+    const keys: (keyof Ability)[] = ['str', 'int', 'con', 'siz', 'app', 'dex', 'armor'];
+    const ability: Ability = {} as Ability;
+    keys.forEach(key => {
+      ability[key] = coeffs[key].base + coeffs[key].growth * this.level * this.individualStrength;
+    });
+    return ability;
+  }
+
+  levelup() {
+    this.level++;
+    this.ability = this.calculateAbility();
+    this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
+    this.health = this.maxHealth;
+  }
+
   // 按照权重随机返回一个动作
   getRandomAction(): Action {
     const random = Math.random();
