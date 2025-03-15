@@ -168,7 +168,7 @@ export function renderMainMenu(player: Player): void {
   console.log(player);
 
   appElement.innerHTML = `
-<div class="container d-flex flex-column min-vh-100">
+<div class="container d-flex flex-column" style="min-height: 80vh;">
   <!-- 顶部区域：显示血条和玩家信息 -->
   <div>
     <div class="card mb-4 shadow-sm">
@@ -195,8 +195,8 @@ export function renderMainMenu(player: Player): void {
     </div>
   </div>
 
-  <!-- 主菜单区域：使用一个固定的 margin-top 将它推到中间偏下 -->
-  <div style="margin-top: 30vh;">
+  <!-- 主菜单区域：用 mt-auto 自动向下推 -->
+  <div class="mt-auto">
     <h2 class="text-center mb-4">主菜单</h2>
     <div class="row g-3 justify-content-center">
       <div class="col-12 col-md-4">
