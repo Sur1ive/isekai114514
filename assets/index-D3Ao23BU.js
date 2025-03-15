@@ -156,7 +156,7 @@ and limitations under the License.
       </div>
     </div>
   </div>
-`,e.clearTempLogs(),Bt(e),(o=document.getElementById("main-menu-btn"))==null||o.addEventListener("click",()=>{Mn(e)})}function od(e){let t=Object.values(ft)[Math.floor(Math.random()*Object.values(ft).length)];(t===ft.Player||t===ft.Player114514)&&(t=ft.Wolf);const n=Math.floor(Math.random()*10)+1,i=Math.random()*2,r=new xs(Be[t].typeName,t,n,i);fi(e,r,null,null)}function ad(){var t,n;const e=It();e.innerHTML=`
+`,e.clearTempLogs(),Bt(e),(o=document.getElementById("main-menu-btn"))==null||o.addEventListener("click",()=>{Mn(e)})}function od(e){let t=Object.values(ft)[Math.floor(Math.random()*Object.values(ft).length)];(t===ft.Player||t===ft.Player114514)&&(t=ft.Wolf);const n=Math.floor(Math.random()*10)+1,i=Math.random()*2,r=new xs(Be[t].typeName,t,n,i);fi(e,r,null,null)}const ad="/game-otherworld/assets/player-8N5Sf3fj.gif";function cd(){var t,n;const e=It();e.innerHTML=`
     <h1>你是谁？</h1>
     <div class="row mb-4">
       <div class="col-6">
@@ -193,12 +193,12 @@ and limitations under the License.
     <h1>躲避大卡车</h1>
     <p>躲避失败，你嗝屁了</p>
     <button id="continue-btn">继续</button>
-  `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{cd(e)})}function cd(e){var n;const t=It();t.innerHTML=`
+  `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{ld(e)})}function ld(e){var n;const t=It();t.innerHTML=`
     <h1>???</h1>
     <p>请输入你的名字</p>
     <input type="text" id="name-input" placeholder="${e.name}">
     <button id="continue-btn">继续</button>
-  `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{const r=document.getElementById("name-input").value.trim();r?(e.name=r,ld(e)):alert("请输入你的名字！")})}function ld(e){var n;const t=It();t.innerHTML=`
+  `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{const r=document.getElementById("name-input").value.trim();r?(e.name=r,ud(e)):alert("请输入你的名字！")})}function ud(e){var n;const t=It();t.innerHTML=`
     <h1>???</h1>
     <p>你睁开了眼睛，发现自己好像身处森林之中</p>
     <p>周围的一切都显得那么陌生，充满了异世界风情</p>
@@ -229,7 +229,7 @@ and limitations under the License.
 
         <!-- 玩家形象区域 -->
         <div class="text-center mt-3">
-          <img src="src/assets/player.gif" alt="玩家形象" class="img-fluid" style="max-height: 200px;">
+          <img src=${ad} alt="玩家形象" class="img-fluid" style="max-height: 200px;">
         </div>
       </div>
     </div>
@@ -341,4 +341,4 @@ and limitations under the License.
         <button id="back-btn" class="btn btn-primary">返回主菜单</button>
       </div>
     </div>
-  `,(r=document.getElementById("back-btn"))==null||r.addEventListener("click",()=>{Mn(e)});for(const c of e.pack)c instanceof ze&&((s=document.getElementById(`use-btn${c.uuid}`))==null||s.addEventListener("click",()=>{c.useItem(e),e.addLog(`${e.name} 使用了 ${c.name}`),Bt(e),_n(e)})),c instanceof re&&((o=document.getElementById(`use-btn${c.uuid}`))==null||o.addEventListener("click",()=>{e.wearEquipment(c),Bt(e),_n(e)}));for(const[c,h]of Object.entries(e.equipments))h&&((a=document.getElementById(`equipment-slot-${c}`))==null||a.addEventListener("click",()=>{e.removeEquipment(h.position),Bt(e),_n(e)}));Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(c=>{new Vt(c,{placement:"top",html:!0})})}document.addEventListener("DOMContentLoaded",()=>{let e;try{e=sd()}catch(t){console.log(t),localStorage.clear(),ad();return}Mn(e)});
+  `,(r=document.getElementById("back-btn"))==null||r.addEventListener("click",()=>{Mn(e)});for(const c of e.pack)c instanceof ze&&((s=document.getElementById(`use-btn${c.uuid}`))==null||s.addEventListener("click",()=>{c.useItem(e),e.addLog(`${e.name} 使用了 ${c.name}`),Bt(e),_n(e)})),c instanceof re&&((o=document.getElementById(`use-btn${c.uuid}`))==null||o.addEventListener("click",()=>{e.wearEquipment(c),Bt(e),_n(e)}));for(const[c,h]of Object.entries(e.equipments))h&&((a=document.getElementById(`equipment-slot-${c}`))==null||a.addEventListener("click",()=>{e.removeEquipment(h.position),Bt(e),_n(e)}));Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(c=>{new Vt(c,{placement:"top",html:!0})})}document.addEventListener("DOMContentLoaded",()=>{let e;try{e=sd()}catch(t){console.log(t),localStorage.clear(),cd();return}Mn(e)});
