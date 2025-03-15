@@ -205,7 +205,7 @@ and limitations under the License.
     <p>看着远处地上缓慢蠕动的史莱姆，你总算相信自己穿越了</p>
     <button id="continue-btn">继续</button>
   `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{Bt(e),Dn(e)})}function Dn(e){var n,i,r;const t=kt();e.isAtHome=!0,Bt(e),console.log(e),t.innerHTML=`
-<div class="container d-flex flex-column min-vh-100">
+<div class="container d-flex flex-column min-vh-70">
   <!-- 顶部区域：显示血条和玩家信息 -->
   <div>
     <div class="card mb-4 shadow-sm">
