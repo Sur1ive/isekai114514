@@ -161,6 +161,7 @@ function renderStartPage4(player: Player): void {
   });
 }
 
+import playerImage from './assets/player.gif';
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
@@ -193,7 +194,7 @@ export function renderMainMenu(player: Player): void {
 
         <!-- 玩家形象区域 -->
         <div class="text-center mt-3">
-          <img src="src/assets/player.gif" alt="玩家形象" class="img-fluid" style="max-height: 200px;">
+          <img src=${playerImage} alt="玩家形象" class="img-fluid" style="max-height: 200px;">
         </div>
       </div>
     </div>
