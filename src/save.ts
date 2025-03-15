@@ -32,10 +32,15 @@ export function loadPlayer(): Player {
     return item;
   });
   // 把装备栏转换回Equipment
-  const equipmentKeys = Object.keys(player.equipments) as (keyof EquipmentBar)[];
+  const equipmentKeys = Object.keys(
+    player.equipments,
+  ) as (keyof EquipmentBar)[];
   equipmentKeys.forEach((key) => {
     if (player.equipments[key]) {
-      player.equipments[key] = plainToInstance(Equipment, player.equipments[key]);
+      player.equipments[key] = plainToInstance(
+        Equipment,
+        player.equipments[key],
+      );
     }
   });
   return player;

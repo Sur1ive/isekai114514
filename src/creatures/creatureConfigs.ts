@@ -85,7 +85,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
   [CreatureType.Dragon]: {
     typeName: "龙",
     description:
-      "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗",
+      "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗。Tips: 你并不需要一次性击败Boss，对其造成20%最大生命值以上的伤害即可永久削减其生命值。你可以通过多次战斗来最终击败它。",
     abilityCoeff: {
       str: { base: 10, growth: 0.2 },
       int: { base: 4, growth: 0.1 },

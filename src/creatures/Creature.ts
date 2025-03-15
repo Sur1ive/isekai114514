@@ -1,5 +1,5 @@
 import { creatureConfigs, CreatureType } from "./creatureConfigs";
-import type { Coefficient, Ability, CreatureStatus } from "./types";
+import type { Ability, CreatureStatus } from "./types";
 import type { Item } from "../items/Item";
 import type { WeightedActionType } from "../actions/types";
 import { actionConfigs, ActionType } from "../actions/actionConfigs";
@@ -45,10 +45,20 @@ export class Creature {
 
   calculateAbility(): Ability {
     const coeffs = creatureConfigs[this.type].abilityCoeff;
-    const keys: (keyof Ability)[] = ['str', 'int', 'con', 'siz', 'app', 'dex', 'armor'];
+    const keys: (keyof Ability)[] = [
+      "str",
+      "int",
+      "con",
+      "siz",
+      "app",
+      "dex",
+      "armor",
+    ];
     const ability: Ability = {} as Ability;
-    keys.forEach(key => {
-      ability[key] = coeffs[key].base + coeffs[key].growth * this.level * this.individualStrength;
+    keys.forEach((key) => {
+      ability[key] =
+        coeffs[key].base +
+        coeffs[key].growth * this.level * this.individualStrength;
     });
     return ability;
   }
@@ -93,11 +103,19 @@ export class Creature {
   // 获取装备加成后的能力值
   getAbility(): Ability {
     const ability = { ...this.ability };
-    const keys: (keyof Ability)[] = ['str', 'int', 'con', 'siz', 'app', 'dex', 'armor'];
+    const keys: (keyof Ability)[] = [
+      "str",
+      "int",
+      "con",
+      "siz",
+      "app",
+      "dex",
+      "armor",
+    ];
     // 累加装备的基础属性，若不存在则默认 0
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
-        keys.forEach(key => {
+        keys.forEach((key) => {
           ability[key] += equipment.ability?.[key] ?? 0;
         });
       }
@@ -105,7 +123,7 @@ export class Creature {
     // 乘以装备的行动系数，若不存在则默认 1
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
-        keys.forEach(key => {
+        keys.forEach((key) => {
           ability[key] *= equipment.actionCoeff?.[key]?.multiply ?? 1;
         });
       }

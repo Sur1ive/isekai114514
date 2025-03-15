@@ -48,15 +48,23 @@ function generatePointString(
     playerPoint = playerHit.messageGenerator(player, enemy) + " ";
   } else {
     playerPoint =
-      player.name + getHitIcon(playerHit) + '<span style="color: blue;">' + Math.round(playerPower) + "</span> ";
+      player.name +
+      getHitIcon(playerHit) +
+      '<span style="color: blue;">' +
+      Math.round(playerPower) +
+      "</span> ";
   }
   if (enemyHit.category === ActionCategory.NoAction) {
     enemyPoint = enemyHit.messageGenerator(enemy, player) + " ";
   } else {
     enemyPoint =
-      enemy.name + getHitIcon(enemyHit) + '<span style="color: orange;">' + Math.round(enemyPower) + "</span> ";
+      enemy.name +
+      getHitIcon(enemyHit) +
+      '<span style="color: orange;">' +
+      Math.round(enemyPower) +
+      "</span> ";
   }
-  return ("掷骰：" + playerPoint + enemyPoint);
+  return "掷骰：" + playerPoint + enemyPoint;
 }
 
 function attackAgainstAttack(

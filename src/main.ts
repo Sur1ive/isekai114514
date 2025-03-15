@@ -1,16 +1,20 @@
 import "reflect-metadata";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './styles/custom.css';
-import * as bootstrap from 'bootstrap';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/custom.css";
+import * as bootstrap from "bootstrap";
 import { Player } from "./creatures/Player";
-import { getAppElement, getRarityColor, getItemIcon, generateItemTooltipContent } from "./tools";
+import {
+  getAppElement,
+  getRarityColor,
+  getItemIcon,
+  generateItemTooltipContent,
+} from "./tools";
 import { testBattle } from "./battle/battlePage";
 import { loadPlayer, saveGame } from "./save";
 import { Consumable } from "./items/Consumable";
 import { CreatureType } from "./creatures/creatureConfigs";
 import { setIntervals } from "./global";
 import { Equipment } from "./items/Equipment";
-
 
 // 渲染开始界面
 function renderStartPage(): void {
@@ -22,7 +26,7 @@ function renderStartPage(): void {
         <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
           <div class="card-body text-center">
             <h5 class="card-title">普通人</h5>
-            <p class="card-text">你是一个正准备去上班/上学的普通人</p>
+            <p class="card-text">"野兽先辈是什么？"</p>
           </div>
         </div>
       </div>
@@ -30,8 +34,9 @@ function renderStartPage(): void {
         <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
           <div class="card-body text-center">
             <h5 class="card-title">野兽仙贝</h5>
-            <p class="card-text">你是野兽先辈，一番劳累过后，正准备返回自家天台晒日光浴</p>
-          </div>
+            <p class="card-text">你是野兽先辈，正准备请后辈来自己的房子做客</p>
+            <p class="card-text">"ko↑ko↓"</p>
+            </div>
         </div>
       </div>
     </div>
@@ -156,7 +161,6 @@ function renderStartPage4(player: Player): void {
   });
 }
 
-// 渲染主菜单
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
   player.isAtHome = true;
@@ -164,19 +168,41 @@ export function renderMainMenu(player: Player): void {
   console.log(player);
 
   appElement.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <div>
-      <h2>${player.name} lv ${player.level}</h2>
-      <div>${player.type === CreatureType.Player114514 ? "野兽" : "人类"}</div>
-      <div id="health-display" class="fs-4 mb-3">${player.getHealthDisplay()}</div>
-      <div id="exp-display" class="fs-4 mb-3">${player.getExpDisplay()}</div>
+<div class="container d-flex flex-column min-vh-100">
+  <!-- 顶部区域：显示血条和玩家信息 -->
+  <div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <!-- 血条区域 -->
+        <div id="health-display" class="mb-3">
+          ${player.getHealthDisplay()}
+        </div>
+        <!-- 玩家信息区域 -->
+        <div class="text-center">
+          <h2 class="card-title mb-1">
+            <span class="badge bg-${player.type === CreatureType.Player114514 ? "danger" : "primary"} ms-2" style="font-size: 0.75rem; padding: 0.35em 0.5em;">
+              ${player.type === CreatureType.Player114514 ? "野兽" : "人类"}
+            </span>
+            ${player.name}
+            <small class="text-muted"> lv ${player.level}</small>
+          </h2>
+          <!-- 经验条 -->
+          <div id="exp-display" class="mt-2" style="max-width: 200px; margin: 0 auto;">
+            ${player.getExpDisplay()}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="container mt-4">
+
+  <!-- 主菜单区域：使用一个固定的 margin-top 将它推到中间偏下 -->
+  <div style="margin-top: 30vh;">
     <h2 class="text-center mb-4">主菜单</h2>
     <div class="row g-3 justify-content-center">
       <div class="col-12 col-md-4">
-        <button id="battle-btn" class="btn btn-primary w-100 py-3">${player.type === CreatureType.Player114514 ? "救世啊！" : "战斗"}</button>
+        <button id="battle-btn" class="btn btn-primary w-100 py-3">
+          ${player.type === CreatureType.Player114514 ? "救世啊！" : "战斗"}
+        </button>
       </div>
       <div class="col-12 col-md-4">
         <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>
@@ -185,26 +211,31 @@ export function renderMainMenu(player: Player): void {
         <button id="restart-btn" class="btn btn-danger w-100 py-3">秽土转生</button>
       </div>
     </div>
+
+    <!-- 查看记录按钮 -->
     <div class="text-center mt-4">
       <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
         查看记录
       </button>
     </div>
   </div>
+</div>
 
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasRightLabel">记录</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      <div style="max-height: 60vh; overflow-y: auto;">
-        <p>${player.getLastNLog(20)}</p>
-      </div>
+<!-- Offcanvas 记录面板 -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">记录</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="关闭"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div style="max-height: 60vh; overflow-y: auto;">
+      <p>${player.getLastNLog(20)}</p>
     </div>
   </div>
-`;
+</div>
+  `;
 
+  // 绑定按钮事件
   document.getElementById("battle-btn")?.addEventListener("click", () => {
     player.isAtHome = false;
     testBattle(player);
@@ -213,7 +244,7 @@ export function renderMainMenu(player: Player): void {
     renderStatusPage(player);
   });
   document.getElementById("restart-btn")?.addEventListener("click", () => {
-    if (window.confirm("你确定要remake吗?")) {
+    if (window.confirm("你确定要 remak e 吗？")) {
       localStorage.clear();
       window.location.reload();
     }
@@ -226,7 +257,9 @@ function renderStatusPage(player: Player): void {
 
   // 在渲染前清理所有 Tooltip 实例
   function disposeTooltips(): void {
-    const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipElements = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]',
+    );
     tooltipElements.forEach((el) => {
       const tooltipInstance = bootstrap.Tooltip.getInstance(el);
       if (tooltipInstance) {
@@ -257,12 +290,12 @@ function renderStatusPage(player: Player): void {
                       <span class="fw-bold">${position}</span>
                       ${
                         equipment
-                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${generateItemTooltipContent(equipment).replace(/"/g, '&quot;')}">${equipment.name}</span>`
+                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${generateItemTooltipContent(equipment).replace(/"/g, "&quot;")}">${equipment.name}</span>`
                           : '<span class="badge bg-secondary">空</span>'
                       }
                     </div>
                   </div>
-                `
+                `,
                   )
                   .join("")}
               </div>
@@ -285,10 +318,11 @@ function renderStatusPage(player: Player): void {
                           const btnClass = `btn-${getRarityColor(item.rarity)}`;
                           // 如果 item 属于 Consumable 或 Equipment，则调用 generateItemTooltipContent，否则使用 item.description
                           const tooltipContent =
-                            item instanceof Consumable || item instanceof Equipment
+                            item instanceof Consumable ||
+                            item instanceof Equipment
                               ? generateItemTooltipContent(item)
                               : item.description;
-                          return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${tooltipContent.replace(/"/g, '&quot;')}">${getItemIcon(item)}${item.name}</button>`;
+                          return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${tooltipContent.replace(/"/g, "&quot;")}">${getItemIcon(item)}${item.name}</button>`;
                         })
                         .join("")
                     : '<p class="text-muted">背包为空</p>'
@@ -317,7 +351,7 @@ function renderStatusPage(player: Player): void {
                           <span class="fw-bold">${monster.name}</span>
                           <span class="text-muted">Lv. ${monster.level}</span>
                         </div>
-                      `
+                      `,
                         )
                         .join("")
                     : '<p class="text-muted">暂无宠物</p>'
@@ -342,35 +376,43 @@ function renderStatusPage(player: Player): void {
   // 为背包中的道具绑定点击事件
   for (const item of player.pack) {
     if (item instanceof Consumable) {
-      document.getElementById(`use-btn${item.uuid}`)?.addEventListener("click", () => {
-        item.useItem(player);
-        player.addLog(`${player.name} 使用了 ${item.name}`);
-        saveGame(player);
-        renderStatusPage(player);
-      });
+      document
+        .getElementById(`use-btn${item.uuid}`)
+        ?.addEventListener("click", () => {
+          item.useItem(player);
+          player.addLog(`${player.name} 使用了 ${item.name}`);
+          saveGame(player);
+          renderStatusPage(player);
+        });
     }
     if (item instanceof Equipment) {
-      document.getElementById(`use-btn${item.uuid}`)?.addEventListener("click", () => {
-        player.wearEquipment(item);
-        saveGame(player);
-        renderStatusPage(player);
-      });
+      document
+        .getElementById(`use-btn${item.uuid}`)
+        ?.addEventListener("click", () => {
+          player.wearEquipment(item);
+          saveGame(player);
+          renderStatusPage(player);
+        });
     }
   }
 
   // 为装备栏中的装备绑定点击事件（点击时卸下装备）
   for (const [position, equipment] of Object.entries(player.equipments)) {
     if (equipment) {
-      document.getElementById(`equipment-slot-${position}`)?.addEventListener("click", () => {
-        player.removeEquipment(equipment.position);
-        saveGame(player);
-        renderStatusPage(player);
-      });
+      document
+        .getElementById(`equipment-slot-${position}`)
+        ?.addEventListener("click", () => {
+          player.removeEquipment(equipment.position);
+          saveGame(player);
+          renderStatusPage(player);
+        });
     }
   }
 
   // 初始化 Bootstrap Tooltip
-  const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  const tooltipTriggerList = Array.from(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]'),
+  );
   tooltipTriggerList.forEach((tooltipTriggerEl) => {
     new bootstrap.Tooltip(tooltipTriggerEl, { placement: "top", html: true });
   });

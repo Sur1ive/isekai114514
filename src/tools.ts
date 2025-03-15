@@ -86,21 +86,21 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
   `;
 
   // 属性部分（例如力量、体质等）
-  let abilitiesHtml = '';
+  let abilitiesHtml = "";
   if (equipment.ability && Object.keys(equipment.ability).length > 0) {
     abilitiesHtml = `
       <div class="tooltip-abilities tooltip-extra">
         <p><strong>属性: </strong>
           ${Object.entries(equipment.ability)
             .map(([stat, value]) => `${stat}: ${value}`)
-            .join(', ')}
+            .join(", ")}
         </p>
       </div>
     `;
   }
 
   // 额外行动部分，根据 extraActions 数组生成（假设通过 equipmentConfigs[actionType].name 获取行动名称）
-  let extraActionsHtml = '';
+  let extraActionsHtml = "";
   if (equipment.extraActions && equipment.extraActions.length > 0) {
     extraActionsHtml = `
       <div class="tooltip-extra-actions tooltip-extra">
@@ -108,15 +108,15 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
           ${equipment.extraActions
             .map(
               (action) =>
-                `${ actionConfigs[action.actionType].name} (权重: ${action.weight})`
+                `${actionConfigs[action.actionType].name} (权重: ${action.weight})`,
             )
-            .join(', ')}
+            .join(", ")}
       </div>
     `;
   }
 
   // 行动系数部分，遍历 actionCoeff 对象（每个分类有 plus 与 multiply 值）
-  let actionCoeffHtml = '';
+  let actionCoeffHtml = "";
   if (equipment.actionCoeff && Object.keys(equipment.actionCoeff).length > 0) {
     actionCoeffHtml = `
       <div class="tooltip-action-coeff tooltip-extra">
@@ -124,9 +124,9 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
           ${Object.entries(equipment.actionCoeff)
             .map(
               ([category, coeff]) =>
-                `${category}: ${coeff.plus < 0 ? '' : '+'}${coeff.plus} ${coeff.multiply === 1 ? '' : "x" + coeff.multiply}`
+                `${category}: ${coeff.plus < 0 ? "" : "+"}${coeff.plus} ${coeff.multiply === 1 ? "" : "x" + coeff.multiply}`,
             )
-            .join(', ')}
+            .join(", ")}
       </div>
     `;
   }

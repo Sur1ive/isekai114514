@@ -1,4 +1,4 @@
-/* tooltip 内部整体控制 */
+/* ---------------------------tooltip 内部整体控制------------------------------ */
 .tooltip-inner {
   max-width: 300px;
   padding: 0.5rem;
@@ -21,3 +21,29 @@
 .tooltip-inner p {
   margin-bottom: 0.5rem;
 }
+
+/* ---------------------------------------------------------- */
+/* ---------------------------标题部分--------------------------- */
+.flat-header {
+  background-color: #fff;
+  /* border-bottom: 1px solid #eaeaea; */
+  padding: 1rem 0;
+  position: relative;
+}
+
+.header-content {
+  position: relative;
+}
+
+/* 标题部分居中 */
+.header-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.header-extra-text {
+  margin-left: 5px;
+	font-size: 1rem;
+}
+/* ---------------------------------------------------------- */
+

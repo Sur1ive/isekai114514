@@ -16,7 +16,9 @@ function renderBattlePage(
   const appElement = getAppElement();
 
   if (playerAction && enemyAction) {
-    player.addTempLog("--------------------------回合-----------------------------");
+    player.addTempLog(
+      "--------------------------回合-----------------------------",
+    );
     handleAction(player, enemy, playerAction, enemyAction);
     saveGame(player);
   }

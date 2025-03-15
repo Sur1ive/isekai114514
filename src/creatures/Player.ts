@@ -17,7 +17,7 @@ export class Player extends Creature {
     super(name, type, 0, 1);
   }
 
-    /**
+  /**
    * 根据当前等级计算下一次升级所需经验
    * 1-10级：固定经验（100）
    * 10-20级：线性增长，100 + (level - 10) * 40
@@ -49,25 +49,38 @@ export class Player extends Creature {
     const nextExp = this.getNextLevelExp();
     const percent = Math.min(100, (this.exp / nextExp) * 100);
     return `
-      <div class="progress" style="height: 20px;">
+      <div class="progress" style="height: 2px; position: relative;">
         <div class="progress-bar" role="progressbar" style="width: ${percent}%;"
              aria-valuenow="${this.exp}" aria-valuemin="0" aria-valuemax="${nextExp}">
-          exp: ${this.exp} / ${nextExp} (${percent.toFixed(1)}%)
         </div>
       </div>
     `;
   }
 
   getHealthDisplay(): string {
-    const amount = ((this.ability.con / 5) * this.maxHealth) / 900;
-    return `hp: ${this.health.toFixed(1)} / ${this.maxHealth.toFixed(1)} + ${amount.toFixed(2)}/s`;
+    const percent = Math.min(100, (this.health / this.maxHealth) * 100);
+    const regen = ((this.ability.con / 5) * this.maxHealth) / 900;
+    return `
+    <div class="progress" style="height: 20px; position: relative; background-color: #444;">
+      <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: ${percent}%;"
+           aria-valuenow="${this.health}" aria-valuemin="0" aria-valuemax="${this.maxHealth}">
+      </div>
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        <div style="text-align: center; line-height: 20px; font-size: 0.9rem; font-weight: bold; color: #fff;">
+          hp: ${this.health.toFixed(1)} / ${this.maxHealth.toFixed(1)}
+        </div>
+        <div style="position: absolute; top: 0; right: 5px; height: 100%; display: flex; align-items: center; font-size: 0.9rem; font-weight: bold; color: #fff;">
+          +${regen.toFixed(2)}
+        </div>
+      </div>
+    </div>
+  `;
   }
-
   // 更新生命值显示
   updateHealthDisplay(): void {
     const healthElement = document.getElementById("health-display");
     if (healthElement) {
-      healthElement.innerText = this.getHealthDisplay();
+      healthElement.innerHTML = this.getHealthDisplay();
     }
   }
 
