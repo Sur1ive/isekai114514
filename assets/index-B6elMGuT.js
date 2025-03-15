@@ -205,7 +205,7 @@ and limitations under the License.
     <p>看着远处地上缓慢蠕动的史莱姆，你总算相信自己穿越了</p>
     <button id="continue-btn">继续</button>
   `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{Bt(e),Dn(e)})}function Dn(e){var n,i,r;const t=kt();e.isAtHome=!0,Bt(e),console.log(e),t.innerHTML=`
-<div class="container d-flex flex-column min-vh-70">
+<div class="container d-flex flex-column" style="min-height: 80vh;">
   <!-- 顶部区域：显示血条和玩家信息 -->
   <div>
     <div class="card mb-4 shadow-sm">
@@ -232,8 +232,8 @@ and limitations under the License.
     </div>
   </div>
 
-  <!-- 主菜单区域：使用一个固定的 margin-top 将它推到中间偏下 -->
-  <div style="margin-top: 30vh;">
+  <!-- 主菜单区域：用 mt-auto 自动向下推 -->
+  <div class="mt-auto">
     <h2 class="text-center mb-4">主菜单</h2>
     <div class="row g-3 justify-content-center">
       <div class="col-12 col-md-4">
