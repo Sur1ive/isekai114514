@@ -161,6 +161,7 @@ function renderStartPage4(player: Player): void {
   });
 }
 
+// 渲染主菜单
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
   player.isAtHome = true;
@@ -168,9 +169,7 @@ export function renderMainMenu(player: Player): void {
   console.log(player);
 
   appElement.innerHTML = `
-<div class="container d-flex flex-column" style="min-height: 80vh;">
-  <!-- 顶部区域：显示血条和玩家信息 -->
-  <div>
+    <!-- 顶部区域：显示血条和玩家信息 -->
     <div class="card mb-4 shadow-sm">
       <div class="card-body">
         <!-- 血条区域 -->
@@ -191,48 +190,54 @@ export function renderMainMenu(player: Player): void {
             ${player.getExpDisplay()}
           </div>
         </div>
+
+        <!-- 玩家形象区域 -->
+        <div class="text-center mt-3">
+          <img src="src/assets/player.gif" alt="玩家形象" class="img-fluid" style="max-height: 200px;">
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 主菜单区域：用 mt-auto 自动向下推 -->
-  <div class="mt-auto">
-    <h2 class="text-center mb-4">主菜单</h2>
-    <div class="row g-3 justify-content-center">
-      <div class="col-12 col-md-4">
-        <button id="battle-btn" class="btn btn-primary w-100 py-3">
-          ${player.type === CreatureType.Player114514 ? "救世啊！" : "战斗"}
+    <!-- 主菜单区域：用 mt-auto 自动向下推 -->
+    <div class="mt-auto">
+      <div class="row g-3 justify-content-center">
+        <div class="col-12 col-md-4">
+          <button id="battle-btn" class="btn btn-primary w-100 py-3">
+            ${player.type === CreatureType.Player114514 ? "救世啊！" : "战斗"}
+          </button>
+        </div>
+        <div class="col-12 col-md-4">
+          <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>
+        </div>
+        <div class="col-12 col-md-4">
+          <button id="restart-btn" class="btn btn-danger w-100 py-3">秽土转生</button>
+        </div>
+      </div>
+
+      <!-- 查看记录按钮 -->
+      <div class="text-center mt-4">
+        <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+          查看记录
         </button>
       </div>
-      <div class="col-12 col-md-4">
-        <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>
+    </div>
+
+    <!-- Offcanvas 记录面板 -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">记录</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="关闭"></button>
       </div>
-      <div class="col-12 col-md-4">
-        <button id="restart-btn" class="btn btn-danger w-100 py-3">秽土转生</button>
+      <div class="offcanvas-body">
+        <div style="max-height: 60vh; overflow-y: auto;">
+          <p>${player.getLastNLog(20)}</p>
+        </div>
       </div>
     </div>
 
-    <!-- 查看记录按钮 -->
-    <div class="text-center mt-4">
-      <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-        查看记录
-      </button>
+    <!-- 底部区域：占位 -->
+    <div class="mt-auto">
     </div>
-  </div>
-</div>
-
-<!-- Offcanvas 记录面板 -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasRightLabel">记录</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="关闭"></button>
-  </div>
-  <div class="offcanvas-body">
-    <div style="max-height: 60vh; overflow-y: auto;">
-      <p>${player.getLastNLog(20)}</p>
-    </div>
-  </div>
-</div>
   `;
 
   // 绑定按钮事件
@@ -244,7 +249,7 @@ export function renderMainMenu(player: Player): void {
     renderStatusPage(player);
   });
   document.getElementById("restart-btn")?.addEventListener("click", () => {
-    if (window.confirm("你确定要 remak e 吗？")) {
+    if (window.confirm("你确定要 remake 吗？")) {
       localStorage.clear();
       window.location.reload();
     }

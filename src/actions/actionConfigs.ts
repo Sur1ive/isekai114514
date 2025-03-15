@@ -12,6 +12,9 @@ export enum ActionType {
   PowerAttack = "PowerAttack",
   QuickAttack = "QuickAttack",
   PowerfulDigAttack = "PowerfulDigAttack",
+  Yarimasune = "Yarimasune",
+  SleepyTea = "SleepyTea",
+  Repent = "Repent",
   HorizontalSlash = "HorizontalSlash",
   Bite = "Bite",
   Capture = "Capture",
@@ -119,13 +122,13 @@ export const actionConfigs: Record<ActionType, Action> = {
   },
 
   [ActionType.PowerfulDigAttack]: {
-    name: "狠狠地撅",
-    description: "1！1！4！5！1！4！",
-    rarity: Rarity.Legendary,
+    name: "撅",
+    description: "十分甚至九分的强大",
+    rarity: Rarity.Epic,
     hits: [
       {
         category: ActionCategory.Attack,
-        coeff: { str: 6, int: 0, con: 0, siz: 3, app: 0, dex: 0 },
+        coeff: { str: 4, int: 0, con: 0, siz: 2, app: 0, dex: 0 },
         extraEffect: (_actor: Creature, target: Creature) => {
           target.status.push({
             type: CreatureStatusType.Pain,
@@ -133,8 +136,76 @@ export const actionConfigs: Record<ActionType, Action> = {
           });
         },
         messageGenerator: (actor: Creature, target: Creature) => {
-          return `${actor.name}狠狠地撅了${target.name}一下，${target.name}痛苦难耐\n// 哼哼啊啊啊啊啊啊啊啊啊啊 `;
+          return `${actor.name}撅了${target.name}，${target.name}痛苦难耐\n// 哼哼啊啊啊啊啊啊啊啊啊啊 `;
         },
+      },
+    ],
+  },
+
+  [ActionType.SleepyTea]: {
+    name: "饮用昏睡红茶",
+    description: "要来一杯吗？",
+    rarity: Rarity.Legendary,
+    hits: [
+      {
+        category: ActionCategory.NoAction,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}喝下了昏睡红茶，进入睡眠`;
+        },
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}喝下了昏睡红茶，于睡眠中恢复了<span style="color: green">${actor.getAbility().con}</span>点生命值`;
+        },
+        extraEffect: (actor: Creature, _target: Creature) => {
+          actor.health = Math.min(
+            actor.health + actor.getAbility().con,
+            actor.maxHealth,
+          );
+        },
+      },
+    ],
+  },
+
+  [ActionType.Yarimasune]: {
+    name: "这个可以有！(赞赏)",
+    description: "压力马斯内！",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: ActionCategory.Defend,
+        coeff: { str: 0.5, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) =>
+          `${actor.name} 进行了防御`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (actor: Creature, _target: Creature) =>
+          `${actor.name} 进行了反击`,
+      },
+    ],
+  },
+
+  [ActionType.Repent]: {
+    name: "†你改悔罢†",
+    description: "†悔い改めて†",
+    rarity: Rarity.Epic,
+    hits: [
+      {
+        category: ActionCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 2.5 },
+        messageGenerator: (actor: Creature, _target: Creature) =>
+          `${actor.name} 进行了闪躲`,
+      },
+      {
+        category: ActionCategory.Attack,
+        coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
+        messageGenerator: (actor: Creature, _target: Creature) =>
+          `${actor.name}曰: †你改悔罢†`,
       },
     ],
   },
@@ -279,8 +350,8 @@ export const actionConfigs: Record<ActionType, Action> = {
       {
         category: ActionCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 3 },
-        messageGenerator: (actor: Creature, _target: Creature) =>
-          `${actor.name} 进行了躲闪`,
+        messageGenerator: (actor: Creature, target: Creature) =>
+          `${actor.name} 对 ${target.name} 的攻击进行了闪躲`,
       },
     ],
   },
@@ -313,7 +384,7 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: ActionCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 2.5 },
         messageGenerator: (actor: Creature, _target: Creature) =>
-          `${actor.name} 进行了躲闪`,
+          `${actor.name} 进行了闪避`,
       },
       {
         category: ActionCategory.Attack,

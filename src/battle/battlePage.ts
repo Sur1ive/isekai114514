@@ -1,5 +1,5 @@
 import { Monster } from "../creatures/Monster";
-import { observeEnemyAction, handleAction, calculateMaxPower } from "./battle";
+import { observeEnemyAction, handleAction, calculateMaxPower, calculateMinPower } from "./battle";
 import { renderMainMenu } from "../main";
 import { saveGame } from "../save";
 import { getAppElement, getHitIcon, getRarityColor } from "../tools";
@@ -78,7 +78,7 @@ function renderBattlePage(
             <p class="card-text">${action1.hits
               .map(
                 (hit) =>
-                  `${getHitIcon(hit)}(0~${Math.round(calculateMaxPower(hit.coeff, player.getAbility()))})`,
+                  `${getHitIcon(hit)}(${calculateMinPower(hit.coeff, player.getAbility())}~${calculateMaxPower(hit.coeff, player.getAbility())})`,
               )
               .join("<br>")}
             </p>
@@ -93,7 +93,7 @@ function renderBattlePage(
             <p class="card-text">${action2.hits
               .map(
                 (hit) =>
-                  `${getHitIcon(hit)}(0~${Math.round(calculateMaxPower(hit.coeff, player.getAbility()))})`,
+                  `${getHitIcon(hit)}(${calculateMinPower(hit.coeff, player.getAbility())}~${calculateMaxPower(hit.coeff, player.getAbility())})`,
               )
               .join("<br>")}
             </p>

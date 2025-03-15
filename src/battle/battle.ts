@@ -7,25 +7,27 @@ import { NoHit } from "../actions/actionConfigs";
 import { getHitIcon } from "../tools";
 
 export function calculateMaxPower(coeff: ActionCoeff, ability: Ability) {
-  return (
+  return Math.round(
     coeff.str * ability.str +
-    coeff.dex * ability.dex +
-    coeff.int * ability.int +
-    coeff.con * ability.con +
-    coeff.siz * ability.siz +
-    coeff.app * ability.app
-  );
-}
-
-function calculatePower(coeff: ActionCoeff, ability: Ability) {
-  return (
-    (coeff.str * ability.str +
       coeff.dex * ability.dex +
       coeff.int * ability.int +
       coeff.con * ability.con +
       coeff.siz * ability.siz +
-      coeff.app * ability.app) *
-    Math.random()
+      coeff.app * ability.app,
+  );
+}
+
+export function calculateMinPower(coeff: ActionCoeff, ability: Ability) {
+  return Math.round(calculateMaxPower(coeff, ability) * 0.1);
+}
+
+function calculatePower(coeff: ActionCoeff, ability: Ability) {
+  return (
+    calculateMinPower(coeff, ability) +
+    Math.round(
+      (calculateMaxPower(coeff, ability) - calculateMinPower(coeff, ability)) *
+        Math.random(),
+    )
   );
 }
 
@@ -189,9 +191,9 @@ function attackAgainstDefend(
   if (power > 0) {
     player.addTempLog(
       attackerAction.messageGenerator(attacker, defender) +
-        '击穿了${defender.name}的防御，造成了<span style="color: red;">' +
+        `击穿了${defender.name}的防御，造成了<span style="color: red;">` +
         Math.round(damage) +
-        "(-${defenderPower})</span>点伤害",
+        `(-${defenderPower})</span>点伤害`,
     );
   } else {
     player.addTempLog(
@@ -340,7 +342,7 @@ export function observeEnemyAction(
       action.hits
         .map(
           (hit) =>
-            `${getHitIcon(hit)}(0~${Math.round(calculateMaxPower(hit.coeff, enemy.getAbility()))})`,
+            `${getHitIcon(hit)}(${calculateMinPower(hit.coeff, enemy.getAbility())}~${calculateMaxPower(hit.coeff, enemy.getAbility())})`,
         )
         .join("<br>")
     );
