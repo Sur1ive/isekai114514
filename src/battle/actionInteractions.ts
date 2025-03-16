@@ -1,10 +1,63 @@
 import { Player } from "../creatures/Player";
-import { Monster } from "../creatures/Monster";
-import { Action, Hit } from "../actions/Action";
+import type { Monster } from "../creatures/Monster";
+import type { Action, Hit } from "../actions/Action";
 import { HitCategory } from "../actions/types";
 import { NoHit } from "../actions/actionConfigs";
-import { calculatePower, calculateDamage, generatePointString } from "./battle";
+import { calculateDamage, generatePointString } from "./battle";
 import { getHitIcon } from "../tools";
+import { StatusType } from "../creatures/status/statusConfigs";
+import { BattleResult } from "../types";
+import { calculatePower } from "../actions/actionUtils";
+
+function handleHit(
+  player: Player,
+  enemy: Monster,
+  playerHit: Hit,
+  enemyHit: Hit,
+): BattleResult {
+  if (playerHit.category === HitCategory.Capture) {
+    playerHit.category = HitCategory.Attack;
+  }
+
+  if (
+    playerHit.category === HitCategory.Attack &&
+    enemyHit.category === HitCategory.Attack
+  ) {
+    return attackAgainstAttack(player, enemy, playerHit, enemyHit);
+  } else if (
+    (playerHit.category === HitCategory.Attack &&
+      enemyHit.category === HitCategory.None) ||
+    (playerHit.category === HitCategory.None &&
+      enemyHit.category === HitCategory.Attack)
+  ) {
+    return attackAgainstNone(player, enemy, playerHit, enemyHit);
+  } else if (
+    (playerHit.category === HitCategory.Attack &&
+      enemyHit.category === HitCategory.Defend) ||
+    (playerHit.category === HitCategory.Defend &&
+      enemyHit.category === HitCategory.Attack)
+  ) {
+    return attackAgainstDefend(player, enemy, playerHit, enemyHit);
+  } else if (
+    (playerHit.category === HitCategory.Dodge &&
+      enemyHit.category === HitCategory.Attack) ||
+    (playerHit.category === HitCategory.Attack &&
+      enemyHit.category === HitCategory.Dodge)
+  ) {
+    return attackAgainstDodge(player, enemy, playerHit, enemyHit);
+  } else {
+    player.addTempLog(
+      "无事发生(" +
+        player.name +
+        getHitIcon(playerHit) +
+        " " +
+        enemy.name +
+        getHitIcon(enemyHit) +
+        ")",
+    );
+    return BattleResult.Draw;
+  }
+}
 
 export function handleAction(
   player: Player,
@@ -26,61 +79,26 @@ export function handleAction(
   while (playerAction.hits[i] || enemyAction.hits[i]) {
     const playerHit = playerAction.hits[i] || NoHit;
     const enemyHit = enemyAction.hits[i] || NoHit;
-    if (playerHit.category === HitCategory.Capture) {
-      playerHit.category = HitCategory.Attack;
+
+    const result = handleHit(player, enemy, playerHit, enemyHit);
+
+    // 连续hit未命中会导致后续hit无法释放
+    if (playerHit.continuous && result !== BattleResult.PlayerWin) {
+      playerAction.hits.splice(i + 1);
     }
-    if (
-      playerHit.category === HitCategory.Attack &&
-      enemyHit.category === HitCategory.Attack
-    ) {
-      attackAgainstAttack(player, enemy, playerHit, enemyHit);
-    } else if (
-      (playerHit.category === HitCategory.Attack &&
-        enemyHit.category === HitCategory.None) ||
-      (playerHit.category === HitCategory.None &&
-        enemyHit.category === HitCategory.Attack)
-    ) {
-      attackAgainstNone(player, enemy, playerHit, enemyHit);
-    } else if (
-      (playerHit.category === HitCategory.Attack &&
-        enemyHit.category === HitCategory.Defend) ||
-      (playerHit.category === HitCategory.Defend &&
-        enemyHit.category === HitCategory.Attack)
-    ) {
-      attackAgainstDefend(player, enemy, playerHit, enemyHit);
-    } else if (
-      (playerHit.category === HitCategory.Dodge &&
-        enemyHit.category === HitCategory.Attack) ||
-      (playerHit.category === HitCategory.Attack &&
-        enemyHit.category === HitCategory.Dodge)
-    ) {
-      const result = attackAgainstDodge(player, enemy, playerHit, enemyHit);
-      if (result === "player" && playerAction.hits[i + 1]) {
-        playerAction.hits[i + 1] = NoHit;
-      } else if (result === "enemy" && enemyAction.hits[i + 1]) {
-        enemyAction.hits[i + 1] = NoHit;
-      }
-    } else {
-      player.addTempLog(
-        "无事发生(" +
-          player.name +
-          getHitIcon(playerHit) +
-          " " +
-          enemy.name +
-          getHitIcon(enemyHit) +
-          ")",
-      );
+    if (enemyHit.continuous && result !== BattleResult.EnemyWin) {
+      enemyAction.hits.splice(i + 1);
     }
     i++;
   }
 }
 
-function attackAgainstAttack(
+function attackAgainstAttack (
   player: Player,
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-) {
+): BattleResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility());
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
   player.addTempLog(
@@ -105,6 +123,7 @@ function attackAgainstAttack(
     if (playerHit.extraEffect) {
       playerHit.extraEffect(player, enemy);
     }
+    return BattleResult.PlayerWin;
   } else {
     const damage = calculateDamage(enemyPower, player.getAbility().armor);
     player.health -= damage;
@@ -117,6 +136,7 @@ function attackAgainstAttack(
     if (enemyHit.extraEffect) {
       enemyHit.extraEffect(enemy, player);
     }
+    return BattleResult.EnemyWin;
   }
 }
 
@@ -125,7 +145,7 @@ function attackAgainstNone(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-) {
+): BattleResult {
   let actor;
   let target;
   let action;
@@ -146,8 +166,8 @@ function attackAgainstNone(
       enemy,
       playerHit,
       enemyHit,
-      actor instanceof Player ? power : 0,
-      actor instanceof Monster ? power : 0,
+      actor.isPlayer ? power : 0,
+      actor.isPlayer ? power : 0,
     ),
   );
   const damage = calculateDamage(power, target.getAbility().armor);
@@ -161,6 +181,7 @@ function attackAgainstNone(
   if (action.extraEffect) {
     action.extraEffect(actor, target);
   }
+  return actor instanceof Player ? BattleResult.PlayerWin : BattleResult.EnemyWin;
 }
 
 function attackAgainstDefend(
@@ -168,7 +189,7 @@ function attackAgainstDefend(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-) {
+): BattleResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility());
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
   player.addTempLog(
@@ -194,6 +215,7 @@ function attackAgainstDefend(
     attackerPower - defenderPower > 0 ? attackerPower - defenderPower : 0;
   const damage = calculateDamage(power, defender.getAbility().armor);
   defender.health -= damage;
+
   if (power > 0) {
     player.addTempLog(
       attackerAction.messageGenerator(attacker, defender) +
@@ -201,6 +223,11 @@ function attackAgainstDefend(
         Math.round(damage) +
         `(-${defenderPower})</span>点伤害`,
     );
+    if (attackerAction.extraEffect) {
+      attackerAction.extraEffect(attacker, defender);
+    }
+    return isPlayerAttack ? BattleResult.PlayerWin : BattleResult.EnemyWin;
+
   } else {
     player.addTempLog(
       defenderAction.messageGenerator(defender, attacker) +
@@ -208,6 +235,7 @@ function attackAgainstDefend(
         attackerAction.messageGenerator(attacker, defender) +
         "但没有造成伤害",
     );
+    return isPlayerAttack ? BattleResult.EnemyWin : BattleResult.PlayerWin;
   }
 }
 
@@ -216,7 +244,7 @@ function attackAgainstDodge(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-): string {
+): BattleResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility());
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
   player.addTempLog(
@@ -253,14 +281,15 @@ function attackAgainstDodge(
         Math.round(damage) +
         "</span>点伤害",
     );
-    return "";
+    return isPlayerAttack ? BattleResult.PlayerWin : BattleResult.EnemyWin;
   } else {
+    attacker.addStatus(StatusType.Unbalance, 1);
     player.addTempLog(
       dodgerAction.messageGenerator(attacker, dodger) +
         "," +
         attacker.name +
         "失衡了",
     );
-    return attacker instanceof Player ? "player" : "enemy";
+    return isPlayerAttack ? BattleResult.EnemyWin : BattleResult.PlayerWin;
   }
 }

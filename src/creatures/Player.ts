@@ -1,6 +1,6 @@
 import { Creature } from "./Creature";
 import { CreatureType } from "./creatureConfigs";
-import { Monster } from "./Monster";
+import type { Monster } from "./Monster";
 
 export class Player extends Creature {
   log: string[] = [];
@@ -8,6 +8,7 @@ export class Player extends Creature {
   capturedMonster: Monster[] = [];
   isAtHome: boolean = true;
   exp: number = 0;
+  isPlayer: boolean = true;
 
   constructor(name: string, type: CreatureType) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义

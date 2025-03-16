@@ -5,3 +5,9 @@ export enum Rarity {
   Legendary = 3,
   Unique = 4,
 }
+
+export enum BattleResult {
+  PlayerWin = "PlayerWin",
+  EnemyWin = "EnemyWin",
+  Draw = "Draw",
+}

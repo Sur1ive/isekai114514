@@ -1,14 +1,11 @@
 import { Monster } from "../creatures/Monster";
-import {
-  observeEnemyAction,
-  calculateMaxPower,
-  calculateMinPower,
-} from "../battle/battle";
+import { observeEnemyAction } from "../battle/battle";
 import { handleAction } from "../battle/actionInteractions";
 import { saveGame } from "../save";
-import { getAppElement, getHitIcon, getRarityColor } from "../tools";
+import { getAppElement, getRarityColor } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
+import { getHitsDescription } from "../actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
 
 // 渲染战斗界面
@@ -103,13 +100,7 @@ export function renderBattlePage(
           <div class="card-body text-center">
             <h5 class="card-title">${action1.name}</h5>
             <p class="card-text fst-italic">"${action1.description}"</p>
-            <p class="card-text">${action1.hits
-              .map(
-                (hit) =>
-                  `${getHitIcon(hit)}(${calculateMinPower(hit.coeff, player.getAbility())}~${calculateMaxPower(hit.coeff, player.getAbility())})`,
-              )
-              .join("<br>")}
-            </p>
+            <p class="card-text">${getHitsDescription(player, action1)}</p>
           </div>
         </div>
       </div>
@@ -118,13 +109,7 @@ export function renderBattlePage(
           <div class="card-body text-center">
             <h5 class="card-title">${action2.name}</h5>
             <p class="card-text fst-italic">"${action2.description}"</p>
-            <p class="card-text">${action2.hits
-              .map(
-                (hit) =>
-                  `${getHitIcon(hit)}(${calculateMinPower(hit.coeff, player.getAbility())}~${calculateMaxPower(hit.coeff, player.getAbility())})`,
-              )
-              .join("<br>")}
-            </p>
+            <p class="card-text">${getHitsDescription(player, action2)}</p>
           </div>
         </div>
       </div>

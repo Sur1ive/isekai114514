@@ -1,36 +1,11 @@
-import { ActionCoeff, HitCategory } from "../actions/types";
+import { HitCategory } from "../actions/types";
 import type { Action, Hit } from "../actions/Action";
-import type { Ability } from "../creatures/types";
-import { Player } from "../creatures/Player";
+import { getHitsDescription } from "../actions/actionUtils";
+import type { Player } from "../creatures/Player";
 import { Monster } from "../creatures/Monster";
 import { getHitIcon } from "../tools";
 import { renderMainMenu } from "../pages/mainMenu";
 import { renderBattlePage } from "../pages/battlePage";
-
-export function calculateMaxPower(coeff: ActionCoeff, ability: Ability) {
-  return Math.round(
-    coeff.str * ability.str +
-      coeff.dex * ability.dex +
-      coeff.int * ability.int +
-      coeff.con * ability.con +
-      coeff.siz * ability.siz +
-      coeff.app * ability.app,
-  );
-}
-
-export function calculateMinPower(coeff: ActionCoeff, ability: Ability) {
-  return Math.round(calculateMaxPower(coeff, ability) * 0.1);
-}
-
-export function calculatePower(coeff: ActionCoeff, ability: Ability) {
-  return (
-    calculateMinPower(coeff, ability) +
-    Math.round(
-      (calculateMaxPower(coeff, ability) - calculateMinPower(coeff, ability)) *
-        Math.random(),
-    )
-  );
-}
 
 export function calculateDamage(power: number, armor: number) {
   return power * (25 / (armor + 25));
@@ -81,12 +56,7 @@ export function observeEnemyAction(
       "看起来似乎会使用" +
       action.name +
       "<br>" +
-      action.hits
-        .map(
-          (hit) =>
-            `${getHitIcon(hit)}(${calculateMinPower(hit.coeff, enemy.getAbility())}~${calculateMaxPower(hit.coeff, enemy.getAbility())})`,
-        )
-        .join("<br>")
+      getHitsDescription(enemy, action)
     );
   }
 

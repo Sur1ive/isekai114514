@@ -1,6 +1,10 @@
-import { Creature } from "../creatures/Creature";
+import type { Creature } from "../creatures/Creature";
 import { Player } from "../creatures/Player";
 import type { Monster } from "../creatures/Monster";
+import type { Action } from "./Action";
+import { getHitIcon } from "../tools";
+import type { Ability } from "../creatures/types";
+import { ActionCoeff } from "./types";
 
 export function capture(actor: Creature, target: Creature): void {
   // actor不是玩家，则不进行任何操作
@@ -27,4 +31,38 @@ export function capture(actor: Creature, target: Creature): void {
   } else {
     actor.addLog(`你尝试捕获${target.name}，但是失败了`);
   }
+}
+
+export function getHitsDescription(actor: Creature, action: Action): string {
+  return action.hits
+  .map(
+    (hit) =>
+      `${getHitIcon(hit)}${hit.continuous ? "🔗" : ""}(${calculateMinPower(hit.coeff, actor.getAbility())}~${calculateMaxPower(hit.coeff, actor.getAbility())})`,
+    )
+    .join("<br>");
+}
+
+export function calculateMaxPower(coeff: ActionCoeff, ability: Ability) {
+  return Math.round(
+    coeff.str * ability.str +
+      coeff.dex * ability.dex +
+      coeff.int * ability.int +
+      coeff.con * ability.con +
+      coeff.siz * ability.siz +
+      coeff.app * ability.app,
+  );
+}
+
+export function calculateMinPower(coeff: ActionCoeff, ability: Ability) {
+  return Math.round(calculateMaxPower(coeff, ability) * 0.1);
+}
+
+export function calculatePower(coeff: ActionCoeff, ability: Ability) {
+  return (
+    calculateMinPower(coeff, ability) +
+    Math.round(
+      (calculateMaxPower(coeff, ability) - calculateMinPower(coeff, ability)) *
+        Math.random(),
+    )
+  );
 }

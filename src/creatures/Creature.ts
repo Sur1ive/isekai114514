@@ -11,6 +11,7 @@ import type { EquipmentPosition } from "../items/types";
 import { statusConfigs, StatusType } from "./status/statusConfigs";
 
 export class Creature {
+  isPlayer: boolean = false;
   name: string;
   type: CreatureType;
   level: number;
@@ -163,6 +164,16 @@ export class Creature {
   updateStatusesOnTurnEnd() {
     this.statuses = this.statuses.filter((status) => {
       if (status.durationType === StatusDurationType.Turn) {
+        status.duration -= 1;
+      }
+      return status.duration > 0;
+    });
+  }
+
+  // 所有hit状态持续时间-1
+  updateStatusesOnHitStart() {
+    this.statuses = this.statuses.filter((status) => {
+      if (status.durationType === StatusDurationType.Hit) {
         status.duration -= 1;
       }
       return status.duration > 0;
