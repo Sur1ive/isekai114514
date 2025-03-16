@@ -317,7 +317,7 @@ and limitations under the License.
     <h1>野兽宅</h1>
     <p>距离击败远野已不知过去了多久，但一切都还历历在目。<p>
     <p>你感到痛心疾首，为什么事情会变成这样，为什么亲密无间的两人会反目成仇。<p>
-    <p>你不再沉沦，高呼道：伊已逝，吾亦逝。忆旧已久罢忆灵！(你逝去了，而我的心也逝去了，空留肉体如行尸走肉般存活。我已经缅怀故人多时，罢了罢了，现在是时候了！)</p>
+    <p>你不再沉沦，高呼道：伊已逝，吾亦逝。忆旧已久罢忆灵！(你逝去了，而我的心也逝去了，空留肉体如行尸走肉般存活。我已经缅怀故人多时，罢了罢了，是时候随你而去了！)</p>
 		<p>你闭上了眼睛。</p>
     <button id="continue-btn">继续</button>
   `,(n=document.getElementById("continue-btn"))==null||n.addEventListener("click",()=>{Mi(e)})}function fd(e){var n;const t=wt();t.innerHTML=`
