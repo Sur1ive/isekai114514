@@ -1,6 +1,6 @@
 import type { Action, Hit } from "./Action";
 import type { Creature } from "../creatures/Creature";
-import { CreatureStatusType } from "../creatures/types";
+import { StatusType } from "../creatures/status/statusConfigs";
 import { HitCategory } from "./types";
 import { Rarity } from "../types";
 import { capture } from "./actionUtils";
@@ -32,10 +32,10 @@ export enum ActionType {
   PsyDodge = "PsyDodge",
   Slash = "Slash",
   Claw = "Claw",
-  Helmbreaker = "Helmbreaker",
+  HelmBreaker = "HelmBreaker",
   StepSlash = "StepSlash",
   Mikiri = "Mikiri",
-  SpiritRoundslash = "SpiritRoundslash",
+  SpiritRoundSlash = "SpiritRoundSlash",
 }
 
 export const NoHit: Hit = {
@@ -137,10 +137,7 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: HitCategory.Attack,
         coeff: { str: 2, int: 0, con: 0, siz: 3, app: 0, dex: 0 },
         extraEffect: (_actor: Creature, target: Creature) => {
-          target.status.push({
-            type: CreatureStatusType.Pain,
-            duration: 10,
-          });
+          target.addStatus(StatusType.Pain, 1);
         },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}撅了${target.name}，${target.name}痛苦难耐\n// 哼哼啊啊啊啊啊啊啊啊啊啊 `;
@@ -264,11 +261,14 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name}在敌人攻击的瞬间拔刀后退`,
+        extraEffect: (actor: Creature, _target: Creature) => {
+          actor.addStatus(StatusType.SpiritBlade, 1);
+        },
       },
     ],
   },
 
-  [ActionType.SpiritRoundslash]: {
+  [ActionType.SpiritRoundSlash]: {
     name: "气刃大回旋",
     description: "将气附于刀刃之上，使出极大幅度回转刀身的斩击，若是击中敌人则可使用登龙",
     rarity: Rarity.Epic,
@@ -279,11 +279,14 @@ export const actionConfigs: Record<ActionType, Action> = {
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `${actor.name}使出极大幅度回转刀身的斩击`;
         },
+        extraEffect: (actor: Creature, _target: Creature) => {
+          actor.addStatus(StatusType.RedBlade, 1);
+        },
       },
     ],
   },
 
-  [ActionType.Helmbreaker]: {
+  [ActionType.HelmBreaker]: {
     name: "登龙",
     description: "快速向前突进，若成功击中命中便会借势踩着敌人的身体一路跃至高空，而后以全身的力量从空中向下劈出泣鬼神的一刀",
     rarity: Rarity.Legendary,
@@ -291,6 +294,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       {
         category: HitCategory.Attack,
         coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        continuous: true,
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}向${target.name}突进，踩着${target.name}的身体一路跃至高空`;
         },

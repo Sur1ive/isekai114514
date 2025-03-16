@@ -1,5 +1,6 @@
 import { creatureConfigs, CreatureType } from "./creatureConfigs";
-import type { Ability, CreatureStatus } from "./types";
+import type { Ability } from "./types";
+import { Status, StatusDurationType } from "./status/Status";
 import type { Item } from "../items/Item";
 import type { WeightedActionType } from "../actions/types";
 import { actionConfigs, ActionType } from "../actions/actionConfigs";
@@ -7,6 +8,7 @@ import type { Action } from "../actions/Action";
 import type { EquipmentBar } from "./types";
 import { Equipment } from "../items/Equipment";
 import type { EquipmentPosition } from "../items/types";
+import { statusConfigs, StatusType } from "./status/statusConfigs";
 
 export class Creature {
   name: string;
@@ -16,7 +18,7 @@ export class Creature {
   maxHealth: number;
   health: number;
   ability: Ability;
-  status: CreatureStatus[] = [];
+  statuses: Status[] = [];
   pack: Item[] = [];
   equipments: EquipmentBar = {
     head: null,
@@ -140,5 +142,30 @@ export class Creature {
       }
     }
     return actions;
+  }
+
+  addStatus(statusType: StatusType, duration: number, statusLevel?: number) {
+    const statusData = statusConfigs[statusType];
+    const status = {
+      ...statusData,
+      duration,
+      statusLevel,
+    };
+    this.statuses.push(status);
+  }
+
+  // 清除所有非永久状态
+  clearStatus() {
+    this.statuses = this.statuses.filter((status) => status.durationType === StatusDurationType.Permanent);
+  }
+
+  // 所有回合状态持续时间-1
+  updateStatusesOnTurnEnd() {
+    this.statuses = this.statuses.filter((status) => {
+      if (status.durationType === StatusDurationType.Turn) {
+        status.duration -= 1;
+      }
+      return status.duration > 0;
+    });
   }
 }

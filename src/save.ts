@@ -43,5 +43,6 @@ export function loadPlayer(): Player {
       );
     }
   });
+  player.clearStatus();
   return player;
 }

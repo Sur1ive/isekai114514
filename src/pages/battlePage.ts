@@ -9,6 +9,7 @@ import { saveGame } from "../save";
 import { getAppElement, getHitIcon, getRarityColor } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
+import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
 
 // 渲染战斗界面
 export function renderBattlePage(
@@ -20,12 +21,12 @@ export function renderBattlePage(
 ): void {
   const appElement = getAppElement();
 
+  // 上回合结算
   if (playerAction && enemyAction) {
     player.addTempLog(
       "--------------------------回合-----------------------------",
     );
     handleAction(player, enemy, playerAction, enemyAction);
-    saveGame(player);
   }
 
   if (player.health <= 0) {
@@ -38,11 +39,33 @@ export function renderBattlePage(
     renderBattleEndPage(player, enemy, true, endHandler);
     return;
   }
+  player.updateStatusesOnTurnEnd();
+  enemy.updateStatusesOnTurnEnd();
+  saveGame(player);
 
+  // 本回合准备阶段
   enemyAction = enemy.getRandomAction();
   const enemyActionObservation = observeEnemyAction(player, enemy, enemyAction);
-  const action1 = player.getRandomAction();
-  const action2 = player.getRandomAction();
+  let action1 = player.getRandomAction();
+  let action2 = player.getRandomAction();
+
+  // 按照优先级从小往大处理OnTurnStart status
+  player.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
+    if (status.category === StatusCategory.OnTurnStart) {
+      const effect = status.effect as StatusEffectMap[StatusCategory.OnTurnStart];
+      const actions = effect(player, action1, action2);
+      action1 = actions.action1;
+      action2 = actions.action2;
+    }
+  });
+
+  enemy.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
+    if (status.category === StatusCategory.OnTurnStart) {
+      const effect = status.effect as StatusEffectMap[StatusCategory.OnTurnStart];
+      const actions = effect(enemy, enemyAction!, enemyAction!);
+      enemyAction = actions.action1;
+    }
+  });
 
   appElement.innerHTML = `
   <div class="container mt-4">

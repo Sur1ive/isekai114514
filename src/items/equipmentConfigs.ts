@@ -63,8 +63,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.05 },
       { actionType: ActionType.StepSlash, weight: 0.025 },
       { actionType: ActionType.Mikiri, weight: 0.01 },
-      { actionType: ActionType.SpiritRoundslash, weight: 0.01 },
-      { actionType: ActionType.Helmbreaker, weight: 0.005 },
+      { actionType: ActionType.SpiritRoundSlash, weight: 0.01 },
+      { actionType: ActionType.HelmBreaker, weight: 0.005 },
     ],
     ability: {},
     actionCoeff: {
@@ -88,8 +88,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.4 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.1 },
-      { actionType: ActionType.SpiritRoundslash, weight: 0.05 },
-      { actionType: ActionType.Helmbreaker, weight: 0.02 },
+      { actionType: ActionType.SpiritRoundSlash, weight: 0.05 },
+      { actionType: ActionType.HelmBreaker, weight: 0.02 },
     ],
     ability: {
       str: 2,
@@ -115,8 +115,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.3 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.3 },
-      { actionType: ActionType.SpiritRoundslash, weight: 0.1 },
-      { actionType: ActionType.Helmbreaker, weight: 0.05 },
+      { actionType: ActionType.SpiritRoundSlash, weight: 0.1 },
+      { actionType: ActionType.HelmBreaker, weight: 0.05 },
     ],
     ability: {},
     actionCoeff: {
@@ -135,8 +135,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.3 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.3 },
-      { actionType: ActionType.SpiritRoundslash, weight: 0.1 },
-      { actionType: ActionType.Helmbreaker, weight: 0.15 },
+      { actionType: ActionType.SpiritRoundSlash, weight: 0.1 },
+      { actionType: ActionType.HelmBreaker, weight: 0.15 },
     ],
     ability: {
       str: 1,
