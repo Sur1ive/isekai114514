@@ -30,6 +30,12 @@ export enum ActionType {
   PsyExplosion = "PsyExplosion",
   PsyInvisibleSword = "PsyInvisibleSword",
   PsyDodge = "PsyDodge",
+  Slash = "Slash",
+  Claw = "Claw",
+  Helmbreaker = "Helmbreaker",
+  StepSlash = "StepSlash",
+  Mikiri = "Mikiri",
+  SpiritRoundslash = "SpiritRoundslash",
 }
 
 export const NoHit: Hit = {
@@ -39,6 +45,8 @@ export const NoHit: Hit = {
     `${actor.name} 来不及反应`,
 };
 
+// common的系数大致是2，rare的系数大致是3.5，epic的系数大致是5+，
+// legendary的系数大致是10，unique随便设计10+系数，但是小权重
 export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.Dazed]: {
     name: "反应不过来",
@@ -90,7 +98,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     hits: [
       {
         category: HitCategory.Attack,
-        coeff: { str: 2, int: 0, con: 0, siz: 0.5, app: 0, dex: 0.5 },
+        coeff: { str: 2, int: 0, con: 0, siz: 1, app: 0, dex: 0.5 },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}对${target.name}发起了一次强力的攻击`;
         },
@@ -112,7 +120,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `电光火石之间，${actor.name}再次做出了攻击`;
         },
@@ -127,7 +135,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     hits: [
       {
         category: HitCategory.Attack,
-        coeff: { str: 4, int: 0, con: 0, siz: 2, app: 0, dex: 0 },
+        coeff: { str: 2, int: 0, con: 0, siz: 3, app: 0, dex: 0 },
         extraEffect: (_actor: Creature, target: Creature) => {
           target.status.push({
             type: CreatureStatusType.Pain,
@@ -209,17 +217,105 @@ export const actionConfigs: Record<ActionType, Action> = {
     ],
   },
 
-  // 横劈
   [ActionType.HorizontalSlash]: {
-    name: "横劈",
-    description: "以迅猛之势横向劈出一刀",
+    name: "横斩",
+    description: "千钧之力的大力横劈",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 3, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}猛劈一刀`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.StepSlash]: {
+    name: "踏前斩",
+    description: "前踏一步进行追击，而后猛劈一刀",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: HitCategory.None,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}前踏一步`;
+        },
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 3, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}借着前冲的力劈出强力一击`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Mikiri]: {
+    name: "见切",
+    description: "在敌人攻击的瞬间拔刀后退，成功回避攻击则能乘势将气入刀，以在下回合释放气刃大回旋",
+    rarity: Rarity.Epic,
+    hits: [
+      {
+        category: HitCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
+        messageGenerator: (actor: Creature, _target: Creature) =>
+          `${actor.name}在敌人攻击的瞬间拔刀后退`,
+      },
+    ],
+  },
+
+  [ActionType.SpiritRoundslash]: {
+    name: "气刃大回旋",
+    description: "将气附于刀刃之上，使出极大幅度回转刀身的斩击，若是击中敌人则可使用登龙",
     rarity: Rarity.Epic,
     hits: [
       {
         category: HitCategory.Attack,
-        coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
+        coeff: { str: 4, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) => {
-          return `${actor.name}以迅猛之势横向劈出一刀`;
+          return `${actor.name}使出极大幅度回转刀身的斩击`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Helmbreaker]: {
+    name: "登龙",
+    description: "快速向前突进，若成功击中命中便会借势踩着敌人的身体一路跃至高空，而后以全身的力量从空中向下劈出泣鬼神的一刀",
+    rarity: Rarity.Legendary,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}向${target.name}突进，踩着${target.name}的身体一路跃至高空`;
+        },
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 10, int: 0, con: 2, siz: 2, app: 0, dex: 2 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}从天而降，以全身之力劈向${target.name}`;
+        },
+      },
+    ],
+  },
+
+  // 劈砍
+  [ActionType.Slash]: {
+    name: "劈砍",
+    description: "挥舞手中的武器",
+    rarity: Rarity.Common,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}挥舞手中的武器劈向${target.name}`;
         },
       },
     ],
@@ -236,6 +332,28 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 1, int: 0, con: 0, siz: 0.5, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}冲过来咬了${target.name}一口`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Claw]: {
+    name: "爪击",
+    description: "野兽的原始攻击方式",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 1, int: 0, con: 0, siz: 0.5, app: 0, dex: 1 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}向${target.name}挥舞锐利的爪子`;
+        },
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0.5, int: 0, con: 0, siz: 0.5, app: 0, dex: 0},
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}向${target.name}挥舞锐利的爪子`;
         },
       },
     ],
@@ -359,7 +477,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1.5 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了回旋击`,
       },
@@ -509,25 +627,25 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 2, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 0, int: 1.5, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `看不见的剑贯穿${target.name}`,
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 4, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 0, int: 3, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `更多看不见的剑贯穿${target.name}`,
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 8, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 0, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `极多看不见的剑贯穿${target.name}`,
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 16, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 0, int: 12, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `无数看不见的剑贯穿${target.name}`,
       },

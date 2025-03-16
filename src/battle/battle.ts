@@ -91,19 +91,12 @@ export function observeEnemyAction(
   }
 
   if (
-    Math.random() * player.getAbility().dex >
-    Math.random() * enemy.getAbility().dex
+    Math.random() * player.getAbility().int >
+    Math.random() * enemy.getAbility().int
   ) {
-    if (
-      Math.random() * player.getAbility().int >
-      Math.random() * enemy.getAbility().int
-    ) {
-      return generateMsg(enemy, realAction);
-    } else {
-      return generateMsg(enemy, enemy.getRandomAction());
-    }
+    return generateMsg(enemy, realAction);
   } else {
-    return "你来不及观察" + enemy.name + "的行动";
+    return "你分辨不出" + enemy.name + "即将使用的动作";
   }
 }
 

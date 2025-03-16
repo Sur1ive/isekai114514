@@ -83,6 +83,9 @@ export function renderMainMenu(player: Player): void {
     <!-- 底部区域：占位 -->
     <div class="mt-auto">
     </div>
+		<!-- 底部区域：占位 -->
+    <div class="mt-auto">
+    </div>
   `;
 
   // 绑定按钮事件

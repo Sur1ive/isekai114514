@@ -79,7 +79,7 @@ export function renderBattlePage(
         <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
           <div class="card-body text-center">
             <h5 class="card-title">${action1.name}</h5>
-            <p class="card-text">${action1.description}</p>
+            <p class="card-text fst-italic">"${action1.description}"</p>
             <p class="card-text">${action1.hits
               .map(
                 (hit) =>
@@ -94,7 +94,7 @@ export function renderBattlePage(
         <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
           <div class="card-body text-center">
             <h5 class="card-title">${action2.name}</h5>
-            <p class="card-text">${action2.description}</p>
+            <p class="card-text fst-italic">"${action2.description}"</p>
             <p class="card-text">${action2.hits
               .map(
                 (hit) =>
