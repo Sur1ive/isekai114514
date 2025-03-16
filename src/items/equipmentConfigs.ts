@@ -1,5 +1,5 @@
 import { EquipmentPosition, EquipmentData } from "./types";
-import { ActionCategory } from "../actions/types";
+import { HitCategory } from "../actions/types";
 import { ActionType } from "../actions/actionConfigs";
 import { Rarity } from "../types";
 
@@ -25,7 +25,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     ],
     ability: {},
     actionCoeff: {
-      [ActionCategory.Attack]: {
+      [HitCategory.Attack]: {
         plus: 1,
         multiply: 1,
       },
@@ -39,11 +39,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     extraActions: [{ actionType: ActionType.Capture, weight: 0.2 }],
     ability: {},
     actionCoeff: {
-      [ActionCategory.Attack]: {
+      [HitCategory.Attack]: {
         plus: -1,
         multiply: 0.9,
       },
-      [ActionCategory.Capture]: {
+      [HitCategory.Capture]: {
         plus: 2,
         multiply: 1,
       },
@@ -60,15 +60,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       dex: -1,
     },
     actionCoeff: {
-      [ActionCategory.Attack]: {
+      [HitCategory.Attack]: {
         plus: 2,
         multiply: 1,
       },
-      [ActionCategory.Dodge]: {
-        plus: -2,
-        multiply: 1,
-      },
-      [ActionCategory.DexAction]: {
+      [HitCategory.Dodge]: {
         plus: -2,
         multiply: 1,
       },
@@ -88,15 +84,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       dex: 2,
     },
     actionCoeff: {
-      [ActionCategory.Attack]: {
+      [HitCategory.Attack]: {
         plus: 1,
         multiply: 1,
       },
-      [ActionCategory.Dodge]: {
-        plus: 2,
-        multiply: 1,
-      },
-      [ActionCategory.DexAction]: {
+      [HitCategory.Dodge]: {
         plus: 2,
         multiply: 1,
       },
@@ -118,11 +110,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       con: 1,
     },
     actionCoeff: {
-      [ActionCategory.Attack]: {
+      [HitCategory.Attack]: {
         plus: 2,
         multiply: 1,
       },
-      [ActionCategory.Defend]: {
+      [HitCategory.Defend]: {
         plus: 3,
         multiply: 1,
       },
@@ -142,7 +134,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       con: 2,
     },
     actionCoeff: {
-      [ActionCategory.Attack]: {
+      [HitCategory.Attack]: {
         plus: 3,
         multiply: 1.1,
       },

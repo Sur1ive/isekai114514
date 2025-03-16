@@ -1,7 +1,7 @@
 import type { ConsumableType } from "./consumableConfigs";
 import type { EquipmentType } from "./equipmentConfigs";
 import type { Ability } from "../creatures/types";
-import type { ActionCategory, WeightedActionType } from "../actions/types";
+import type { HitCategory, WeightedActionType } from "../actions/types";
 import type { Creature } from "../creatures/Creature";
 import type { Rarity } from "../types";
 export enum ItemCategory {
@@ -34,7 +34,7 @@ export type ItemType = EquipmentType | ConsumableType;
 export type EquipmentAbility = Partial<Ability>;
 
 export type EquipmentActionCoeff = Partial<
-  Record<ActionCategory, EquipmentActionCoeffValue>
+  Record<HitCategory, EquipmentActionCoeffValue>
 >;
 
 export interface EquipmentData {

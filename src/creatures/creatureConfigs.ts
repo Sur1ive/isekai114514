@@ -12,6 +12,7 @@ export enum CreatureType {
   Wolf = "Wolf",
   DiscardedGolem = "DiscardedGolem",
   Ayulsa = "Ayulsa",
+  Toono = "Toono",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -37,7 +38,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
   },
   [CreatureType.Player114514]: {
     typeName: "野兽仙贝",
-    description: "114514",
+    description: "24岁，是学生",
     abilityCoeff: {
       str: { base: 5, growth: 0.2 },
       int: { base: 5, growth: 0 },
@@ -56,7 +57,25 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     ],
     dropItems: [],
   },
-
+  [CreatureType.Toono]: {
+    typeName: "远野",
+    description: "后辈",
+    abilityCoeff: {
+      str: { base: 10, growth: 0.1 },
+      int: { base: 5, growth: 0.1 },
+      con: { base: 10, growth: 0.2 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 5, growth: 0.1 },
+      armor: { base: 0, growth: 0 },
+    },
+    actions: [
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.4 },
+      { actionType: ActionType.Counter, weight: 0.4 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
+    ],
+    dropItems: [{ type: null, weight: 1 }],
+  },
   [CreatureType.Slime]: {
     typeName: "史莱姆",
     description: "一种行动缓慢的软体生物，武器打上去没有什么手感",

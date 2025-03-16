@@ -1,17 +1,22 @@
 import { Monster } from "../creatures/Monster";
-import { observeEnemyAction, handleAction, calculateMaxPower, calculateMinPower } from "./battle";
-import { renderMainMenu } from "../main";
+import {
+  observeEnemyAction,
+  calculateMaxPower,
+  calculateMinPower,
+} from "../battle/battle";
+import { handleAction } from "../battle/actionInteractions";
 import { saveGame } from "../save";
 import { getAppElement, getHitIcon, getRarityColor } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 
 // 渲染战斗界面
-function renderBattlePage(
+export function renderBattlePage(
   player: Player,
   enemy: Monster,
   playerAction: Action | null,
   enemyAction: Action | null,
+  endHandler: (player: Player, enemy: Monster, result: boolean) => void,
 ): void {
   const appElement = getAppElement();
 
@@ -25,12 +30,12 @@ function renderBattlePage(
 
   if (player.health <= 0) {
     player.addLog(player.name + "撑不住了");
-    renderBattleEndPage(player, enemy, false);
+    renderBattleEndPage(player, enemy, false, endHandler);
     return;
   }
   if (enemy.health < 1) {
     player.addLog(player.name + "击败了" + enemy.name);
-    renderBattleEndPage(player, enemy, true);
+    renderBattleEndPage(player, enemy, true, endHandler);
     return;
   }
 
@@ -115,15 +120,20 @@ function renderBattlePage(
 `;
 
   document.getElementById("action1-btn")?.addEventListener("click", () => {
-    renderBattlePage(player, enemy, action1, enemyAction);
+    renderBattlePage(player, enemy, action1, enemyAction, endHandler);
   });
   document.getElementById("action2-btn")?.addEventListener("click", () => {
-    renderBattlePage(player, enemy, action2, enemyAction);
+    renderBattlePage(player, enemy, action2, enemyAction, endHandler);
   });
 }
 
 // 渲染战斗结算界面
-function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
+function renderBattleEndPage(
+  player: Player,
+  enemy: Monster,
+  result: boolean,
+  endHandler: (player: Player, enemy: Monster, result: boolean) => void,
+) {
   const appElement = getAppElement();
   let levelUp = false;
   let dropItem = null;
@@ -175,7 +185,7 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn btn-primary" id="main-menu-btn">返回主菜单</button>
+        <button class="btn btn-primary" id="continue-btn">继续</button>
       </div>
     </div>
   </div>
@@ -183,31 +193,7 @@ function renderBattleEndPage(player: Player, enemy: Monster, result: boolean) {
 
   player.clearTempLogs();
   saveGame(player);
-  document.getElementById("main-menu-btn")?.addEventListener("click", () => {
-    renderMainMenu(player);
+  document.getElementById("continue-btn")?.addEventListener("click", () => {
+    endHandler(player, enemy, result);
   });
-}
-
-import { creatureConfigs, CreatureType } from "../creatures/creatureConfigs";
-
-export function testBattle(player: Player): void {
-  let enemyType =
-    Object.values(CreatureType)[
-      Math.floor(Math.random() * Object.values(CreatureType).length)
-    ];
-  if (
-    enemyType === CreatureType.Player ||
-    enemyType === CreatureType.Player114514
-  ) {
-    enemyType = CreatureType.Wolf;
-  }
-  const enemyLevel = Math.floor(Math.random() * 10) + 1;
-  const enemyIndividualStrength = Math.random() * 2;
-  const enemy = new Monster(
-    creatureConfigs[enemyType].typeName,
-    enemyType,
-    enemyLevel,
-    enemyIndividualStrength,
-  );
-  renderBattlePage(player, enemy, null, null);
 }

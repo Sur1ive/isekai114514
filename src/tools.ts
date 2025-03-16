@@ -1,7 +1,7 @@
 import { Rarity } from "./types";
 import { ItemCategory } from "./items/types";
 import type { Item } from "./items/Item";
-import { ActionCategory } from "./actions/types";
+import { HitCategory } from "./actions/types";
 import { Hit } from "./actions/Action";
 import { Consumable } from "./items/Consumable";
 import { Equipment } from "./items/Equipment";
@@ -32,27 +32,29 @@ export function getRarityColor(rarity: Rarity): string {
 
 export function getHitIcon(hit: Hit): string {
   switch (hit.category) {
-    case ActionCategory.Attack:
+    case HitCategory.Attack:
       return "🗡️";
-    case ActionCategory.Defend:
+    case HitCategory.Defend:
       return "🛡️";
-    case ActionCategory.Dodge:
-      return "💨";
-    case ActionCategory.Capture:
-      return "🕸️";
-    case ActionCategory.DexAction:
+    case HitCategory.Dodge:
       return "💫";
-    case ActionCategory.StrAction:
-      return "🦾";
-    case ActionCategory.IntAction:
-      return "📚";
-    case ActionCategory.ConAction:
-      return "❤️‍🔥";
-    case ActionCategory.SizAction:
-      return "🐋";
-    case ActionCategory.AppAction:
-      return "✨";
-    case ActionCategory.NoAction:
+    case HitCategory.Capture:
+      return "🕸️";
+    case HitCategory.Special:
+      return "💥";
+    // case HitCategory.DexAction:
+    //   return "💫";
+    // case HitCategory.StrAction:
+    //   return "🦾";
+    // case HitCategory.IntAction:
+    //   return "📚";
+    // case HitCategory.ConAction:
+    //   return "❤️‍🔥";
+    // case HitCategory.SizAction:
+    //   return "🐋";
+    // case HitCategory.AppAction:
+    //   return "✨";
+    case HitCategory.None:
       return "❔";
     default:
       return "";

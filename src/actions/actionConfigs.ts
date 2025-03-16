@@ -1,10 +1,9 @@
 import type { Action, Hit } from "./Action";
 import type { Creature } from "../creatures/Creature";
-import { Player } from "../creatures/Player";
 import { CreatureStatusType } from "../creatures/types";
-import { ActionCategory } from "./types";
-import type { Monster } from "../creatures/Monster";
+import { HitCategory } from "./types";
 import { Rarity } from "../types";
+import { capture } from "./actionUtils";
 
 export enum ActionType {
   Dazed = "Dazed",
@@ -34,7 +33,7 @@ export enum ActionType {
 }
 
 export const NoHit: Hit = {
-  category: ActionCategory.NoAction,
+  category: HitCategory.None,
   coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
   messageGenerator: (actor: Creature, _target: Creature) =>
     `${actor.name} 来不及反应`,
@@ -47,7 +46,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 来不及反应`,
@@ -61,7 +60,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 眩晕了`,
@@ -75,7 +74,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 1, int: 0, con: 0, siz: 0.5, app: 0, dex: 0.5 },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}攻击了${target.name}`;
@@ -90,7 +89,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 2, int: 0, con: 0, siz: 0.5, app: 0, dex: 0.5 },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}对${target.name}发起了一次强力的攻击`;
@@ -105,14 +104,14 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}以迅雷不及掩耳之势向${target.name}发起了攻势`;
         },
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `电光火石之间，${actor.name}再次做出了攻击`;
@@ -127,7 +126,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Epic,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 4, int: 0, con: 0, siz: 2, app: 0, dex: 0 },
         extraEffect: (_actor: Creature, target: Creature) => {
           target.status.push({
@@ -144,18 +143,18 @@ export const actionConfigs: Record<ActionType, Action> = {
 
   [ActionType.SleepyTea]: {
     name: "饮用昏睡红茶",
-    description: "要来一杯吗？",
+    description: "诗人都喜欢饮酒作赋，古代的哲学家也是如此，只是彼时还没有酒",
     rarity: Rarity.Legendary,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `${actor.name}喝下了昏睡红茶，进入睡眠`;
         },
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `${actor.name}喝下了昏睡红茶，于睡眠中恢复了<span style="color: green">${actor.getAbility().con}</span>点生命值`;
@@ -172,17 +171,17 @@ export const actionConfigs: Record<ActionType, Action> = {
 
   [ActionType.Yarimasune]: {
     name: "这个可以有！(赞赏)",
-    description: "压力马斯内！",
+    description: "丝毫不吝啬对敌人的赞赏，这就是野兽先辈的气量",
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.Defend,
+        category: HitCategory.Defend,
         coeff: { str: 0.5, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了防御`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了反击`,
@@ -192,17 +191,17 @@ export const actionConfigs: Record<ActionType, Action> = {
 
   [ActionType.Repent]: {
     name: "†你改悔罢†",
-    description: "†悔い改めて†",
+    description: "令敌人改悔的神圣攻击",
     rarity: Rarity.Epic,
     hits: [
       {
-        category: ActionCategory.Dodge,
+        category: HitCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 2.5 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了闪躲`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name}曰: †你改悔罢†`,
@@ -217,7 +216,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Epic,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `${actor.name}以迅猛之势横向劈出一刀`;
@@ -233,7 +232,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 1, int: 0, con: 0, siz: 0.5, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}冲过来咬了${target.name}一口`;
@@ -249,37 +248,9 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.Capture,
+        category: HitCategory.Capture,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
-        extraEffect: (actor: Creature, target: Creature) => {
-          // actor不是玩家，则不进行任何操作
-          if (!(actor instanceof Player)) {
-            return;
-          }
-          if (target.health < 1) {
-            actor.addLog(`${target.name}已经死了，无法捕获`);
-            return;
-          }
-          // 否则进行两次概率判定
-          const dexSuccessRate =
-            ((actor.ability.dex / target.ability.dex) *
-              (actor.ability.siz / target.ability.siz)) /
-            ((10 * target.health) / target.maxHealth);
-          const strSuccessRate =
-            ((actor.ability.str / target.ability.str) *
-              (actor.ability.siz / target.ability.siz)) /
-            ((10 * target.health) / target.maxHealth);
-          if (
-            Math.random() < strSuccessRate &&
-            Math.random() < dexSuccessRate
-          ) {
-            target.health = 0.9;
-            actor.capturedMonster.push(target as Monster);
-            actor.addLog(`你成功捕获了${target.name}`);
-          } else {
-            actor.addLog(`你尝试捕获${target.name}，但是失败了`);
-          }
-        },
+        extraEffect: capture,
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}尝试通过绞住${target.name}，让${target.name}失去行动力`;
         },
@@ -293,7 +264,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.Defend,
+        category: HitCategory.Defend,
         coeff: { str: 1, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了防御`,
@@ -307,13 +278,13 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.Defend,
+        category: HitCategory.Defend,
         coeff: { str: 0.5, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了防御`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了反击`,
@@ -327,13 +298,13 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了一次快速攻击`,
       },
       {
-        category: ActionCategory.Defend,
+        category: HitCategory.Defend,
         coeff: { str: 1.5, int: 0, con: 1.5, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了铁壁一般的防御`,
@@ -348,7 +319,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Common,
     hits: [
       {
-        category: ActionCategory.Dodge,
+        category: HitCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 3 },
         messageGenerator: (actor: Creature, target: Creature) =>
           `${actor.name} 对 ${target.name} 的攻击进行了闪躲`,
@@ -362,12 +333,12 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Legendary,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.Dodge,
+        category: HitCategory.Dodge,
         coeff: { str: 0, int: 12, con: 0, siz: 0, app: 0, dex: 3 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 的身影瞬间到了别处`,
@@ -381,13 +352,13 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.Dodge,
+        category: HitCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 2.5 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了闪避`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了回旋击`,
@@ -401,19 +372,19 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Legendary,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 10, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 喷出了汹涌的火焰`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 5, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 喷出了灼热的火焰`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 2, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 喷出了喉咙中残余的火焰`,
@@ -427,7 +398,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Unique,
     hits: [
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 12, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `神明的愤怒降临于${target.name}`,
@@ -441,31 +412,31 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Unique,
     hits: [
       {
-        category: ActionCategory.Defend,
+        category: HitCategory.Defend,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 6 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 被花瓣包围了`,
       },
       {
-        category: ActionCategory.Dodge,
+        category: HitCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 6 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 的身影消失了`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
         messageGenerator: (_actor: Creature, _target: Creature) =>
           `空气中只有残影`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
         messageGenerator: (_actor: Creature, _target: Creature) =>
           `空气中只有更多的残影`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 3 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `${target.name} 同花瓣一同破碎`,
@@ -479,17 +450,17 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Rare,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 2, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `${target.name}凭空被踢了一脚`,
@@ -503,17 +474,17 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Legendary,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 4, int: 12, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `${target.name}所在的位置发生了大爆炸`,
@@ -527,35 +498,35 @@ export const actionConfigs: Record<ActionType, Action> = {
     rarity: Rarity.Unique,
     hits: [
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.NoAction,
+        category: HitCategory.None,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, _target: Creature) => `一切如常`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 2, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `看不见的剑贯穿${target.name}`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 4, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `更多看不见的剑贯穿${target.name}`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 8, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `极多看不见的剑贯穿${target.name}`,
       },
       {
-        category: ActionCategory.Attack,
+        category: HitCategory.Attack,
         coeff: { str: 0, int: 16, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `无数看不见的剑贯穿${target.name}`,
