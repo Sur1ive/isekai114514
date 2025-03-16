@@ -7,6 +7,7 @@ import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 import { getHitsDescription } from "../actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
+import { statusConfigs } from "../creatures/status/statusConfigs";
 
 // 渲染战斗界面
 export function renderBattlePage(
@@ -49,7 +50,7 @@ export function renderBattlePage(
   // 按照优先级从小往大处理OnTurnStart status
   player.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
     if (status.category === StatusCategory.OnTurnStart) {
-      const effect = status.effect as StatusEffectMap[StatusCategory.OnTurnStart];
+      const effect = statusConfigs[status.type].effect as StatusEffectMap[StatusCategory.OnTurnStart];
       const actions = effect(player, action1, action2);
       action1 = actions.action1;
       action2 = actions.action2;
@@ -58,7 +59,7 @@ export function renderBattlePage(
 
   enemy.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
     if (status.category === StatusCategory.OnTurnStart) {
-      const effect = status.effect as StatusEffectMap[StatusCategory.OnTurnStart];
+      const effect = statusConfigs[status.type].effect as StatusEffectMap[StatusCategory.OnTurnStart];
       const actions = effect(enemy, enemyAction!, enemyAction!);
       enemyAction = actions.action1;
     }

@@ -145,10 +145,16 @@ export class Creature {
     return actions;
   }
 
+  // 添加状态
   addStatus(statusType: StatusType, duration: number, statusLevel?: number) {
     const statusData = statusConfigs[statusType];
     const status = {
-      ...statusData,
+      name: statusData.name,
+      description: statusData.description,
+      type: statusType,
+      priority: statusData.priority,
+      durationType: statusData.durationType,
+      category: statusData.category,
       duration,
       statusLevel,
     };

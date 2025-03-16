@@ -264,11 +264,8 @@ function attackAgainstDodge(
   const dodger = isPlayerAttack ? enemy : player;
   const attackerAction = isPlayerAttack ? playerHit : enemyHit;
   const dodgerAction = isPlayerAttack ? enemyHit : playerHit;
-  const attackerPower = calculatePower(
-    attackerAction.coeff,
-    attacker.getAbility(),
-  );
-  const dodgerPower = calculatePower(dodgerAction.coeff, dodger.getAbility());
+  const attackerPower = isPlayerAttack ? playerPower : enemyPower;
+  const dodgerPower = isPlayerAttack ? enemyPower : playerPower;
 
   if (attackerPower > dodgerPower) {
     const damage = calculateDamage(attackerPower, dodger.getAbility().armor);
@@ -286,9 +283,9 @@ function attackAgainstDodge(
     attacker.addStatus(StatusType.Unbalance, 1);
     player.addTempLog(
       dodgerAction.messageGenerator(attacker, dodger) +
-        "," +
-        attacker.name +
-        "失衡了",
+      "," +
+      attacker.name +
+      "失衡了",
     );
     return isPlayerAttack ? BattleResult.EnemyWin : BattleResult.PlayerWin;
   }

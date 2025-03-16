@@ -1,6 +1,6 @@
 import type { Action, Hit } from "../../actions/Action";
 import type { Creature } from "../Creature";
-
+import type { StatusType } from "./statusConfigs";
 export enum StatusDurationType {
   Permanent = "Permanent", // 永久
   Turn = "Turn", // 回合结算完毕时-1
@@ -46,7 +46,13 @@ export interface StatusData<T extends StatusCategory = StatusCategory> {
   effect: StatusEffectMap[T];
 }
 
-export interface Status extends StatusData {
+export interface Status{
+  name: string;
+  description: string;
+  type: StatusType;
+  priority: number;
+  durationType: StatusDurationType;
+  category: StatusCategory;
   duration: number;
   statusLevel?: number;
 }
