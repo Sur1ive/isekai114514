@@ -78,7 +78,7 @@ export function observeEnemyAction(
   function generateMsg(enemy: Monster, action: Action) {
     return (
       enemy.name +
-      "看起来似乎会释放" +
+      "看起来似乎会使用" +
       action.name +
       "<br>" +
       action.hits
@@ -128,7 +128,7 @@ export function testBattle(player: Player): void {
     enemyLevel,
     enemyIndividualStrength,
   );
-  renderBattlePage(player, enemy, null, null, () => {
+  renderBattlePage(player, enemy, null, null, (player: Player, _enemy: Monster, _result: boolean) => {
     renderMainMenu(player);
   });
 }

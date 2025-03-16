@@ -4,6 +4,8 @@ import { renderMainMenu } from "./mainMenu";
 import { CreatureType } from "../creatures/creatureConfigs";
 import { setIntervals } from "../global";
 import { saveGame } from "../save";
+import { Monster } from "../creatures/Monster";
+import { renderBattlePage } from "./battlePage";
 
 // 渲染开始界面
 export function renderStartPage(): void {
@@ -23,7 +25,7 @@ export function renderStartPage(): void {
         <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
           <div class="card-body text-center">
             <h5 class="card-title">野兽仙贝</h5>
-            <p class="card-text">伟大的古希腊哲学家田所曾这样警醒后人：逸一时，误一世，忆旧已久罢忆灵。(如果一时放纵自己，贪图安逸，就可能误了一生的前程) 现在，你将扮演这位伟大的贤人。好时代，来临罢！</p>
+            <p class="card-text">伟大的古希腊哲学家田所曾这样警醒后人：逸一时，误一世。(如果一时放纵自己，贪图安逸，就可能误了一生的前程) 现在，你将扮演这位伟大的贤人。好时代，来临罢！</p>
             </div>
         </div>
       </div>
@@ -33,17 +35,64 @@ export function renderStartPage(): void {
   document.getElementById("action1-btn")?.addEventListener("click", () => {
     const player = new Player("吴田所", CreatureType.Player);
     setIntervals(player);
-    renderStartPage1(player);
+    renderStartPageNormal1(player);
   });
 
   document.getElementById("action2-btn")?.addEventListener("click", () => {
-    const player = new Player("田所*二", CreatureType.Player114514);
+    const player = new Player("田所", CreatureType.Player114514);
     setIntervals(player);
+    const monster = new Monster("远野", CreatureType.Toono, 1, 1);
+    player.isAtHome = false;
+    renderBattlePage(
+      player,
+      monster,
+      null,
+      null,
+      (player: Player, _enemy: Monster, result: boolean) => {
+        if (result) {
+          renderStartPageBeast1_1(player);
+        } else {
+          renderStartPageBeast1_2(player);
+        }
+      },
+    );
+  });
+}
+
+function renderStartPageBeast1_1(player: Player): void {
+  const appElement = getAppElement();
+  appElement.innerHTML = `
+    <h1>野兽宅</h1>
+    <p>距离击败远野已不知过去了多久，但一切都还历历在目。<p>
+    <p>你感到痛心疾首，为什么事情会变成这样，为什么亲密无间的两人会反目成仇。<p>
+    <p>你不再沉沦，高呼道：伊已逝，吾亦逝。忆旧已久罢忆灵！(你逝去了，而我的心也逝去了，空留肉体如行尸走肉般存活。我已经缅怀故人多时，罢了罢了，现在是时候了！)</p>
+		<p>你闭上了眼睛。</p>
+    <button id="continue-btn">继续</button>
+  `;
+
+  document.getElementById("continue-btn")?.addEventListener("click", () => {
     renderStartPage1(player);
   });
 }
 
-export function renderStartPage1(player: Player): void {
+function renderStartPageBeast1_2(player: Player): void {
+  const appElement = getAppElement();
+  appElement.innerHTML = `
+    <h1>野兽宅</h1>
+    <p>你被远野击败了。<p>
+    <p>你感到痛心疾首，为什么事情会变成这样，为什么亲密无间的两人会反目成仇。<p>
+    <p>你愤怒地将手指向远野，不甘心地嘶吼：你是一个一个一个一个，呐，哼哼，啊啊啊啊啊啊啊！！！<p>
+    <p>但是意识逐渐模糊，你最终还是倒下了。<p>
+    <button id="continue-btn">继续</button>
+  `;
+
+  document.getElementById("continue-btn")?.addEventListener("click", () => {
+    player.health = player.maxHealth * 0.8;
+    renderStartPage1(player);
+  });
+}
+
+export function renderStartPageNormal1(player: Player): void {
   const appElement = getAppElement();
 
   // 生成 0 到 3 的随机整数，每个方向各 25% 概率
@@ -82,22 +131,22 @@ export function renderStartPage1(player: Player): void {
   // 给按钮添加点击事件，切换到对应的界面
   document.getElementById("left-btn")?.addEventListener("click", () => {
     if (Math.random() > 0.3) {
-      renderStartPage1(player);
+      renderStartPageNormal1(player);
     } else {
-      renderStartPage2(player);
+      renderStartPageNormal2(player);
     }
   });
   document.getElementById("right-btn")?.addEventListener("click", () => {
     if (Math.random() > 0.3) {
-      renderStartPage1(player);
+      renderStartPageNormal1(player);
     } else {
-      renderStartPage2(player);
+      renderStartPageNormal2(player);
     }
   });
 }
 
 // 渲染开始界面2
-export function renderStartPage2(player: Player): void {
+export function renderStartPageNormal2(player: Player): void {
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>躲避大卡车</h1>
@@ -106,12 +155,12 @@ export function renderStartPage2(player: Player): void {
   `;
 
   document.getElementById("continue-btn")?.addEventListener("click", () => {
-    renderStartPage3(player);
+    renderStartPage1(player);
   });
 }
 
 // 渲染开始界面3
-export function renderStartPage3(player: Player): void {
+export function renderStartPage1(player: Player): void {
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>???</h1>
@@ -125,7 +174,7 @@ export function renderStartPage3(player: Player): void {
     const playerName = nameInput.value.trim();
     if (playerName) {
       player.name = playerName;
-      renderStartPage4(player);
+      renderStartPage2(player);
     } else {
       alert("请输入你的名字！");
     }
@@ -133,7 +182,7 @@ export function renderStartPage3(player: Player): void {
 }
 
 // 渲染开始界面4
-export function renderStartPage4(player: Player): void {
+export function renderStartPage2(player: Player): void {
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>???</h1>
