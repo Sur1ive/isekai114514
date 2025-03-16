@@ -6,6 +6,7 @@ import { setIntervals } from "../global";
 import { saveGame } from "../save";
 import { Monster } from "../creatures/Monster";
 import { renderBattlePage } from "./battlePage";
+import angryImage from "../assets/1919.gif";
 
 // 渲染开始界面
 export function renderStartPage(): void {
@@ -84,7 +85,8 @@ function renderStartPageBeast1_2(player: Player): void {
     <p>你被远野击败了。<p>
     <p>你感到痛心疾首，为什么事情会变成这样，为什么亲密无间的两人会反目成仇。<p>
     <p>你愤怒地将手指向远野，不甘心地嘶吼：你是一个一个一个一个，呐，哼哼，啊啊啊啊啊啊啊！！！<p>
-    <p>但是意识逐渐模糊，你最终还是倒下了。<p>
+    <img src="${angryImage}" alt="1919">
+		<p>但是意识逐渐模糊，你最终还是倒下了。<p>
     <button id="continue-btn">继续</button>
   `;
 
