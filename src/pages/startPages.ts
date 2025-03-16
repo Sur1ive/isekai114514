@@ -16,16 +16,18 @@ export function renderStartPage(): void {
       <div class="col-6">
         <div class="card bg-primary text-white" id="action1-btn" style="cursor: pointer;">
           <div class="card-body text-center">
-            <h5 class="card-title">普通人</h5>
-            <p class="card-text">"野兽先辈是什么？"</p>
+            <h5 class="card-title" style="font-weight: bold;">普通人</h5>
+            <p class="card-text fst-italic">"我不抽烟，酒仅浅尝辄止。晚上11点睡，保证睡足8小时。睡前喝一杯温牛奶，然后做20分钟的舒缓运动再睡觉，一觉熟睡到天亮，绝不把疲劳和压力留到第二天。医生都说我很正常。"</p>
+            <p class="card-text" style="font-weight: bold;">(适合不了解野兽先辈的玩家)</p>
           </div>
         </div>
       </div>
       <div class="col-6">
         <div class="card bg-info text-white" id="action2-btn" style="cursor: pointer;">
           <div class="card-body text-center">
-            <h5 class="card-title">野兽仙贝</h5>
-            <p class="card-text">伟大的古希腊哲学家田所曾这样警醒后人：逸一时，误一世。(如果一时放纵自己，贪图安逸，就可能误了一生的前程) 现在，你将扮演这位伟大的贤人。好时代，来临罢！</p>
+            <h5 class="card-title" style="font-weight: bold;">野兽仙贝</h5>
+            <p class="card-text fst-italic">"伟大的古希腊哲学家，野兽学派的大先辈田所曾这样警醒后人：逸一时，误一世。(如果一时放纵自己，贪图安逸，就可能误了一生的前程) 现在，你将扮演这位伟大的贤人。好时代，来临罢！"</p>
+            <p class="card-text" style="font-weight: bold;">(适合拥有野兽之心的玩家)</p>
             </div>
         </div>
       </div>
@@ -65,7 +67,7 @@ function renderStartPageBeast1_1(player: Player): void {
     <h1>野兽宅</h1>
     <p>距离击败远野已不知过去了多久，但一切都还历历在目。<p>
     <p>你感到痛心疾首，为什么事情会变成这样，为什么亲密无间的两人会反目成仇。<p>
-    <p>你不再沉沦，高呼道：伊已逝，吾亦逝。忆旧已久罢忆灵！(你逝去了，而我的心也逝去了，空留肉体如行尸走肉般存活。我已经缅怀故人多时，罢了罢了，现在是时候了！)</p>
+    <p>你不再沉沦，高呼道：伊已逝，吾亦逝。忆旧已久罢忆灵！(你逝去了，而我的心也逝去了，空留肉体如行尸走肉般存活。我已经缅怀故人多时，罢了罢了，是时候随你而去了！)</p>
 		<p>你闭上了眼睛。</p>
     <button id="continue-btn">继续</button>
   `;
@@ -186,7 +188,7 @@ export function renderStartPage2(player: Player): void {
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>???</h1>
-    <p>你睁开了眼睛，发现自己好像身处森林之中</p>
+    <p>你睁开了眼睛，发现自己好像身处一片池沼之中</p>
     <p>周围的一切都显得那么陌生，充满了异世界风情</p>
     <p>看着远处地上缓慢蠕动的史莱姆，你总算相信自己穿越了</p>
     <button id="continue-btn">继续</button>

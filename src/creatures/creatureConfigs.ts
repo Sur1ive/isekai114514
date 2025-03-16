@@ -40,12 +40,12 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     typeName: "野兽仙贝",
     description: "24岁，是学生",
     abilityCoeff: {
-      str: { base: 5, growth: 0.2 },
+      str: { base: 5, growth: 0.1 },
       int: { base: 5, growth: 0 },
-      con: { base: 7, growth: 0.2 }, // 小麦色的健康肤色
-      siz: { base: 5, growth: 0.1 }, // 24岁是学生，还在长身体很合理吧
+      con: { base: 7, growth: 0.3 }, // 小麦色的健康肤色
+      siz: { base: 5, growth: 0.05 }, // 24岁是学生，还在长身体很合理吧
       app: { base: 7, growth: 0 }, // 没有魅力怎么能吸引后辈
-      dex: { base: 5, growth: 0 },
+      dex: { base: 5, growth: 0.05 },
       armor: { base: 0, growth: 0 },
     },
     actions: [
@@ -102,7 +102,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
   },
 
   [CreatureType.Dragon]: {
-    typeName: "龙",
+    typeName: "\"池沼之主\"龙",
     description:
       "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗。<br>Tips: 你并不需要一次性击败Boss，对其造成20%最大生命值以上的伤害即可永久削减其生命值。你可以通过多次战斗来最终击败它。",
     abilityCoeff: {

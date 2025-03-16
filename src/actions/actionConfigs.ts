@@ -122,7 +122,7 @@ export const actionConfigs: Record<ActionType, Action> = {
 
   [ActionType.PowerfulDigAttack]: {
     name: "撅",
-    description: "十分甚至九分的强大",
+    description: "撅是对知识的渴求。古往今来多少哲学家撅地三尺探求真理",
     rarity: Rarity.Epic,
     hits: [
       {
