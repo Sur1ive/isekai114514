@@ -7,6 +7,7 @@ import { ItemCategory } from "./items/types";
 import { EquipmentBar } from "./creatures/types";
 
 export function saveGame(player: Player) {
+  player.clearStatus();
   const plainPlayer = instanceToPlain(player);
   localStorage.setItem("playerData", JSON.stringify(plainPlayer));
 }
@@ -43,6 +44,5 @@ export function loadPlayer(): Player {
       );
     }
   });
-  player.clearStatus();
   return player;
 }

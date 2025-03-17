@@ -9,6 +9,7 @@ import type { EquipmentBar } from "./types";
 import { Equipment } from "../items/Equipment";
 import type { EquipmentPosition } from "../items/types";
 import { statusConfigs, StatusType } from "./status/statusConfigs";
+import type { StatusCategory } from "./status/Status";
 
 export class Creature {
   isPlayer: boolean = false;
@@ -166,6 +167,10 @@ export class Creature {
     this.statuses = this.statuses.filter((status) => status.durationType === StatusDurationType.Permanent);
   }
 
+  clearStatusByCategory(category: StatusCategory) {
+    this.statuses = this.statuses.filter((status) => status.category !== category);
+  }
+
   // 所有回合状态持续时间-1
   updateStatusesOnTurnEnd() {
     this.statuses = this.statuses.filter((status) => {
@@ -176,7 +181,7 @@ export class Creature {
     });
   }
 
-  // 所有hit状态持续时间-1
+  // 所有onHitStart状态持续时间-1
   updateStatusesOnHitStart() {
     this.statuses = this.statuses.filter((status) => {
       if (status.durationType === StatusDurationType.Hit) {

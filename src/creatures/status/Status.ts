@@ -9,32 +9,32 @@ export enum StatusDurationType {
 }
 
 export enum StatusCategory {
-  OnApply = "OnApply", // 立刻生效
-  OnTurnEnd = "OnTurnEnd", // 回合结算时生效 e.g.中毒
+  // OnApply = "OnApply", // 立刻生效
+  // OnTurnEnd = "OnTurnEnd", // 回合结算时生效 e.g.中毒
   OnTurnStart = "OnTurnStart", // 回合开始时生效
-  OnActionStart = "OnActionStart", // 动作开始时生效
+  // OnActionStart = "OnActionStart", // 动作开始时生效
   OnHitStart = "OnHitStart", // hit开始时生效
 }
 
 export type StatusEffectMap = {
-  [StatusCategory.OnApply]: (self: Creature, statusLevel?: number) => void;
-  [StatusCategory.OnTurnEnd]: (self: Creature, statusLevel?: number) => void;
+  // [StatusCategory.OnApply]: (self: Creature, statusLevel?: number) => void;
+  // [StatusCategory.OnTurnEnd]: (self: Creature, statusLevel?: number) => void;
   [StatusCategory.OnTurnStart]: (
     self: Creature,
     action1: Action,
     action2: Action,
     statusLevel?: number,
   ) => { action1: Action; action2: Action };
-  [StatusCategory.OnActionStart]: (
-    self: Creature,
-    action: Action,
-    statusLevel?: number,
-  ) => void;
+  // [StatusCategory.OnActionStart]: (
+  //   self: Creature,
+  //   action: Action,
+  //   statusLevel?: number,
+  // ) => void;
   [StatusCategory.OnHitStart]: (
     self: Creature,
     hit: Hit,
     statusLevel?: number,
-  ) => void;
+  ) => Hit;
 };
 
 export interface StatusData<T extends StatusCategory = StatusCategory> {

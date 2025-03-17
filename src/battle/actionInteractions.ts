@@ -5,9 +5,11 @@ import { HitCategory } from "../actions/types";
 import { NoHit } from "../actions/actionConfigs";
 import { calculateDamage, generatePointString } from "./battle";
 import { getHitIcon } from "../tools";
-import { StatusType } from "../creatures/status/statusConfigs";
 import { BattleResult } from "../types";
 import { calculatePower } from "../actions/actionUtils";
+import { StatusCategory } from "../creatures/status/Status";
+import { statusConfigs, StatusType } from "../creatures/status/statusConfigs";
+import type { StatusEffectMap } from "../creatures/status/Status";
 
 function handleHit(
   player: Player,
@@ -77,8 +79,26 @@ export function handleAction(
 
   let i = 0;
   while (playerAction.hits[i] || enemyAction.hits[i]) {
-    const playerHit = playerAction.hits[i] || NoHit;
-    const enemyHit = enemyAction.hits[i] || NoHit;
+    let playerHit = playerAction.hits[i] || NoHit;
+    let enemyHit = enemyAction.hits[i] || NoHit;
+
+    // 按照优先级从小往大处理OnHitStart status
+    player.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
+      if (status.category === StatusCategory.OnHitStart) {
+        const effect = statusConfigs[status.type].effect as StatusEffectMap[StatusCategory.OnHitStart];
+        playerHit = effect(player, playerHit, status.statusLevel);
+      }
+    });
+    enemy.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
+      if (status.category === StatusCategory.OnHitStart) {
+        const effect = statusConfigs[status.type].effect as StatusEffectMap[StatusCategory.OnHitStart];
+        enemyHit = effect(enemy, enemyHit, status.statusLevel);
+      }
+    });
+
+    // 所有onHitStart状态持续时间-1
+    player.updateStatusesOnHitStart();
+    enemy.updateStatusesOnHitStart();
 
     const result = handleHit(player, enemy, playerHit, enemyHit);
 
@@ -91,6 +111,10 @@ export function handleAction(
     }
     i++;
   }
+
+  // Action结束时，清除所有onHit状态
+  player.clearStatusByCategory(StatusCategory.OnHitStart);
+  enemy.clearStatusByCategory(StatusCategory.OnHitStart);
 }
 
 function attackAgainstAttack (

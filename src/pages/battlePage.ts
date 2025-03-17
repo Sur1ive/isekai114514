@@ -29,11 +29,15 @@ export function renderBattlePage(
 
   if (player.health <= 0) {
     player.addLog(player.name + "撑不住了");
+    // 战斗结束时，清除所有非永久状态
+    player.clearStatus();
     renderBattleEndPage(player, enemy, false, endHandler);
     return;
   }
   if (enemy.health < 1) {
     player.addLog(player.name + "击败了" + enemy.name);
+    // 战斗结束时，清除所有非永久状态
+    player.clearStatus();
     renderBattleEndPage(player, enemy, true, endHandler);
     return;
   }
