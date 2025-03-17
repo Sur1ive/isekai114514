@@ -8,6 +8,6 @@ export function openChest(_chestLevel: number, rarity: Rarity) {
     rarity += 1;
   }
   rarity = rarity < Rarity.Common ? Rarity.Common : rarity;
-  rarity = rarity > Rarity.Unique ? Rarity.Unique : rarity;
+  rarity = rarity > Rarity.Mythical ? Rarity.Mythical : rarity;
   return generateRandomEquipment(rarity);
 }

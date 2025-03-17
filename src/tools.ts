@@ -15,21 +15,6 @@ export function getAppElement(): HTMLElement {
   return el;
 }
 
-export function getRarityColor(rarity: Rarity): string {
-  switch (rarity) {
-    case Rarity.Unique:
-      return "danger";
-    case Rarity.Legendary:
-      return "warning";
-    case Rarity.Epic:
-      return "info";
-    case Rarity.Rare:
-      return "success";
-    default:
-      return "secondary";
-  }
-}
-
 export function getHitIcon(hit: Hit): string {
   switch (hit.category) {
     case HitCategory.Attack:
@@ -80,7 +65,7 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
   // 基本信息部分：名称、稀有度、描述、装备位置
   const baseInfo = `
     <div class="tooltip-base tooltip-header">
-      <h5 class="text-${getRarityColor(equipment.rarity)}">${equipment.name}</h5>
+      <h5 class="text-${Rarity[equipment.rarity]}" style="font-weight: bold;">${equipment.name}</h5>
       <p>${equipment.description}</p>
       <p><strong>位置:</strong> ${equipment.position}</p>
       <br>
@@ -144,7 +129,7 @@ export function generateItemTooltipContent(item: Item): string {
   if (item instanceof Consumable) {
     return `
       <div class="tooltip-base tooltip-header">
-        <h5>${item.name}</h5>
+        <h5 class="text-${Rarity[item.rarity]}">${item.name}</h5>
         <p>${item.description}</p>
       </div>
     `;

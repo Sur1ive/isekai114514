@@ -1,7 +1,6 @@
 import { Player } from "../creatures/Player";
 import {
   getAppElement,
-  getRarityColor,
   getItemIcon,
   generateItemTooltipContent,
 } from "../tools";
@@ -10,6 +9,7 @@ import { Consumable } from "../items/Consumable";
 import { Equipment } from "../items/Equipment";
 import * as bootstrap from "bootstrap";
 import { renderMainMenu } from "./mainMenu";
+import { Rarity } from "../types";
 
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
@@ -50,7 +50,7 @@ export function renderStatusPage(player: Player): void {
                       <span class="fw-bold">${position}</span>
                       ${
                         equipment
-                          ? `<span class="badge bg-${getRarityColor(equipment.rarity)}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${generateItemTooltipContent(equipment).replace(/"/g, "&quot;")}">${equipment.name}</span>`
+                          ? `<span class="badge bg-${Rarity[equipment.rarity]}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${generateItemTooltipContent(equipment).replace(/"/g, "&quot;")}">${equipment.name}</span>`
                           : '<span class="badge bg-secondary">空</span>'
                       }
                     </div>
@@ -74,8 +74,9 @@ export function renderStatusPage(player: Player): void {
                 ${
                   player.pack.length > 0
                     ? player.pack
+                        .sort((a, b) => b.rarity - a.rarity)
                         .map((item) => {
-                          const btnClass = `btn-${getRarityColor(item.rarity)}`;
+                          const btnClass = `btn-${Rarity[item.rarity]}`;
                           // 如果 item 属于 Consumable 或 Equipment，则调用 generateItemTooltipContent，否则使用 item.description
                           const tooltipContent =
                             item instanceof Consumable ||

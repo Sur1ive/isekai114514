@@ -62,9 +62,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Slash, weight: 0.9 },
       { actionType: ActionType.HorizontalSlash, weight: 0.05 },
       { actionType: ActionType.StepSlash, weight: 0.025 },
-      { actionType: ActionType.Mikiri, weight: 0.01 },
-      { actionType: ActionType.SpiritRoundSlash, weight: 0.01 },
-      { actionType: ActionType.HelmBreaker, weight: 0.005 },
+      { actionType: ActionType.Mikiri, weight: 0.001 },
     ],
     ability: {},
     actionCoeff: {
@@ -88,8 +86,6 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.4 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.1 },
-      { actionType: ActionType.SpiritRoundSlash, weight: 0.05 },
-      { actionType: ActionType.HelmBreaker, weight: 0.02 },
     ],
     ability: {
       str: 2,
@@ -115,8 +111,6 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.3 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.3 },
-      { actionType: ActionType.SpiritRoundSlash, weight: 0.1 },
-      { actionType: ActionType.HelmBreaker, weight: 0.05 },
     ],
     ability: {},
     actionCoeff: {
@@ -129,14 +123,12 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.Mikadsukimunechika]: {
     name: "太刀\"三日月宗近\"",
     description: "太刀最高杰作的天下五剑之一，传说中的名刀，有着名物中的名物之称。刀身如同新月一般美丽",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.HorizontalSlash, weight: 0.3 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.3 },
-      { actionType: ActionType.SpiritRoundSlash, weight: 0.1 },
-      { actionType: ActionType.HelmBreaker, weight: 0.15 },
     ],
     ability: {
       str: 1,
@@ -175,7 +167,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.WindSpinSword]: {
     name: "风旋刺剑",
     description: "靠近剑身能听到轻轻的风声",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.QuickAttack, weight: 0.4 },
@@ -199,7 +191,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.RockSword]: {
     name: "剑型大石头",
     description: "一把很宽的石头大剑，看起来就像块大石头",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.DefenseSlash, weight: 0.4 },
@@ -225,7 +217,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.DragonSlayer]: {
     name: "弑龙者",
     description: "传说这把剑上的龙之力来源于被它杀死的龙",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.HorizontalSlash, weight: 1 },

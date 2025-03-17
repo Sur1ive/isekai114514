@@ -4,7 +4,7 @@ import { Prefix } from "./Prefix";
 
 export enum PrefixType {
   None = "None",
-  // Legendary = "Legendary",
+  // Epic = "Epic",
 }
 
 export const prefixConfigs: Record<PrefixType, Prefix> = {
@@ -17,10 +17,10 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
     ability: {},
     actionCoeff: {},
   },
-  // [PrefixType.Legendary]: {
+  // [PrefixType.Epic]: {
   //   name: "神话的",
   //   description: "传奇级别的装备，拥有强大的力量",
   //   position: "AnyPosition",
-  //   rarity: Rarity.Legendary,
+  //   rarity: Rarity.Epic,
   // },
 };

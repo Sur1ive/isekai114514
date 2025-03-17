@@ -1,0 +1,13 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+$theme-colors: map-merge($theme-colors, (
+  "Common":    $secondary,
+  "Rare":      $green-600,
+  "Masterpiece":      $cyan-700,
+  "Epic": $orange,
+  "Mythical":  $pink,
+	"Unique":    $red,
+));
+
+@import "bootstrap";

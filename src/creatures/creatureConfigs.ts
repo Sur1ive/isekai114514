@@ -166,9 +166,9 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Defend, weight: 0.3 },
     ],
     dropItems: [
-      { type: ConsumableType.SilverChest, weight: 0.98 },
-      { type: ConsumableType.GoldChest, weight: 0.02 },
-      { type: ConsumableType.DiamondChest, weight: 0.001 },
+      { type: ConsumableType.SilverChest, weight: 0.95 },
+      { type: ConsumableType.GoldChest, weight: 0.05 },
+      { type: ConsumableType.DiamondChest, weight: 0.002 },
     ],
   },
 
@@ -190,10 +190,9 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.SpinAttack, weight: 0.5 },
     ],
     dropItems: [
-      { type: ConsumableType.BrokenChest, weight: 0.7 },
-      { type: ConsumableType.WoodenChest, weight: 0.3 },
-      { type: ConsumableType.SilverChest, weight: 0.015 },
-      { type: ConsumableType.GoldChest, weight: 0.001 },
+      { type: ConsumableType.BrokenChest, weight: 0.8 },
+      { type: ConsumableType.WoodenChest, weight: 0.2 },
+      { type: ConsumableType.SilverChest, weight: 0.01 },
     ],
   },
 
@@ -220,7 +219,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { type: ConsumableType.BrokenChest, weight: 0.2 },
       { type: ConsumableType.WoodenChest, weight: 0.8 },
       { type: ConsumableType.SilverChest, weight: 0.04 },
-      { type: ConsumableType.GoldChest, weight: 0.004 },
+      { type: ConsumableType.GoldChest, weight: 0.002 },
     ],
   },
 

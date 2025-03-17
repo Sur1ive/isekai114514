@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/custom.scss";
 import "./styles/custom.css";
 import { Player } from "./creatures/Player";
 import { loadPlayer } from "./save";

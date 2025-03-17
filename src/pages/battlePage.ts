@@ -2,12 +2,13 @@ import { Monster } from "../creatures/Monster";
 import { observeEnemyAction } from "../battle/battle";
 import { handleAction } from "../battle/actionInteractions";
 import { saveGame } from "../save";
-import { getAppElement, getRarityColor } from "../tools";
+import { getAppElement } from "../tools";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 import { getHitsDescription } from "../actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
 import { statusConfigs } from "../creatures/status/statusConfigs";
+import { Rarity } from "../types";
 
 // 渲染战斗界面
 export function renderBattlePage(
@@ -188,7 +189,7 @@ function renderBattleEndPage(
               : '<span class="text-danger">失败</span>'
           }
           <p>lv: ${player.level}${levelUp ? "🔺" : ""} exp: ${player.exp}/${player.getNextLevelExp()}</p>
-          ${result ? `<p>获得经验: <span class="text-info">${Math.floor(enemy.giveExp)}</span>  ${dropItem ? `获得物品: <span class="text-${getRarityColor(dropItem.rarity)}">${dropItem.name}</span>` : ""}</p>` : ""}
+          ${result ? `<p>获得经验: <span class="text-info">${Math.floor(enemy.giveExp)}</span>  ${dropItem ? `获得物品: <span class="text-${Rarity[dropItem.rarity]}">${dropItem.name}</span>` : ""}</p>` : ""}
         </h4>
         <hr>
         <h5>记录</h5>

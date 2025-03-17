@@ -31,26 +31,26 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
   },
   [ConsumableType.SilverChest]: {
     name: "银色装饰的宝箱",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     description: "这个宝箱上有着精细的银制装饰，银锈并不能掩盖它的华丽",
     effect: (target: Creature) => {
-      target.pack.push(openChest(1, Rarity.Epic));
+      target.pack.push(openChest(1, Rarity.Masterpiece));
     },
   },
   [ConsumableType.GoldChest]: {
     name: "黄金镶边的宝箱",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     description: "金光闪闪，这才叫宝箱！光是看着就让人心潮澎湃",
     effect: (target: Creature) => {
-      target.pack.push(openChest(1, Rarity.Legendary));
+      target.pack.push(openChest(1, Rarity.Epic));
     },
   },
   [ConsumableType.DiamondChest]: {
     name: "华丽的宝石宝箱",
-    rarity: Rarity.Unique,
+    rarity: Rarity.Mythical,
     description: "无法用辞藻形容的华丽，你甚至害怕打开它会划伤上面美丽的宝石",
     effect: (target: Creature) => {
-      target.pack.push(openChest(1, Rarity.Unique));
+      target.pack.push(openChest(1, Rarity.Mythical));
     },
   },
   [ConsumableType.Unknown]: {

@@ -1,9 +1,10 @@
 export enum Rarity {
-  Common = 0,
-  Rare = 1,
-  Epic = 2,
-  Legendary = 3,
-  Unique = 4,
+  Common = 0, // 普通
+  Rare = 1, // 稀有
+  Masterpiece = 2, // 杰作
+  Epic = 3, // 史诗
+  Mythical = 4, // 神话
+  Unique = 5, // 独特
 }
 
 export enum BattleResult {

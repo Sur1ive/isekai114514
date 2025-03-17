@@ -45,8 +45,8 @@ export const NoHit: Hit = {
     `${actor.name} 来不及反应`,
 };
 
-// common的系数大致是2，rare的系数大致是3.5，epic的系数大致是5+，
-// legendary的系数大致是10，unique随便设计10+系数，但是小权重
+// common的系数大致是2，rare的系数大致是3.5，Masterpiece的系数大致是5+，
+// Epic的系数大致是10(小权重)，mythical随便设计10+系数，但是小权重
 export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.Dazed]: {
     name: "反应不过来",
@@ -131,7 +131,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.PowerfulDigAttack]: {
     name: "撅",
     description: "撅是对知识的渴求。古往今来多少哲学家撅地三尺探求真理",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     hits: [
       {
         category: HitCategory.Attack,
@@ -149,7 +149,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.SleepyTea]: {
     name: "饮用昏睡红茶",
     description: "诗人都喜欢饮酒作赋，古代的哲学家也是如此，只是彼时还没有酒",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     hits: [
       {
         category: HitCategory.None,
@@ -194,7 +194,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.Repent]: {
     name: "†你改悔罢†",
     description: "令敌人改悔的神圣攻击",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     hits: [
       {
         category: HitCategory.Dodge,
@@ -251,7 +251,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.Mikiri]: {
     name: "见切",
     description: "在敌人攻击的瞬间拔刀后退，成功回避攻击则能乘势将气入刀，以在下回合释放气刃大回旋",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     hits: [
       {
         category: HitCategory.Dodge,
@@ -268,7 +268,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.SpiritRoundSlash]: {
     name: "气刃大回旋",
     description: "将气附于刀刃之上，使出极大幅度回转刀身的斩击，若是击中敌人则可使用登龙",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     hits: [
       {
         category: HitCategory.Attack,
@@ -286,7 +286,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.HelmBreaker]: {
     name: "登龙",
     description: "快速向前突进，若成功击中命中便会借势踩着敌人的身体一路跃至高空，而后以全身的力量从空中向下劈出泣鬼神的一刀",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     hits: [
       {
         category: HitCategory.Attack,
@@ -449,7 +449,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.PsyDodge]: {
     name: "瞬移",
     description: "念力的一种用法",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     hits: [
       {
         category: HitCategory.None,
@@ -488,7 +488,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.DragonBreath]: {
     name: "巨龙吐息",
     description: "据说巨龙的吐息足以融化钢铁",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     hits: [
       {
         category: HitCategory.Attack,
@@ -590,7 +590,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.PsyExplosion]: {
     name: "不可视爆裂",
     description: "不可视的念力凝聚成万吨重锤从天而降",
-    rarity: Rarity.Legendary,
+    rarity: Rarity.Epic,
     hits: [
       {
         category: HitCategory.None,
