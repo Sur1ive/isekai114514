@@ -104,6 +104,20 @@ export class Creature {
     }
   }
 
+  loseHp(amount: number) {
+    this.health -= amount;
+    if (this.health < 0) {
+      this.health = 0;
+    }
+  }
+
+  recoverHp(amount: number) {
+    this.health += amount;
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth;
+    }
+  }
+
   // 获取装备加成后的能力值
   getAbility(): Ability {
     const ability = { ...this.ability };

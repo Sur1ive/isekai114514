@@ -4,19 +4,19 @@ import {
   EquipmentPosition,
   EquipmentAbility,
   EquipmentActionCoeff,
-  EquipmentPrefix,
   ItemCategory,
 } from "./types";
 import { equipmentConfigs, EquipmentType } from "./equipmentConfigs";
 import { v4 as uuidv4 } from "uuid";
 import { generateRandomPrefix } from "./equipmentUtils";
+import { Prefix } from "./Prefix";
 
 export class Equipment extends Item {
   position: EquipmentPosition;
   extraActions: WeightedActionType[];
   ability: EquipmentAbility;
   actionCoeff: EquipmentActionCoeff;
-  prefix: EquipmentPrefix;
+  prefix: Prefix;
 
   constructor(type: EquipmentType) {
     type = type || EquipmentType.Sword;
@@ -34,6 +34,6 @@ export class Equipment extends Item {
     this.extraActions = data.extraActions;
     this.ability = data.ability;
     this.actionCoeff = data.actionCoeff;
-    this.prefix = generateRandomPrefix();
+    this.prefix = generateRandomPrefix(data.rarity, data.position);
   }
 }

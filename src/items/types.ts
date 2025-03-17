@@ -14,13 +14,6 @@ export interface EquipmentActionCoeffValue {
   multiply: number;
 }
 
-// todo: 给各个前缀添加效果和出率权重
-export enum EquipmentPrefix {
-  None = "",
-  Big = "巨大的",
-  Smelly = "野兽先辈的",
-}
-
 export enum EquipmentPosition {
   Head = "head",
   Body = "body",

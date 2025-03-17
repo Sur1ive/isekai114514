@@ -105,9 +105,11 @@ export function handleAction(
     // 连续hit未命中会导致后续hit无法释放
     if (playerHit.continuous && result !== BattleResult.PlayerWin) {
       playerAction.hits.splice(i + 1);
+      player.addTempLog(player.name + "的连续hit中断");
     }
     if (enemyHit.continuous && result !== BattleResult.EnemyWin) {
       enemyAction.hits.splice(i + 1);
+      player.addTempLog(enemy.name + "的连续hit中断");
     }
     i++;
   }
@@ -137,7 +139,7 @@ function attackAgainstAttack (
   );
   if (playerPower >= enemyPower) {
     const damage = calculateDamage(playerPower, enemy.getAbility().armor);
-    enemy.health -= damage;
+    enemy.loseHp(damage);
     player.addTempLog(
       playerHit.messageGenerator(player, enemy) +
         '造成了<span style="color: red;">' +
@@ -150,7 +152,7 @@ function attackAgainstAttack (
     return BattleResult.PlayerWin;
   } else {
     const damage = calculateDamage(enemyPower, player.getAbility().armor);
-    player.health -= damage;
+    player.loseHp(damage);
     player.addTempLog(
       enemyHit.messageGenerator(enemy, player) +
         '造成了<span style="color: red;">' +
@@ -195,7 +197,7 @@ function attackAgainstNone(
     ),
   );
   const damage = calculateDamage(power, target.getAbility().armor);
-  target.health -= damage;
+  target.loseHp(damage);
   player.addTempLog(
     action.messageGenerator(actor, target) +
       '造成了<span style="color: red;">' +
@@ -238,7 +240,7 @@ function attackAgainstDefend(
   const power =
     attackerPower - defenderPower > 0 ? attackerPower - defenderPower : 0;
   const damage = calculateDamage(power, defender.getAbility().armor);
-  defender.health -= damage;
+  defender.loseHp(damage);
 
   if (power > 0) {
     player.addTempLog(
@@ -293,7 +295,7 @@ function attackAgainstDodge(
 
   if (attackerPower > dodgerPower) {
     const damage = calculateDamage(attackerPower, dodger.getAbility().armor);
-    dodger.health -= damage;
+    dodger.loseHp(damage);
     player.addTempLog(
       attackerAction.messageGenerator(attacker, dodger) +
         "对" +

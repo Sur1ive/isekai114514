@@ -165,10 +165,7 @@ export const actionConfigs: Record<ActionType, Action> = {
           return `${actor.name}喝下了昏睡红茶，于睡眠中恢复了<span style="color: green">${actor.getAbility().con}</span>点生命值`;
         },
         extraEffect: (actor: Creature, _target: Creature) => {
-          actor.health = Math.min(
-            actor.health + actor.getAbility().con,
-            actor.maxHealth,
-          );
+          actor.recoverHp(actor.getAbility().con / 2);
         },
       },
     ],

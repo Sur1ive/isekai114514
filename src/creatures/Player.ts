@@ -87,7 +87,7 @@ export class Player extends Creature {
 
   autoRecoverHpDot(): void {
     const amount = ((this.ability.con / 5) * this.maxHealth) / 900;
-    this.health = Math.min(this.health + amount, this.maxHealth);
+    this.recoverHp(amount);
   }
 
   addLog(log: string): void {

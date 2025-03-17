@@ -1,13 +1,18 @@
-import { EquipmentPrefix } from "./types";
 import { equipmentConfigs, EquipmentType } from "./equipmentConfigs";
 import { Equipment } from "./Equipment";
 import type { Rarity } from "../types";
+import { prefixConfigs, PrefixType } from "./prefixConfigs";
+import { EquipmentPosition } from "./types";
 
 // 生成随机前缀
-export function generateRandomPrefix() {
-  return Object.values(EquipmentPrefix)[
-    Math.floor(Math.random() * Object.values(EquipmentPrefix).length)
-  ];
+export function generateRandomPrefix(rarity: Rarity, position: EquipmentPosition) {
+  const prefixKeys = Object.keys(prefixConfigs).filter(
+    (key) => prefixConfigs[key as PrefixType].rarity === rarity && prefixConfigs[key as PrefixType].position === position ,
+  );
+  const randomIndex = Math.floor(Math.random() * prefixKeys.length);
+  const randomPrefixKey = prefixKeys[randomIndex];
+
+  return prefixConfigs[randomPrefixKey as PrefixType] || prefixConfigs[PrefixType.None];
 }
 
 // 根据稀有度随机抽取装备类型

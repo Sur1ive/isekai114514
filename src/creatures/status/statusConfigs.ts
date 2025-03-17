@@ -9,6 +9,8 @@ export enum StatusType {
   RedBlade = "RedBlade",
   Pain = "Pain",
   Unbalance = "Unbalance",
+  Wound = "Wound",
+  Burning = "Burning",
 }
 
 export const statusConfigs: Record<StatusType, StatusData> = {
@@ -56,6 +58,28 @@ export const statusConfigs: Record<StatusType, StatusData> = {
     priority: 999,
     effect: (_self: Creature, _hit: Hit) => {
       return NoHit;
+    },
+  },
+  [StatusType.Wound]: {
+    name: "创伤",
+    description: "每次行动(hit)都会损失一定生命值",
+    durationType: StatusDurationType.Turn,
+    category: StatusCategory.OnHitStart,
+    priority: 999,
+    effect: (self: Creature, hit: Hit, level?: number) => {
+      self.loseHp(level || 1);
+      return hit;
+    },
+  },
+  [StatusType.Burning]: {
+    name: "燃烧",
+    description: "每回合损失一定生命值",
+    durationType: StatusDurationType.Turn,
+    category: StatusCategory.OnTurnStart,
+    priority: 999,
+    effect: (self: Creature, action1: Action, action2: Action, level?: number) => {
+      self.loseHp(level || 1);
+      return { action1, action2 };
     },
   },
 };
