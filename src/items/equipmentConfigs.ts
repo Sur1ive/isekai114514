@@ -15,6 +15,7 @@ export enum EquipmentType {
   RockSword = "RockSword",
   Rope = "Rope",
   DragonSlayer = "DragonSlayer",
+  KatanaOfTheHeart = "KatanaOfTheHeart",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -61,10 +62,12 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     extraActions: [
       { actionType: ActionType.Slash, weight: 0.9 },
       { actionType: ActionType.HorizontalSlash, weight: 0.05 },
-      { actionType: ActionType.StepSlash, weight: 0.025 },
-      { actionType: ActionType.Mikiri, weight: 0.001 },
+      { actionType: ActionType.StepSlash, weight: 0.04 },
+      { actionType: ActionType.Mikiri, weight: 0.01 },
     ],
-    ability: {},
+    ability: {
+      dex: -1,
+    },
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 1,
@@ -82,18 +85,17 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Rare,
     position: EquipmentPosition.Hand,
     extraActions: [
-      { actionType: ActionType.Slash, weight: 0.2 },
-      { actionType: ActionType.HorizontalSlash, weight: 0.4 },
-      { actionType: ActionType.StepSlash, weight: 0.3 },
-      { actionType: ActionType.Mikiri, weight: 0.1 },
+      { actionType: ActionType.Slash, weight: 0.7 },
+      { actionType: ActionType.HorizontalSlash, weight: 0.1 },
+      { actionType: ActionType.StepSlash, weight: 0.1 },
+      { actionType: ActionType.Mikiri, weight: 0.05 },
     ],
     ability: {
-      str: 2,
       dex: -2,
     },
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 2,
+        plus: 4,
         multiply: 1,
       },
       [HitCategory.Dodge]: {
@@ -105,12 +107,12 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.Ningenmukotsu]: {
     name: "太刀\"人间无骨\"",
     description: "正面刻着人间，背面刻着无骨的名刀。刀如其名，削骨若无物",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Hand,
     extraActions: [
-      { actionType: ActionType.HorizontalSlash, weight: 0.3 },
-      { actionType: ActionType.StepSlash, weight: 0.3 },
-      { actionType: ActionType.Mikiri, weight: 0.3 },
+      { actionType: ActionType.HorizontalSlash, weight: 0.4 },
+      { actionType: ActionType.StepSlash, weight: 0.4 },
+      { actionType: ActionType.Mikiri, weight: 0.15 },
     ],
     ability: {},
     actionCoeff: {
@@ -131,7 +133,6 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Mikiri, weight: 0.3 },
     ],
     ability: {
-      str: 1,
       dex: 1,
     },
     actionCoeff: {
@@ -145,14 +146,35 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
+  [EquipmentType.KatanaOfTheHeart]: {
+    name: "心中的太刀",
+    description: "你看不见它，但它确实在你手中",
+    rarity: Rarity.Mythical,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.Mikiri, weight: 1 },
+    ],
+    ability: {},
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 10,
+        multiply: 1.2,
+      },
+      [HitCategory.Dodge]: {
+        plus: 10,
+        multiply: 1.2,
+      },
+    },
+  },
   [EquipmentType.MudKnife]: {
     name: "沼气短刀",
     description: "刀身闻起来臭臭的",
     rarity: Rarity.Rare,
     position: EquipmentPosition.Hand,
     extraActions: [
-      { actionType: ActionType.PowerfulDigAttack, weight: 0.2 },
-      { actionType: ActionType.QuickAttack, weight: 0.8 },
+      { actionType: ActionType.Slash, weight: 0.4 },
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.1 },
+      { actionType: ActionType.QuickAttack, weight: 0.5 },
     ],
     ability: {
       dex: 1,
@@ -164,7 +186,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
-  [EquipmentType.WindSpinSword]: {
+  [EquipmentType.WindSpinSword]: { //todo
     name: "风旋刺剑",
     description: "靠近剑身能听到轻轻的风声",
     rarity: Rarity.Masterpiece,
@@ -188,7 +210,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
-  [EquipmentType.RockSword]: {
+  [EquipmentType.RockSword]: { //todo
     name: "剑型大石头",
     description: "一把很宽的石头大剑，看起来就像块大石头",
     rarity: Rarity.Masterpiece,
@@ -214,14 +236,14 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
-  [EquipmentType.DragonSlayer]: {
-    name: "弑龙者",
-    description: "传说这把剑上的龙之力来源于被它杀死的龙",
+  [EquipmentType.DragonSlayer]: { //todo
+    name: "\"弑龙者\"",
+    description: "传说这把剑上的龙之力来源于被它杀死的龙的灵魂。你握着它，仿佛能感受到龙的气息",
     rarity: Rarity.Epic,
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.HorizontalSlash, weight: 1 },
-      { actionType: ActionType.DragonBreath, weight: 0.5 },
+      { actionType: ActionType.DragonBreath, weight: 0.1 },
     ],
     ability: {
       str: 1,
@@ -241,9 +263,9 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.PsyKick, weight: 0.2 },
-      { actionType: ActionType.PsyExplosion, weight: 1 },
-      { actionType: ActionType.PsyInvisibleSword, weight: 0.2 },
-      { actionType: ActionType.PsyDodge, weight: 0.6 },
+      { actionType: ActionType.PsyExplosion, weight: 0.2 },
+      { actionType: ActionType.PsyInvisibleSword, weight: 0.1 },
+      { actionType: ActionType.PsyDodge, weight: 0.2 },
     ],
     ability: {
       int: 2,

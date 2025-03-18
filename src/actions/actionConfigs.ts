@@ -286,7 +286,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.HelmBreaker]: {
     name: "登龙",
     description: "快速向前突进，若成功击中命中便会借势踩着敌人的身体一路跃至高空，而后以全身的力量从空中向下劈出泣鬼神的一刀",
-    rarity: Rarity.Epic,
+    rarity: Rarity.Mythical,
     hits: [
       {
         category: HitCategory.Attack,
@@ -514,7 +514,7 @@ export const actionConfigs: Record<ActionType, Action> = {
   [ActionType.GodStrike]: {
     name: "神击",
     description: "犹如神灵降下天罚",
-    rarity: Rarity.Unique,
+    rarity: Rarity.Mythical,
     hits: [
       {
         category: HitCategory.Attack,
@@ -580,7 +580,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 2, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 1, int: 6, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `${target.name}凭空被踢了一脚`,
       },
@@ -604,7 +604,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 4, int: 12, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 2, int: 12, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `${target.name}所在的位置发生了大爆炸`,
       },
