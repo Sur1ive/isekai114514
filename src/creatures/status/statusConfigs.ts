@@ -3,6 +3,7 @@ import { actionConfigs, ActionType, NoHit } from "../../actions/actionConfigs";
 import type { Action } from "../../actions/Action";
 import type { Creature } from "../Creature";
 import type { Hit } from "../../actions/Action";
+import { Player } from "../Player";
 
 export enum StatusType {
   SpiritBlade = "SpiritBlade",
@@ -11,6 +12,7 @@ export enum StatusType {
   Unbalance = "Unbalance",
   Wound = "Wound",
   Burning = "Burning",
+  QuickRecovery = "QuickRecovery",
 }
 
 export const statusConfigs: Record<StatusType, StatusData> = {
@@ -80,6 +82,16 @@ export const statusConfigs: Record<StatusType, StatusData> = {
     effect: (self: Creature, action1: Action, action2: Action, level?: number) => {
       self.loseHp(level || 1);
       return { action1, action2 };
+    },
+  },
+  [StatusType.QuickRecovery]: {
+    name: "快速恢复",
+    description: "自动回复速度大幅度增加",
+    durationType: StatusDurationType.Second,
+    category: StatusCategory.OnSecond,
+    priority: 1,
+    effect: (self: Creature, statusLevel?: number) => {
+      (self as Player).autoRecoverHpDot(statusLevel || 1);
     },
   },
 };

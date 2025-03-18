@@ -2,6 +2,10 @@ import type { Creature } from "../creatures/Creature";
 import { Rarity } from "../types";
 import { ConsumableData } from "./types";
 import { openChest } from "./consumableUtils";
+import { Consumable } from "./Consumable";
+import { Equipment } from "./Equipment";
+import { EquipmentType } from "./equipmentConfigs";
+import { StatusType } from "../creatures/status/statusConfigs";
 
 export enum ConsumableType {
   Unknown = "Unknown",
@@ -10,6 +14,10 @@ export enum ConsumableType {
   SilverChest = "SilverChest",
   GoldChest = "GoldChest",
   DiamondChest = "DiamondChest",
+  QuickRecoveryPotion = "QuickRecoveryPotion",
+  LifePotion = "LifePotion",
+  LargeLifePotion = "LargeLifePotion",
+  GiftboxAndLetter = "GiftboxAndLetter",
 }
 
 export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
@@ -58,5 +66,48 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
     rarity: Rarity.Common,
     description: "未知",
     effect: (_target: Creature) => {},
+  },
+  [ConsumableType.QuickRecoveryPotion]: {
+    name: "超级无敌快速恢复秘药",
+    rarity: Rarity.Epic,
+    description: "看起来不像是这个世界的产物<p>自动回复速度提升15倍，持续1分钟</p>",
+    effect: (target: Creature) => {
+      target.addStatus(StatusType.QuickRecovery, 60, 14);
+      console.log("使用快速恢复秘药");
+    },
+  },
+  [ConsumableType.LifePotion]: {
+    name: "生命秘药",
+    rarity: Rarity.Masterpiece,
+    description: "只要没死，区区断胳膊断腿喝下去立马都能长回来。你有个疑问，这玩意儿到底是什么做的？<p>恢复50点生命值</p>",
+    effect: (target: Creature) => {
+      target.recoverHp(50);
+    },
+  },
+  [ConsumableType.LargeLifePotion]: {
+    name: "大瓶生命秘药",
+    rarity: Rarity.Epic,
+    description: "喝普通的生命秘药一次只能长一只断胳膊，而喝这大瓶装一次能全长回来。前提是你还有手可以拿它<p>恢复100点生命值</p>",
+    effect: (target: Creature) => {
+      target.recoverHp(100);
+    },
+  },
+  [ConsumableType.GiftboxAndLetter]: {
+    name: "礼物箱和一封信",
+    rarity: Rarity.Mythical,
+    description: "一个礼物箱，上面还附了一封信，信上写着：“希望你喜欢这个游戏”",
+    effect: (target: Creature) => {
+      for (let i = 0; i < 5; i++) {
+        target.pack.push(new Consumable(ConsumableType.QuickRecoveryPotion));
+      }
+      for (let i = 0; i < 10; i++) {
+        target.pack.push(new Consumable(ConsumableType.LifePotion));
+      }
+      for (let i = 0; i < 5; i++) {
+        target.pack.push(new Consumable(ConsumableType.LargeLifePotion));
+      }
+      target.pack.push(new Equipment(EquipmentType.Sword));
+      target.pack.push(new Equipment(EquipmentType.Rope));
+    },
   },
 };

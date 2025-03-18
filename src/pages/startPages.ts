@@ -7,6 +7,8 @@ import { saveGame } from "../save";
 import { Monster } from "../creatures/Monster";
 import { renderBattlePage } from "./battlePage";
 import angryImage from "../assets/1919.gif";
+import { Consumable } from "../items/Consumable";
+import { ConsumableType } from "../items/consumableConfigs";
 
 // 渲染开始界面
 export function renderStartPage(): void {
@@ -37,12 +39,14 @@ export function renderStartPage(): void {
 
   document.getElementById("action1-btn")?.addEventListener("click", () => {
     const player = new Player("吴田所", CreatureType.Player);
+    player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
     setIntervals(player);
     renderStartPageNormal1(player);
   });
 
   document.getElementById("action2-btn")?.addEventListener("click", () => {
     const player = new Player("田所", CreatureType.Player114514);
+    player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
     setIntervals(player);
     const monster = new Monster("远野", CreatureType.Toono, 1, 1);
     player.isAtHome = false;

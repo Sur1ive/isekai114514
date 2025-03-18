@@ -3,6 +3,7 @@ import { saveGame } from "./save";
 
 let recoverInterval = -1;
 let saveInterval = -1;
+let secondStatusInterval = -1;
 
 // player指向的对象发生改变（新建，加载或者remake）时，需要调用此函数
 export function setIntervals(player: Player) {
@@ -11,6 +12,9 @@ export function setIntervals(player: Player) {
   }
   if (saveInterval !== -1) {
     clearInterval(saveInterval);
+  }
+  if (secondStatusInterval !== -1) {
+    clearInterval(secondStatusInterval);
   }
 
   recoverInterval = setInterval(() => {
@@ -25,4 +29,11 @@ export function setIntervals(player: Player) {
       saveGame(player);
     }
   }, 10000);
+
+  // 可能影响性能
+  secondStatusInterval = setInterval(() => {
+    if (player.isAtHome) {
+      player.applySecondStatuses();
+    }
+  }, 1000);
 }

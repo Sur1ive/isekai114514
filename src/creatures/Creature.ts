@@ -9,7 +9,7 @@ import type { EquipmentBar } from "./types";
 import { Equipment } from "../items/Equipment";
 import type { EquipmentPosition } from "../items/types";
 import { statusConfigs, StatusType } from "./status/statusConfigs";
-import type { StatusCategory } from "./status/Status";
+import { StatusCategory, StatusEffectMap } from "./status/Status";
 
 export class Creature {
   isPlayer: boolean = false;
@@ -70,8 +70,9 @@ export class Creature {
   levelup() {
     this.level++;
     this.ability = this.calculateAbility();
+    const oldMaxHealth = this.maxHealth;
     this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
-    this.health = this.maxHealth;
+    this.recoverHp(this.maxHealth - oldMaxHealth);
   }
 
   // 按照权重随机返回一个动作
@@ -199,6 +200,23 @@ export class Creature {
   updateStatusesOnHitStart() {
     this.statuses = this.statuses.filter((status) => {
       if (status.durationType === StatusDurationType.Hit) {
+        status.duration -= 1;
+      }
+      return status.duration > 0;
+    });
+  }
+
+  // 应用所有每秒状态，并持续时间-1
+  applySecondStatuses() {
+    this.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
+      if (status.category === StatusCategory.OnSecond) {
+        const effect = statusConfigs[status.type].effect as StatusEffectMap[StatusCategory.OnSecond];
+        effect(this, status.statusLevel);
+      }
+    });
+
+    this.statuses = this.statuses.filter((status) => {
+      if (status.durationType === StatusDurationType.Second) {
         status.duration -= 1;
       }
       return status.duration > 0;

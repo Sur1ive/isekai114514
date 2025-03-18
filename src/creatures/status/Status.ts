@@ -6,17 +6,18 @@ export enum StatusDurationType {
   Turn = "Turn", // 回合结算完毕时-1
   Action = "Action", // 动作结算完毕时-1
   Hit = "Hit", // hit结算完毕时-1
+  Second = "Second", // 每秒-1
 }
 
 export enum StatusCategory {
-  // OnApply = "OnApply", // 立刻生效
+  OnSecond = "OnSecond", // 每秒生效
   OnTurnStart = "OnTurnStart", // 回合开始时生效
   // OnActionStart = "OnActionStart", // 动作开始时生效
   OnHitStart = "OnHitStart", // hit开始时生效
 }
 
 export type StatusEffectMap = {
-  // [StatusCategory.OnApply]: (self: Creature, statusLevel?: number) => void;
+  [StatusCategory.OnSecond]: (self: Creature, statusLevel?: number) => void;
   [StatusCategory.OnTurnStart]: (
     self: Creature,
     action1: Action,

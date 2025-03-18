@@ -7,7 +7,6 @@ import { ItemCategory } from "./items/types";
 import { EquipmentBar } from "./creatures/types";
 
 export function saveGame(player: Player) {
-  player.clearStatus();
   const plainPlayer = instanceToPlain(player);
   localStorage.setItem("playerData", JSON.stringify(plainPlayer));
 }
@@ -44,5 +43,9 @@ export function loadPlayer(): Player {
       );
     }
   });
+
+  // 清除状态。不保存的时候清除是为了保留secondStatus
+  player.clearStatus();
+
   return player;
 }
