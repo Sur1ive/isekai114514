@@ -20,6 +20,7 @@ export interface AbilityCoefficient {
   app: Coefficient;
   dex: Coefficient;
   armor: Coefficient;
+  piercing: Coefficient;
 }
 
 export interface Ability {
@@ -30,6 +31,7 @@ export interface Ability {
   app: number;
   dex: number;
   armor: number;
+  piercing: number;
 }
 
 export interface CreatureData {
@@ -41,7 +43,6 @@ export interface CreatureData {
 }
 
 export interface EquipmentBar {
-  head: Equipment | null;
   body: Equipment | null;
   hand: Equipment | null;
   foot: Equipment | null;

@@ -125,8 +125,8 @@ function attackAgainstAttack (
   playerHit: Hit,
   enemyHit: Hit,
 ): BattleResult {
-  const playerPower = calculatePower(playerHit.coeff, player.getAbility());
-  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
+  const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
+  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
   player.addTempLog(
     generatePointString(
       player,
@@ -138,7 +138,7 @@ function attackAgainstAttack (
     ),
   );
   if (playerPower >= enemyPower) {
-    const damage = calculateDamage(playerPower, enemy.getAbility().armor);
+    const damage = calculateDamage(playerPower, enemy.getAbility().armor, player.getAbility().piercing);
     enemy.loseHp(damage);
     player.addTempLog(
       playerHit.messageGenerator(player, enemy) +
@@ -151,7 +151,7 @@ function attackAgainstAttack (
     }
     return BattleResult.PlayerWin;
   } else {
-    const damage = calculateDamage(enemyPower, player.getAbility().armor);
+    const damage = calculateDamage(enemyPower, player.getAbility().armor, enemy.getAbility().piercing);
     player.loseHp(damage);
     player.addTempLog(
       enemyHit.messageGenerator(enemy, player) +
@@ -185,7 +185,7 @@ function attackAgainstNone(
     action = enemyHit;
   }
 
-  const power = calculatePower(action.coeff, actor.getAbility());
+  const power = calculatePower(action.coeff, actor.getAbility(), actor.getActionCoeff(action.category));
   player.addTempLog(
     generatePointString(
       player,
@@ -196,7 +196,7 @@ function attackAgainstNone(
       actor.isPlayer ? power : 0,
     ),
   );
-  const damage = calculateDamage(power, target.getAbility().armor);
+  const damage = calculateDamage(power, target.getAbility().armor, actor.getAbility().piercing);
   target.loseHp(damage);
   player.addTempLog(
     action.messageGenerator(actor, target) +
@@ -216,8 +216,8 @@ function attackAgainstDefend(
   playerHit: Hit,
   enemyHit: Hit,
 ): BattleResult {
-  const playerPower = calculatePower(playerHit.coeff, player.getAbility());
-  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
+  const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
+  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
   player.addTempLog(
     generatePointString(
       player,
@@ -239,7 +239,7 @@ function attackAgainstDefend(
   const defenderPower = isPlayerAttack ? enemyPower : playerPower;
   const power =
     attackerPower - defenderPower > 0 ? attackerPower - defenderPower : 0;
-  const damage = calculateDamage(power, defender.getAbility().armor);
+  const damage = calculateDamage(power, defender.getAbility().armor, attacker.getAbility().piercing);
   defender.loseHp(damage);
 
   if (power > 0) {
@@ -271,8 +271,8 @@ function attackAgainstDodge(
   playerHit: Hit,
   enemyHit: Hit,
 ): BattleResult {
-  const playerPower = calculatePower(playerHit.coeff, player.getAbility());
-  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility());
+  const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
+  const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
   player.addTempLog(
     generatePointString(
       player,
@@ -294,7 +294,7 @@ function attackAgainstDodge(
   const dodgerPower = isPlayerAttack ? enemyPower : playerPower;
 
   if (attackerPower > dodgerPower) {
-    const damage = calculateDamage(attackerPower, dodger.getAbility().armor);
+    const damage = calculateDamage(attackerPower, dodger.getAbility().armor, attacker.getAbility().piercing);
     dodger.loseHp(damage);
     player.addTempLog(
       attackerAction.messageGenerator(attacker, dodger) +

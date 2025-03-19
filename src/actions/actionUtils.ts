@@ -37,31 +37,33 @@ export function getHitsDescription(actor: Creature, action: Action): string {
   return action.hits
   .map(
     (hit) =>
-      `${getHitIcon(hit)}${hit.continuous ? "🔗" : ""}(${calculateMinPower(hit.coeff, actor.getAbility())}~${calculateMaxPower(hit.coeff, actor.getAbility())})`,
+      `${getHitIcon(hit)}${hit.continuous ? "🔗" : ""}(${calculateMinPower(hit.coeff, actor.getAbility(), actor.getActionCoeff(hit.category))}~${calculateMaxPower(hit.coeff, actor.getAbility(), actor.getActionCoeff(hit.category))})`,
     )
     .join("<br>");
 }
 
-export function calculateMaxPower(coeff: ActionCoeff, ability: Ability) {
+export function calculateMaxPower(coeff: ActionCoeff, ability: Ability, actionCoeff: { plus: number, multiply: number }) {
   return Math.round(
-    coeff.str * ability.str +
+    (coeff.str * ability.str +
       coeff.dex * ability.dex +
       coeff.int * ability.int +
       coeff.con * ability.con +
       coeff.siz * ability.siz +
-      coeff.app * ability.app,
+      coeff.app * ability.app) *
+      actionCoeff.multiply +
+      actionCoeff.plus,
   );
 }
 
-export function calculateMinPower(coeff: ActionCoeff, ability: Ability) {
-  return Math.round(calculateMaxPower(coeff, ability) * 0.1);
+export function calculateMinPower(coeff: ActionCoeff, ability: Ability, actionCoeff: { plus: number, multiply: number }) {
+  return Math.round(calculateMaxPower(coeff, ability, actionCoeff) * 0.1);
 }
 
-export function calculatePower(coeff: ActionCoeff, ability: Ability) {
+export function calculatePower(coeff: ActionCoeff, ability: Ability, actionCoeff: { plus: number, multiply: number }) {
   return (
-    calculateMinPower(coeff, ability) +
+    calculateMinPower(coeff, ability, actionCoeff) +
     Math.round(
-      (calculateMaxPower(coeff, ability) - calculateMinPower(coeff, ability)) *
+      (calculateMaxPower(coeff, ability, actionCoeff) - calculateMinPower(coeff, ability, actionCoeff)) *
         Math.random(),
     )
   );

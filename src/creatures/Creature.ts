@@ -10,6 +10,7 @@ import { Equipment } from "../items/Equipment";
 import type { EquipmentPosition } from "../items/types";
 import { statusConfigs, StatusType } from "./status/statusConfigs";
 import { StatusCategory, StatusEffectMap } from "./status/Status";
+import { HitCategory } from "../actions/types";
 
 export class Creature {
   isPlayer: boolean = false;
@@ -23,7 +24,6 @@ export class Creature {
   statuses: Status[] = [];
   pack: Item[] = [];
   equipments: EquipmentBar = {
-    head: null,
     body: null,
     hand: null,
     foot: null,
@@ -57,6 +57,7 @@ export class Creature {
       "app",
       "dex",
       "armor",
+      "piercing",
     ];
     const ability: Ability = {} as Ability;
     keys.forEach((key) => {
@@ -130,20 +131,13 @@ export class Creature {
       "app",
       "dex",
       "armor",
+      "piercing",
     ];
     // 累加装备的基础属性，若不存在则默认 0
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
         keys.forEach((key) => {
           ability[key] += equipment.ability?.[key] ?? 0;
-        });
-      }
-    }
-    // 乘以装备的行动系数，若不存在则默认 1
-    for (const equipment of Object.values(this.equipments)) {
-      if (equipment) {
-        keys.forEach((key) => {
-          ability[key] *= equipment.actionCoeff?.[key]?.multiply ?? 1;
         });
       }
     }
@@ -159,6 +153,20 @@ export class Creature {
       }
     }
     return actions;
+  }
+
+  // 获取行动系数加成
+  getActionCoeff(hitCategory: HitCategory): { plus: number, multiply: number } {
+    const actionCoeff = { plus: 0, multiply: 1 };
+    for (const equipment of Object.values(this.equipments)) {
+      if (equipment) {
+        actionCoeff.plus += equipment.actionCoeff[hitCategory]?.plus ?? 0;
+        if (equipment.actionCoeff[hitCategory]?.multiply) {
+          actionCoeff.multiply += equipment.actionCoeff[hitCategory].multiply - 1;
+        }
+      }
+    }
+    return actionCoeff;
   }
 
   // 添加状态

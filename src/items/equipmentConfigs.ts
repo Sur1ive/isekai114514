@@ -16,6 +16,7 @@ export enum EquipmentType {
   Rope = "Rope",
   DragonSlayer = "DragonSlayer",
   KatanaOfTheHeart = "KatanaOfTheHeart",
+  WomenDress = "WomenDress",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -28,7 +29,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Slash, weight: 0.8 },
       { actionType: ActionType.HorizontalSlash, weight: 0.2 },
     ],
-    ability: {},
+    ability: {
+      piercing: 25,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 1,
@@ -42,7 +47,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Common,
     position: EquipmentPosition.Hand,
     extraActions: [{ actionType: ActionType.Capture, weight: 0.2 }],
-    ability: {},
+    ability: {
+      piercing: 25,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: -1,
@@ -66,8 +75,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Mikiri, weight: 0.01 },
     ],
     ability: {
+      piercing: 25,
       dex: -1,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 1,
@@ -91,8 +103,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Mikiri, weight: 0.05 },
     ],
     ability: {
+      piercing: 25,
       dex: -2,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 4,
@@ -114,7 +129,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.StepSlash, weight: 0.4 },
       { actionType: ActionType.Mikiri, weight: 0.15 },
     ],
-    ability: {},
+    ability: {
+      piercing: 25,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 3,
@@ -133,8 +152,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Mikiri, weight: 0.3 },
     ],
     ability: {
+      piercing: 25,
       dex: 1,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 10,
@@ -154,7 +176,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     extraActions: [
       { actionType: ActionType.Mikiri, weight: 1 },
     ],
-    ability: {},
+    ability: {
+      piercing: 25,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 10,
@@ -177,8 +203,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.QuickAttack, weight: 0.5 },
     ],
     ability: {
+      piercing: 25,
       dex: 1,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Dodge]: {
         plus: 1,
@@ -197,8 +226,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.SpinAttack, weight: 0.4 },
     ],
     ability: {
+      piercing: 25,
       dex: 2,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 1,
@@ -224,7 +256,10 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     ability: {
       str: 1,
       con: 1,
+      piercing: 25,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 2,
@@ -248,7 +283,10 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     ability: {
       str: 1,
       con: 2,
+      piercing: 25,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 3,
@@ -270,7 +308,23 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     ability: {
       int: 2,
       dex: 2,
+      piercing: 25,
     },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
+    actionCoeff: {},
+  },
+  [EquipmentType.WomenDress]: {
+    name: "女装",
+    description: "女装",
+    rarity: Rarity.Common,
+    position: EquipmentPosition.Body,
+    extraActions: [],
+    ability: {
+      armor: 15,
+    },
+    armorGrowthCoeff: 3,
+    piercingGrowthCoeff: 0,
     actionCoeff: {},
   },
 };

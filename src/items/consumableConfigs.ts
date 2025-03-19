@@ -68,9 +68,9 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
     effect: (_target: Creature) => {},
   },
   [ConsumableType.QuickRecoveryPotion]: {
-    name: "超级无敌快速恢复秘药",
+    name: "神秘黄色药水",
     rarity: Rarity.Epic,
-    description: "看起来不像是这个世界的产物<p>自动回复速度提升15倍，持续1分钟</p>",
+    description: "看起来不像是这个世界的产物。非常的新鲜，非常的美味<p>自动回复速度提升15倍，持续1分钟</p>",
     effect: (target: Creature) => {
       target.addStatus(StatusType.QuickRecovery, 60, 14);
       console.log("使用快速恢复秘药");
@@ -87,7 +87,7 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
   [ConsumableType.LargeLifePotion]: {
     name: "大瓶生命秘药",
     rarity: Rarity.Epic,
-    description: "喝普通的生命秘药一次只能长一只断胳膊，而喝这大瓶装一次能全长回来。前提是你还有手可以拿它<p>恢复100点生命值</p>",
+    description: "普通的生命秘药一次只能让你长一只胳膊，而这大瓶装能让你一次全长回来。前提是你还有手可以拿它<p>恢复100点生命值</p>",
     effect: (target: Creature) => {
       target.recoverHp(100);
     },

@@ -15,7 +15,6 @@ export interface EquipmentActionCoeffValue {
 }
 
 export enum EquipmentPosition {
-  Head = "head",
   Body = "body",
   Hand = "hand",
   Foot = "foot",
@@ -37,6 +36,8 @@ export interface EquipmentData {
   position: EquipmentPosition;
   extraActions: WeightedActionType[];
   ability: EquipmentAbility;
+  armorGrowthCoeff: number;
+  piercingGrowthCoeff: number;
   actionCoeff: EquipmentActionCoeff;
 }
 

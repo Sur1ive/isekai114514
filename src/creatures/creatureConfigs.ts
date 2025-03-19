@@ -27,6 +27,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       app: { base: 5, growth: 0 },
       dex: { base: 5, growth: 0.1 },
       armor: { base: 0, growth: 0 },
+      piercing: { base: 0, growth: 0 },
     },
     actions: [
       { actionType: ActionType.Attack, weight: 0.5 },
@@ -47,6 +48,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       app: { base: 7, growth: 0 }, // 没有魅力怎么能吸引后辈
       dex: { base: 5, growth: 0.05 },
       armor: { base: 0, growth: 0 },
+      piercing: { base: 0, growth: 0 },
     },
     actions: [
       { actionType: ActionType.PowerfulDigAttack, weight: 0.4 },
@@ -59,7 +61,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
   },
   [CreatureType.Toono]: {
     typeName: "远野",
-    description: "后辈",
+    description: "野兽学派的哲学家后辈",
     abilityCoeff: {
       str: { base: 10, growth: 0.1 },
       int: { base: 5, growth: 0.1 },
@@ -67,7 +69,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 5, growth: 0 },
       app: { base: 5, growth: 0 },
       dex: { base: 5, growth: 0.1 },
-      armor: { base: 0, growth: 0 },
+      armor: { base: 0, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.PowerfulDigAttack, weight: 0.4 },
@@ -86,7 +89,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 2, growth: 0 },
       app: { base: 0, growth: 0 },
       dex: { base: 1, growth: 0.05 },
-      armor: { base: 50, growth: 1 },
+      armor: { base: 25, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Attack, weight: 1 },
@@ -112,7 +116,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 20, growth: 0.2 },
       app: { base: 4, growth: 0.1 },
       dex: { base: 4, growth: 0.1 },
-      armor: { base: 50, growth: 10 },
+      armor: { base: 50, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Bite, weight: 0.1 },
@@ -137,6 +142,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       app: { base: 2, growth: 0.05 },
       dex: { base: 6, growth: 0.15 },
       armor: { base: 25, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Bite, weight: 0.1 },
@@ -157,7 +163,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 20, growth: 0.2 },
       app: { base: 2, growth: 0.05 },
       dex: { base: 4, growth: 0.1 },
-      armor: { base: 20, growth: 3 },
+      armor: { base: 20, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Bite, weight: 0.2 },
@@ -182,7 +189,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 4, growth: 0.05 },
       app: { base: 2, growth: 0 },
       dex: { base: 6, growth: 0.15 },
-      armor: { base: 0, growth: 1 },
+      armor: { base: 0, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Bite, weight: 1 },
@@ -207,7 +215,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 15, growth: 0 },
       app: { base: 0, growth: 0 },
       dex: { base: 0, growth: 0 },
-      armor: { base: 100, growth: 0 },
+      armor: { base: 75, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Dazed, weight: 2 },
@@ -233,7 +242,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 5, growth: 0.2 },
       app: { base: 5, growth: 0.2 },
       dex: { base: 5, growth: 0.2 },
-      armor: { base: 0, growth: 0.2 },
+      armor: { base: 0, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.GodStrike, weight: 1 },

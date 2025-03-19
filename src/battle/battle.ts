@@ -7,8 +7,9 @@ import { getHitIcon } from "../tools";
 import { renderMainMenu } from "../pages/mainMenu";
 import { renderBattlePage } from "../pages/battlePage";
 
-export function calculateDamage(power: number, armor: number) {
-  return power * (25 / (armor + 25));
+export function calculateDamage(power: number, armor: number, piercing: number) {
+  const realArmor = armor - piercing > 0 ? armor - piercing : 0;
+  return power * (50 / (realArmor + 50));
 }
 
 // 生成拼点字符串

@@ -7,7 +7,7 @@ import { EquipmentPosition } from "./types";
 // 生成随机前缀
 export function generateRandomPrefix(rarity: Rarity, position: EquipmentPosition) {
   const prefixKeys = Object.keys(prefixConfigs).filter(
-    (key) => prefixConfigs[key as PrefixType].rarity === rarity && prefixConfigs[key as PrefixType].position === position ,
+    (key) => prefixConfigs[key as PrefixType].rarity === rarity && (prefixConfigs[key as PrefixType].position === position || prefixConfigs[key as PrefixType].position === "AnyPosition"),
   );
   const randomIndex = Math.floor(Math.random() * prefixKeys.length);
   const randomPrefixKey = prefixKeys[randomIndex];

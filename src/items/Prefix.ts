@@ -4,7 +4,6 @@ import { EquipmentAbility, EquipmentActionCoeff, EquipmentPosition } from "./typ
 
 export interface Prefix {
   name: string;
-  description: string;
   position: EquipmentPosition | "AnyPosition";
   rarity: Rarity;
   extraActions: WeightedActionType[];
