@@ -13,6 +13,7 @@ export enum StatusType {
   Wound = "Wound",
   Burning = "Burning",
   QuickRecovery = "QuickRecovery",
+  Dizzy = "Dizzy",
 }
 
 export const statusConfigs: Record<StatusType, StatusData> = {
@@ -56,6 +57,16 @@ export const statusConfigs: Record<StatusType, StatusData> = {
     name: "失衡",
     description: "重心不稳，丢失当前Hit",
     durationType: StatusDurationType.Hit,
+    category: StatusCategory.OnHitStart,
+    priority: 999,
+    effect: (_self: Creature, _hit: Hit) => {
+      return NoHit;
+    },
+  },
+  [StatusType.Dizzy]: {
+    name: "头晕眼花",
+    description: "丢失当回合所有hit",
+    durationType: StatusDurationType.Turn,
     category: StatusCategory.OnHitStart,
     priority: 999,
     effect: (_self: Creature, _hit: Hit) => {

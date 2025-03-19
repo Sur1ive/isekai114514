@@ -13,6 +13,7 @@ export enum CreatureType {
   DiscardedGolem = "DiscardedGolem",
   Ayulsa = "Ayulsa",
   Toono = "Toono",
+  Horse = "Horse",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -254,5 +255,30 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.PsyDodge, weight: 1 },
     ],
     dropItems: [{ type: ConsumableType.DiamondChest, weight: 1 }],
+  },
+
+  [CreatureType.Horse]: {
+    typeName: "马 (?)",
+    description: "看起来好像不是普通的马",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.1 },
+      int: { base: 5, growth: 0 },
+      con: { base: 7.5, growth: 0.3 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 10, growth: 0.2 },
+      armor: { base: 0, growth: 4.5 },
+      piercing: { base: 0, growth: 5.5 },
+    },
+    actions: [
+      { actionType: ActionType.SneakAttack, weight: 1 },
+      { actionType: ActionType.LightningFiveStrikes, weight: 1 },
+    ],
+    dropItems: [
+      { type: ConsumableType.BrokenChest, weight: 0.2 },
+      { type: ConsumableType.WoodenChest, weight: 0.8 },
+      { type: ConsumableType.SilverChest, weight: 0.04 },
+      { type: ConsumableType.GoldChest, weight: 0.002 },
+    ],
   },
 };

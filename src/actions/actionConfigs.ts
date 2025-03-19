@@ -41,6 +41,7 @@ export enum ActionType {
   LightningFiveStrikes = "LightningFiveStrikes",
   CrowFly = "CrowFly",
   ParkDestroyer = "ParkDestroyer",
+  SneakAttack = "SneakAttack",
 }
 
 export const NoHit: Hit = {
@@ -742,7 +743,7 @@ export const actionConfigs: Record<ActionType, Action> = {
 
   [ActionType.LightningFiveStrikes]: {
     name: "闪电五连鞭",
-    description: "曾经武林中有一位马大师，靠着这套五连鞭驰骋江湖，可惜后来被两个年轻人偷袭，从此销声匿迹",
+    description: "相传武林中有一位马大师，靠着这套五连鞭驰骋江湖，可惜后来被两个年轻人偷袭，从此销声匿迹",
     rarity: Rarity.Masterpiece,
     hits: [
       {
@@ -769,6 +770,22 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (_actor: Creature, _target: Creature) => `第五鞭！`,
+      },
+    ],
+  },
+
+  [ActionType.SneakAttack]: {
+    name: "偷袭",
+    description: "来！骗！来！偷袭！",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 来！骗！来！偷袭！`,
+        extraEffect: (_actor: Creature, target: Creature) => {
+          target.addStatus(StatusType.Dizzy, 1);
+        }
       },
     ],
   },
