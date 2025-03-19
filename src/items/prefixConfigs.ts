@@ -16,6 +16,7 @@ export enum PrefixType {
   Holy = "Holy",
   BeastHeart = "BeastHeart",
   DragonForge = "DragonForge",
+  Sneaky = "Sneaky",
 }
 
 export const prefixConfigs: Record<PrefixType, Prefix> = {
@@ -66,6 +67,16 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
         multiply: 1,
       },
     },
+  },
+  [PrefixType.Sneaky]: {
+    name: "卑鄙的",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Common,
+    extraActions: [
+      { actionType: ActionType.SneakAttack, weight: 0.2 },
+    ],
+    ability: {},
+    actionCoeff: {},
   },
   [PrefixType.Sharp]: {
     name: "锐利的",
