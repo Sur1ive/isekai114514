@@ -36,6 +36,11 @@ export enum ActionType {
   StepSlash = "StepSlash",
   Mikiri = "Mikiri",
   SpiritRoundSlash = "SpiritRoundSlash",
+  NeverRetreat = "NeverRetreat",
+  LightningStormSlash = "LightningStormSlash",
+  LightningFiveStrikes = "LightningFiveStrikes",
+  CrowFly = "CrowFly",
+  ParkDestroyer = "ParkDestroyer",
 }
 
 export const NoHit: Hit = {
@@ -649,6 +654,121 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0, int: 12, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (_actor: Creature, target: Creature) =>
           `无数看不见的剑贯穿${target.name}`,
+      },
+    ],
+  },
+
+  [ActionType.NeverRetreat]: {
+    name: "死守不退",
+    description: "全力防御，死守不退",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Defend,
+        coeff: { str: 2, int: 0, con: 2, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 全力防御`,
+      },
+      {
+        category: HitCategory.Defend,
+        coeff: { str: 1, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 死守不退`,
+      }
+    ],
+  },
+
+  [ActionType.CrowFly]: {
+    name: "乌鸦坐飞机",
+    description: "高高跃起后发起攻击",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 3 },
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 一个大跳`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, target: Creature) => `${actor.name} 从空中一拳打向 ${target.name}`,
+      },
+    ]
+  },
+
+  [ActionType.ParkDestroyer]: {
+    name: "龙卷风击毁停车场",
+    description: "释放武器中的狂风之力，形成狂暴的龙卷风",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
+        messageGenerator: (_actor: Creature, target: Creature) => `风卷着尘土袭向 ${target.name}`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `回旋的风聚成龙卷`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 1.5, int: 0, con: 0, siz: 0, app: 0, dex: 1.5 },
+        messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 从龙卷风中刺出`,
+      },
+    ]
+  },
+
+  [ActionType.LightningStormSlash]: {
+    name: "闪电旋风劈",
+    description: "闪！电！旋！风！劈！",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `闪电！`,
+      },
+      {
+        category: HitCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `旋风！`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `劈！`,
+      }
+    ],
+  },
+
+  [ActionType.LightningFiveStrikes]: {
+    name: "闪电五连鞭",
+    description: "曾经武林中有一位马大师，靠着这套五连鞭驰骋江湖，可惜后来被两个年轻人偷袭，从此销声匿迹",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `第一鞭！`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `第二鞭！`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `第三鞭！`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `第四鞭！`,
+      },
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (_actor: Creature, _target: Creature) => `第五鞭！`,
       },
     ],
   },

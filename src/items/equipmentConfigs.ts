@@ -215,15 +215,15 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
-  [EquipmentType.WindSpinSword]: { //todo
+  [EquipmentType.WindSpinSword]: {
     name: "风旋刺剑",
     description: "靠近剑身能听到轻轻的风声",
     rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Hand,
     extraActions: [
-      { actionType: ActionType.QuickAttack, weight: 0.4 },
-      { actionType: ActionType.Dodge, weight: 0.2 },
-      { actionType: ActionType.SpinAttack, weight: 0.4 },
+      { actionType: ActionType.SpinAttack, weight: 0.6 },
+      { actionType: ActionType.ParkDestroyer, weight: 0.15 },
+      { actionType: ActionType.LightningStormSlash, weight: 0.15 },
     ],
     ability: {
       piercing: 35,
@@ -242,16 +242,15 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
-  [EquipmentType.RockSword]: { //todo
+  [EquipmentType.RockSword]: {
     name: "剑型大石头",
     description: "一把很宽的石头大剑，看起来就像块大石头",
     rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Hand,
     extraActions: [
-      { actionType: ActionType.DefenseSlash, weight: 0.4 },
-      { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.DefenseSlash, weight: 0.3 },
       { actionType: ActionType.Counter, weight: 0.4 },
-      { actionType: ActionType.PowerAttack, weight: 0.2 },
+      { actionType: ActionType.NeverRetreat, weight: 0.3 },
     ],
     ability: {
       str: 1,
@@ -261,10 +260,6 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     armorGrowthCoeff: 0,
     piercingGrowthCoeff: 5.5,
     actionCoeff: {
-      [HitCategory.Attack]: {
-        plus: 2,
-        multiply: 1,
-      },
       [HitCategory.Defend]: {
         plus: 3,
         multiply: 1,
@@ -317,9 +312,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.WomenDress]: {
     name: "女装",
     description: "女装",
-    rarity: Rarity.Common,
+    rarity: Rarity.Rare,
     position: EquipmentPosition.Body,
-    extraActions: [],
+    extraActions: [
+      { actionType: ActionType.CrowFly, weight: 0.05 },
+    ],
     ability: {
       armor: 15,
     },

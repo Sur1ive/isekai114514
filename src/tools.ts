@@ -76,17 +76,18 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
   let abilitiesHtml = "";
   if (equipment.ability && Object.keys(equipment.ability).length > 0) {
     abilitiesHtml = `
-      <div class="tooltip-abilities tooltip-extra">
-        <p><strong>属性: </strong>
-          ${Object.entries(equipment.ability)
-            .map(([stat, value]) => value ? `${stat}: ${value}` : "")
-            .join(", ")}
-        </p>
-      </div>
-    `;
+    <div class="tooltip-abilities tooltip-extra">
+      <p><strong>属性: </strong>
+        ${Object.entries(equipment.ability)
+          .filter(([_stat, value]) => value)
+          .map(([stat, value]) => `${stat}: ${value}`)
+          .join(", ")}
+      </p>
+    </div>
+  `;
   }
 
-  // 额外行动部分，根据 extraActions 数组生成（假设通过 equipmentConfigs[actionType].name 获取行动名称）
+  // 额外行动部分，根据 extraActions 数组生成
   let extraActionsHtml = "";
   if (equipment.extraActions && equipment.extraActions.length > 0) {
     extraActionsHtml = `
