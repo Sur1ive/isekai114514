@@ -5,7 +5,7 @@ import { ConsumableType, consumableConfigs } from "./consumableConfigs";
 import { v4 as uuidv4 } from "uuid";
 
 export class Consumable extends Item {
-  constructor(type: ConsumableType) {
+  constructor(type: ConsumableType, level: number = 0) {
     type = type || ConsumableType.Unknown;
     const data = consumableConfigs[type];
     super(
@@ -14,6 +14,7 @@ export class Consumable extends Item {
       ItemCategory.Consumable,
       type,
       data.rarity,
+      level,
       data.description,
     );
   }

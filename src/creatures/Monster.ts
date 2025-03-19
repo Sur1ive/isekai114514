@@ -35,7 +35,7 @@ export class Monster extends Creature {
     let random = Math.random() * totalWeight;
     for (const item of this.dropItems) {
       if (random < item.weight && item.type) {
-        return generateItem(item.type);
+        return generateItem(item.type, this.level);
       }
       random -= item.weight;
     }

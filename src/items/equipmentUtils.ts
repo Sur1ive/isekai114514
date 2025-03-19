@@ -16,12 +16,12 @@ export function generateRandomPrefix(rarity: Rarity, position: EquipmentPosition
 }
 
 // 根据稀有度随机抽取装备类型
-export function generateRandomEquipment(rarity: Rarity): Equipment {
+export function generateRandomEquipment(rarity: Rarity, level: number): Equipment {
   // 筛选出稀有度为rarity的装备类型
   const equipmentKeys = Object.keys(equipmentConfigs).filter(
     (key) => equipmentConfigs[key as EquipmentType].rarity === rarity,
   );
   const randomIndex = Math.floor(Math.random() * equipmentKeys.length);
   const randomEquipmentKey = equipmentKeys[randomIndex];
-  return new Equipment(randomEquipmentKey as EquipmentType);
+  return new Equipment(randomEquipmentKey as EquipmentType, level);
 }

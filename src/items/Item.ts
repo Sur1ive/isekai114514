@@ -7,6 +7,7 @@ export abstract class Item {
   category: ItemCategory;
   type: ItemType;
   rarity: Rarity;
+  level: number;
   description: string;
   constructor(
     name: string,
@@ -14,6 +15,7 @@ export abstract class Item {
     category: ItemCategory,
     type: ItemType,
     rarity: Rarity,
+    level: number,
     description: string,
   ) {
     this.name = name;
@@ -21,6 +23,7 @@ export abstract class Item {
     this.category = category;
     this.type = type;
     this.rarity = rarity;
+    this.level = level;
     this.description = description;
   }
 }

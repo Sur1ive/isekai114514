@@ -65,7 +65,7 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
   // 基本信息部分：名称、稀有度、描述、装备位置
   const baseInfo = `
     <div class="tooltip-base tooltip-header">
-      <h5 class="text-${Rarity[equipment.rarity]}" style="font-weight: bold;">${equipment.name}</h5>
+      <h5 class="text-${Rarity[equipment.rarity]}" style="font-weight: bold;">lv${equipment.level} ${equipment.name}</h5>
       <p>${equipment.description}</p>
       <p><strong>位置:</strong> ${equipment.position}</p>
       <br>
@@ -79,7 +79,7 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
       <div class="tooltip-abilities tooltip-extra">
         <p><strong>属性: </strong>
           ${Object.entries(equipment.ability)
-            .map(([stat, value]) => `${stat}: ${value}`)
+            .map(([stat, value]) => value ? `${stat}: ${value}` : "")
             .join(", ")}
         </p>
       </div>
@@ -95,7 +95,7 @@ function generateEquipmentTooltipContent(equipment: Equipment): string {
           ${equipment.extraActions
             .map(
               (action) =>
-                `${actionConfigs[action.actionType].name} (权重: ${action.weight})`,
+                `${actionConfigs[action.actionType].name} (权重: ${action.weight.toFixed(2)})`,
             )
             .join(", ")}
       </div>
@@ -129,7 +129,7 @@ export function generateItemTooltipContent(item: Item): string {
   if (item instanceof Consumable) {
     return `
       <div class="tooltip-base tooltip-header">
-        <h5 class="text-${Rarity[item.rarity]}">${item.name}</h5>
+        <h5 class="text-${Rarity[item.rarity]}">${item.level ? `lv${item.level}` : ""} ${item.name}</h5>
         <p>${item.description}</p>
       </div>
     `;

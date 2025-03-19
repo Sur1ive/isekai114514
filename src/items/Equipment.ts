@@ -15,7 +15,6 @@ import { Rarity } from "../types";
 export class Equipment extends Item {
   position: EquipmentPosition;
   extraActions: WeightedActionType[];
-  level: number;
   ability: EquipmentAbility;
   armorGrowthCoeff: number;
   piercingGrowthCoeff: number;
@@ -31,9 +30,9 @@ export class Equipment extends Item {
       ItemCategory.Equipment,
       type,
       data.rarity,
+      level,
       data.description,
     );
-    this.level = level;
     this.armorGrowthCoeff = data.armorGrowthCoeff;
     this.piercingGrowthCoeff = data.piercingGrowthCoeff;
     this.position = data.position;
@@ -52,8 +51,7 @@ export class Equipment extends Item {
     this.ability.piercing += this.piercingGrowthCoeff * this.level;
 
     this.prefix = generateRandomPrefix(this.randomPrefixRarity(), data.position);
-
-
+    this.applyPrefix();
   }
 
   // 行动列表权重波动 20%
@@ -117,6 +115,8 @@ export class Equipment extends Item {
     });
 
     this.extraActions.push(...this.prefix.extraActions);
+
+    this.name = `${this.prefix.name}${this.name}`;
   }
 
   levelup() {
