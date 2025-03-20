@@ -36,7 +36,7 @@ export function generateEquipmentTooltipContent(equipment: Equipment): string {
   const baseInfo = `
     <div class="tooltip-base tooltip-header">
       <h5 class="text-${Rarity[equipment.rarity]}" style="font-weight: bold;">lv${equipment.level} ${equipment.name}</h5>
-      <p>${equipment.description}</p>
+      <p class="fst-italic">"${equipment.description}"</p>
       <p><strong>位置:</strong> ${equipment.position}</p>
       <br>
     </div>

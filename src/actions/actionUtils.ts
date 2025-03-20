@@ -44,7 +44,7 @@ export function getHitsDescription(actor: Creature, action: Action): string {
 }
 
 export function calculateMaxPower(coeff: ActionCoeff, ability: Ability, actionCoeff: { plus: number, multiply: number }) {
-  return Math.round(
+  const power = Math.round(
     (coeff.str * ability.str +
       coeff.dex * ability.dex +
       coeff.int * ability.int +
@@ -54,10 +54,18 @@ export function calculateMaxPower(coeff: ActionCoeff, ability: Ability, actionCo
       actionCoeff.multiply +
       actionCoeff.plus,
   );
+  if (power < 0) {
+    return 0;
+  }
+  return power;
 }
 
 export function calculateMinPower(coeff: ActionCoeff, ability: Ability, actionCoeff: { plus: number, multiply: number }) {
-  return Math.round(calculateMaxPower(coeff, ability, actionCoeff) * 0.1);
+  const power = Math.round(calculateMaxPower(coeff, ability, actionCoeff) * 0.1);
+  if (power < 0) {
+    return 0;
+  }
+  return power;
 }
 
 export function calculatePower(coeff: ActionCoeff, ability: Ability, actionCoeff: { plus: number, multiply: number }) {
@@ -106,7 +114,7 @@ export function getHitIcon(hit: Hit): string {
  */
 export function generateActionPopoverContent(player: Player, action: Action): string {
   return `
-    <p>${action.description}</p>
+    <p class="fst-italic">"${action.description}"</p>
     <p>系数 (点数范围)</p>
     <p>${action.hits.map(hit => `${getHitIcon(hit)}${hit.continuous ? "🔗" : ""}${Object.entries(hit.coeff)
           .filter(([_stat, value]) => value)

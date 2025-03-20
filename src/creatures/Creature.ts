@@ -120,6 +120,7 @@ export class Creature {
     }
   }
 
+  // 获取装备的额外能力值
   getExtraAbility(): Ability {
     const ability: Ability = {
       str: 0,
@@ -166,24 +167,28 @@ export class Creature {
       "piercing",
     ];
     // 累加装备的基础属性，若不存在则默认 0
-    for (const equipment of Object.values(this.equipments)) {
-      if (equipment) {
-        keys.forEach((key) => {
-          ability[key] += equipment.ability?.[key] ?? 0;
-        });
-      }
+    const extraAbility = this.getExtraAbility();
+    for (const key of keys) {
+      ability[key] += extraAbility[key];
     }
     return ability;
   }
 
-  // 获取装备加成后的行动列表
-  getActions(): WeightedActionType[] {
-    const actions = [...this.actions];
+  // 获取装备的额外行动列表
+  getExtraActions(): WeightedActionType[] {
+    const actions: WeightedActionType[] = [];
     for (const equipment of Object.values(this.equipments)) {
       if (equipment) {
         actions.push(...equipment.extraActions);
       }
     }
+    return actions;
+  }
+
+  // 获取装备加成后的行动列表
+  getActions(): WeightedActionType[] {
+    const actions = [...this.actions];
+    actions.push(...this.getExtraActions());
     return actions;
   }
 

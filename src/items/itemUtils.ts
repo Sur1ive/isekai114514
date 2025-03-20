@@ -26,7 +26,7 @@ export function generateItemTooltipContent(item: Item): string {
     return `
       <div class="tooltip-base tooltip-header">
         <h5 class="text-${Rarity[item.rarity]}">${item.level ? `lv${item.level}` : ""} ${item.name}</h5>
-        <p>${item.description}</p>
+        <p class="fst-italic">"${item.description}"</p>
       </div>
     `;
   }
@@ -40,7 +40,7 @@ export function generateItemTooltipContent(item: Item): string {
   return `
     <div class="tooltip-base">
       <h5>${item.name}</h5>
-      <p>${item.description}</p>
+      <p class="fst-italic">"${item.description}"</p>
     </div>
   `;
 }
