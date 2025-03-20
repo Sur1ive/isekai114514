@@ -1,6 +1,6 @@
 import { Player } from "./creatures/Player";
 import { instanceToPlain, plainToInstance } from "class-transformer";
-import { setIntervals } from "./global";
+import { setIntervals } from "./globalIntervals";
 import { Equipment } from "./items/Equipment";
 import { Consumable } from "./items/Consumable";
 import { ItemCategory } from "./items/types";

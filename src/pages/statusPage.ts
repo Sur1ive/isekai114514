@@ -1,9 +1,4 @@
 import { Player } from "../creatures/Player";
-import {
-  getAppElement,
-  getItemIcon,
-  generateItemTooltipContent,
-} from "../tools";
 import { saveGame } from "../save";
 import { Consumable } from "../items/Consumable";
 import { Equipment } from "../items/Equipment";
@@ -12,6 +7,9 @@ import { renderMainMenu } from "./mainMenu";
 import { Rarity } from "../types";
 import { Ability } from "../creatures/types";
 import { actionConfigs } from "../actions/actionConfigs";
+import { generateItemTooltipContent, getItemIcon } from "../items/itemUtils";
+import { getAppElement } from "./utils";
+import { generateActionPopoverContent } from "../actions/actionUtils";
 
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
@@ -79,18 +77,25 @@ export function renderStatusPage(player: Player): void {
             </div>
             <div class="card-body">
               <ul class="list-group">
-                ${player.getActions().map(action => `
-                  <li class="list-group-item" tabindex="0"
-                      data-bs-toggle="popover"
-                      data-bs-trigger="focus"
-                      data-bs-title="${actionConfigs[action.actionType].name}"
-                      data-bs-content="">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span>${actionConfigs[action.actionType].name}</span>
-                      <span class="badge bg-primary">${action.weight.toFixed(2)}</span>
-                    </div>
-                  </li>
-                `).join("")}
+                ${player.getActions()
+                  .sort((a, b) => actionConfigs[b.actionType].rarity - actionConfigs[a.actionType].rarity)
+                  .map(action => `
+                    <li class="list-group-item" tabindex="0"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="focus"
+                        data-bs-html="true"
+                        data-bs-title="${actionConfigs[action.actionType].name}"
+                        data-bs-content="
+                          <div>
+                            ${generateActionPopoverContent(player, actionConfigs[action.actionType])}
+                          </div>
+                        ">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>${actionConfigs[action.actionType].name}</span>
+                        <span class="badge bg-${Rarity[actionConfigs[action.actionType].rarity]}">${action.weight.toFixed(2)}</span>
+                      </div>
+                    </li>
+                  `).join("")}
               </ul>
             </div>
           </div>

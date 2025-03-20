@@ -1,7 +1,7 @@
-import { getAppElement } from "../tools";
 import { Player } from "../creatures/Player";
 import { testBattle } from "../battle/battle";
 import { renderMainMenu } from "./mainMenu";
+import { getAppElement } from "./utils";
 
 // 渲染地图列表
 export function renderMapListPage(player: Player): void {

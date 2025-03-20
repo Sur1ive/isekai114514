@@ -1,14 +1,14 @@
 import { Player } from "../creatures/Player";
-import { getAppElement } from "../tools";
 import { renderMainMenu } from "./mainMenu";
 import { CreatureType } from "../creatures/creatureConfigs";
-import { setIntervals } from "../global";
+import { setIntervals } from "../globalIntervals";
 import { saveGame } from "../save";
 import { Monster } from "../creatures/Monster";
 import { renderBattlePage } from "./battlePage";
 import angryImage from "../assets/1919.gif";
 import { Consumable } from "../items/Consumable";
 import { ConsumableType } from "../items/consumableConfigs";
+import { getAppElement } from "./utils";
 
 // 渲染开始界面
 export function renderStartPage(): void {

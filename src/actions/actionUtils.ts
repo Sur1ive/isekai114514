@@ -2,9 +2,10 @@ import type { Creature } from "../creatures/Creature";
 import { Player } from "../creatures/Player";
 import type { Monster } from "../creatures/Monster";
 import type { Action } from "./Action";
-import { getHitIcon } from "../tools";
 import type { Ability } from "../creatures/types";
 import { ActionCoeff } from "./types";
+import { HitCategory } from "./types";
+import { Hit } from "./Action";
 
 export function capture(actor: Creature, target: Creature): void {
   // actor不是玩家，则不进行任何操作
@@ -67,4 +68,49 @@ export function calculatePower(coeff: ActionCoeff, ability: Ability, actionCoeff
         Math.random(),
     )
   );
+}
+
+export function getHitIcon(hit: Hit): string {
+  switch (hit.category) {
+    case HitCategory.Attack:
+      return "🗡️";
+    case HitCategory.Defend:
+      return "🛡️";
+    case HitCategory.Dodge:
+      return "💫";
+    case HitCategory.Capture:
+      return "🕸️";
+    case HitCategory.Special:
+      return "💥";
+    // case HitCategory.DexAction:
+    //   return "💫";
+    // case HitCategory.StrAction:
+    //   return "🦾";
+    // case HitCategory.IntAction:
+    //   return "📚";
+    // case HitCategory.ConAction:
+    //   return "❤️‍🔥";
+    // case HitCategory.SizAction:
+    //   return "🐋";
+    // case HitCategory.AppAction:
+    //   return "✨";
+    case HitCategory.None:
+      return "❔";
+    default:
+      return "";
+  }
+}
+
+/**
+ * 根据不同的动作类型生成 popover 内容
+ */
+export function generateActionPopoverContent(player: Player, action: Action): string {
+  return `
+    <p>${action.description}</p>
+    <p>系数 (点数范围)</p>
+    <p>${action.hits.map(hit => `${getHitIcon(hit)}${hit.continuous ? "🔗" : ""}${Object.entries(hit.coeff)
+          .filter(([_stat, value]) => value)
+          .map(([stat, value]) => `${stat}: ${value}`)
+          .join(", ")} (${calculateMinPower(hit.coeff, player.getAbility(), player.getActionCoeff(hit.category))}~${calculateMaxPower(hit.coeff, player.getAbility(), player.getActionCoeff(hit.category))})`).join("<br>")}</p>
+  `;
 }

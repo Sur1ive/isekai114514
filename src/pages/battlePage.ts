@@ -2,7 +2,7 @@ import { Monster } from "../creatures/Monster";
 import { observeEnemyAction } from "../battle/battle";
 import { handleAction } from "../battle/actionInteractions";
 import { saveGame } from "../save";
-import { getAppElement } from "../tools";
+import { getAppElement } from "./utils";
 import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 import { getHitsDescription } from "../actions/actionUtils";

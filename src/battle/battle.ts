@@ -1,9 +1,8 @@
 import { HitCategory } from "../actions/types";
 import type { Action, Hit } from "../actions/Action";
-import { getHitsDescription } from "../actions/actionUtils";
+import { getHitsDescription, getHitIcon } from "../actions/actionUtils";
 import type { Player } from "../creatures/Player";
 import { Monster } from "../creatures/Monster";
-import { getHitIcon } from "../tools";
 import { renderMainMenu } from "../pages/mainMenu";
 import { renderBattlePage } from "../pages/battlePage";
 

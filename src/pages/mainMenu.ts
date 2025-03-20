@@ -1,6 +1,6 @@
 import playerImage from "../assets/player.gif";
 import { Player } from "../creatures/Player";
-import { getAppElement } from "../tools";
+import { getAppElement } from "./utils";
 import { saveGame } from "../save";
 import { CreatureType } from "../creatures/creatureConfigs";
 import { renderStatusPage } from "./statusPage";
