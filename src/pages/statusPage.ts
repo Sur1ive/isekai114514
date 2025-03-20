@@ -79,7 +79,7 @@ export function renderStatusPage(player: Player): void {
             </div>
             <div class="card-body">
               <ul class="list-group">
-                ${player.actions.map(action => `
+                ${player.getActions().map(action => `
                   <li class="list-group-item" tabindex="0"
                       data-bs-toggle="popover"
                       data-bs-trigger="focus"
