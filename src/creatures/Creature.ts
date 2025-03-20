@@ -120,6 +120,38 @@ export class Creature {
     }
   }
 
+  getExtraAbility(): Ability {
+    const ability: Ability = {
+      str: 0,
+      int: 0,
+      con: 0,
+      siz: 0,
+      app: 0,
+      dex: 0,
+      armor: 0,
+      piercing: 0,
+    };
+    const keys: (keyof Ability)[] = [
+      "str",
+      "int",
+      "con",
+      "siz",
+      "app",
+      "dex",
+      "armor",
+      "piercing",
+    ];
+    // 累加装备的基础属性，若不存在则默认 0
+    for (const equipment of Object.values(this.equipments)) {
+      if (equipment) {
+        keys.forEach((key) => {
+          ability[key] += equipment.ability?.[key] ?? 0;
+        });
+      }
+    }
+    return ability;
+  }
+
   // 获取装备加成后的能力值
   getAbility(): Ability {
     const ability = { ...this.ability };

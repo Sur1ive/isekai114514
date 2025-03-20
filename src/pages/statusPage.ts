@@ -10,6 +10,8 @@ import { Equipment } from "../items/Equipment";
 import * as bootstrap from "bootstrap";
 import { renderMainMenu } from "./mainMenu";
 import { Rarity } from "../types";
+import { Ability } from "../creatures/types";
+import { actionConfigs } from "../actions/actionConfigs";
 
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
@@ -34,10 +36,70 @@ export function renderStatusPage(player: Player): void {
       <h2 class="text-center mb-4">状态</h2>
 
       <div class="row">
+        <!-- 属性栏区域 -->
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+              <h4 class="card-title mb-0">${player.name} 的属性</h4>
+            </div>
+            <div class="card-body">
+              <div id="attribute-bar" class="list-group list-group-flush">
+                ${(() => {
+                  const baseAbilities = player.getAbility();
+                  const extraAbilities = player.getExtraAbility();
+                  return Object.entries(baseAbilities).map(([attribute, value]) => {
+                    const extra = extraAbilities[attribute as keyof Ability] || 0;
+                    let extraBadge = '';
+                    if (extra > 0) {
+                      extraBadge = `<span class="badge bg-success ms-2">+${extra}</span>`;
+                    } else if (extra < 0) {
+                      extraBadge = `<span class="badge bg-danger ms-2">${extra}</span>`;
+                    }
+                    return `
+                      <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-capitalize">${attribute}</span>
+                        <div>
+                          <span class="text-muted">${value}</span>
+                          ${extraBadge}
+                        </div>
+                      </div>
+                    `;
+                  }).join("");
+                })()}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 行动列表区域 -->
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+              <h4 class="card-title mb-0">${player.name} 的行动列表</h4>
+            </div>
+            <div class="card-body">
+              <ul class="list-group">
+                ${player.actions.map(action => `
+                  <li class="list-group-item" tabindex="0"
+                      data-bs-toggle="popover"
+                      data-bs-trigger="focus"
+                      data-bs-title="${actionConfigs[action.actionType].name}"
+                      data-bs-content="">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>${actionConfigs[action.actionType].name}</span>
+                      <span class="badge bg-primary">${action.weight.toFixed(2)}</span>
+                    </div>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <!-- 装备栏区域 -->
         <div class="col-md-6 mb-4">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-secondary text-white">
               <h4 class="card-title">${player.name} 的装备</h4>
             </div>
             <div class="card-body">
@@ -66,7 +128,7 @@ export function renderStatusPage(player: Player): void {
         <!-- 背包区域 -->
         <div class="col-md-6 mb-4">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-secondary text-white">
               <h4 class="card-title">${player.name} 的背包</h4>
             </div>
             <div class="card-body">
@@ -98,7 +160,7 @@ export function renderStatusPage(player: Player): void {
       <div class="row mb-4">
         <div class="col">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-secondary text-white">
               <h4 class="card-title">${player.name} 的宠物</h4>
             </div>
             <div class="card-body">
@@ -176,5 +238,9 @@ export function renderStatusPage(player: Player): void {
   );
   tooltipTriggerList.forEach((tooltipTriggerEl) => {
     new bootstrap.Tooltip(tooltipTriggerEl, { placement: "top", html: true });
+  });
+  const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+  popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl);
   });
 }

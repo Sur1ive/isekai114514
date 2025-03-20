@@ -3,8 +3,8 @@ import { Player } from "../creatures/Player";
 import { getAppElement } from "../tools";
 import { saveGame } from "../save";
 import { CreatureType } from "../creatures/creatureConfigs";
-import { testBattle } from "../battle/battle";
 import { renderStatusPage } from "./statusPage";
+import { renderMapListPage } from "./mapListPage";
 
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {
@@ -48,7 +48,7 @@ export function renderMainMenu(player: Player): void {
       <div class="row g-3 justify-content-center">
         <div class="col-12 col-md-4">
           <button id="battle-btn" class="btn btn-primary w-100 py-3">
-            ${player.type === CreatureType.Player114514 ? "救世啊！" : "战斗"}
+            ${player.type === CreatureType.Player114514 ? "救世啊！" : "出击"}
           </button>
         </div>
         <div class="col-12 col-md-4">
@@ -90,8 +90,7 @@ export function renderMainMenu(player: Player): void {
 
   // 绑定按钮事件
   document.getElementById("battle-btn")?.addEventListener("click", () => {
-    player.isAtHome = false;
-    testBattle(player);
+    renderMapListPage(player);
   });
   document.getElementById("status-btn")?.addEventListener("click", () => {
     renderStatusPage(player);
