@@ -104,7 +104,7 @@ and limitations under the License.
             </div>
             <div class="card-body">
               <ul class="list-group">
-                ${e.actions.map(u=>`
+                ${e.getActions().map(u=>`
                   <li class="list-group-item" tabindex="0"
                       data-bs-toggle="popover"
                       data-bs-trigger="focus"
