@@ -70,7 +70,7 @@ export function observeEnemyAction(
   }
 }
 
-import { creatureConfigs, CreatureType } from "../creatures/creatureConfigs";
+import { CreatureType } from "../creatures/creatureConfigs";
 
 export function testBattle(player: Player): void {
   let enemyType =
@@ -86,7 +86,6 @@ export function testBattle(player: Player): void {
   const enemyLevel = Math.floor(Math.random() * 10) + 1;
   const enemyIndividualStrength = Math.random() * 2;
   const enemy = new Monster(
-    creatureConfigs[enemyType].typeName,
     enemyType,
     enemyLevel,
     enemyIndividualStrength,

@@ -26,6 +26,7 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "class-transformer": "^0.5.1",
+    "cytoscape": "^3.31.1",
     "reflect-metadata": "^0.2.2",
     "uuid": "^11.1.0"
   }

@@ -48,7 +48,7 @@ export function renderStartPage(): void {
     const player = new Player("田所", CreatureType.Player114514);
     player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
     setIntervals(player);
-    const monster = new Monster("远野", CreatureType.Toono, 1, 1);
+    const monster = new Monster(CreatureType.Toono, 1, 1, "远野");
     player.isAtHome = false;
     renderBattlePage(
       player,
@@ -192,11 +192,20 @@ export function renderStartPage1(player: Player): void {
 // 渲染开始界面4
 export function renderStartPage2(player: Player): void {
   const appElement = getAppElement();
+
   appElement.innerHTML = `
     <h1>???</h1>
-    <p>你睁开了眼睛，发现自己好像身处一片池沼之中</p>
-    <p>周围的一切都显得那么陌生，充满了异世界风情</p>
-    <p>看着远处地上缓慢蠕动的史莱姆，你总算相信自己穿越了</p>
+    <p>你睁开了眼睛，看到了陌生的天花板。</p>
+    <p>这里似乎是什么遗迹？周围的墙上刻着壁画和奇怪的文字，而你正躺在房间正中心的石棺中。你虽然看不懂那些文字，但它们的意思却飞入脑中：</p>
+    <p class="fst-italic">
+    一百年前，一位叫<span style="font-weight: bold;">远野</span>的异界来客统领着野兽大军从极北之地<span style="font-weight: bold;">“下北泽”</span>南下，在毁灭了诸多城市后，远野在下北泽建立了魔王城，在那里指挥大军继续南下侵略。
+    为了阻止远野，人类根据预言中的指引从异世界召唤了勇者。但被召唤的勇者一直没有苏醒，人类最终难挡野兽大军的攻势，不得不退守大陆的最南端。
+    </p>
+    <p>看起来，你正是故事中被召唤的勇者。
+    ${player.type === CreatureType.Player114514 ?
+      "而这位远野，正是前世你最爱却又背叛你的那个人！你握紧了拳头，暗暗发誓一定要报仇雪恨！</p>" :
+      "责任感和使命感让你决定挺身而出，阻止远野的侵略。</p>"}
+    <p>你站起身来，准备向北进发。</p>
     <button id="continue-btn">继续</button>
   `;
 

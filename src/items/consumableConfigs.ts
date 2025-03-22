@@ -95,7 +95,7 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
   [ConsumableType.GiftboxAndLetter]: {
     name: "礼物箱和一封信",
     rarity: Rarity.Mythical,
-    description: "一个礼物箱，上面还附了一封信，信上写着：“希望你喜欢这个游戏”",
+    description: "一个礼物箱，上面还附了一封信，信上写着：“希望你喜欢”",
     effect: (target: Creature) => {
       for (let i = 0; i < 5; i++) {
         target.pack.push(new Consumable(ConsumableType.QuickRecoveryPotion));

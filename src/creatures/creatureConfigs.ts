@@ -14,6 +14,8 @@ export enum CreatureType {
   Ayulsa = "Ayulsa",
   Toono = "Toono",
   Horse = "Horse",
+  Goblin = "Goblin",
+  GoblinLeader = "GoblinLeader",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -280,5 +282,50 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { type: ConsumableType.SilverChest, weight: 0.04 },
       { type: ConsumableType.GoldChest, weight: 0.002 },
     ],
+  },
+
+  [CreatureType.Goblin]: {
+    typeName: "哥布林",
+    description: "绿色皮肤，矮小且狡猾的类人种族，以偷窃和抢劫为生",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.1 },
+      int: { base: 5, growth: 0 },
+      con: { base: 7.5, growth: 0.3 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 10, growth: 0.2 },
+      armor: { base: 0, growth: 4.5 },
+      piercing: { base: 0, growth: 5.5 },
+    },
+    actions: [
+      { actionType: ActionType.SneakAttack, weight: 1 },
+      { actionType: ActionType.LightningFiveStrikes, weight: 1 },
+    ],
+    dropItems: [
+      { type: ConsumableType.BrokenChest, weight: 0.2 },
+      { type: ConsumableType.WoodenChest, weight: 0.8 },
+      { type: ConsumableType.SilverChest, weight: 0.04 },
+      { type: ConsumableType.GoldChest, weight: 0.002 },
+    ],
+  },
+
+  [CreatureType.GoblinLeader]: {
+    typeName: "哥布林头目",
+    description: "哥布林首领，一种矮小的类人种族，通常以小队形式出现，以偷窃和抢劫为生",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.1 },
+      int: { base: 5, growth: 0 },
+      con: { base: 7.5, growth: 0.3 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 10, growth: 0.2 },
+      armor: { base: 0, growth: 4.5 },
+      piercing: { base: 0, growth: 5.5 },
+    },
+    actions: [
+      { actionType: ActionType.SneakAttack, weight: 1 },
+      { actionType: ActionType.LightningFiveStrikes, weight: 1 },
+    ],
+    dropItems: [],
   },
 };
