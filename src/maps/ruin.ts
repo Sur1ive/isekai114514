@@ -7,7 +7,7 @@ export const ruinNode3_2: NormalMonsterNode = {
   description: "遗迹出口",
   type: NodeType.NormalMonster,
   isCleared: false,
-  position: { x: 50, y: 400 },
+  position: { x: 450, y: 900 },
   toNodeList: [],
   monsterList: [
     {
@@ -24,7 +24,7 @@ export const ruinNode2_1: NormalMonsterNode = {
   description: "靠近出口的房间",
   type: NodeType.NormalMonster,
   isCleared: false,
-  position: { x: 100, y: 300 },
+  position: { x: 600, y: 700 },
   toNodeList: [ruinNode3_2],
   monsterList: [
     {
@@ -41,7 +41,7 @@ export const ruinNode2_2: NormalMonsterNode = {
   description: "哥布林的藏宝室",
   type: NodeType.NormalMonster,
   isCleared: false,
-  position: { x: 200, y: 200 },
+  position: { x: 700, y: 550 },
   toNodeList: [ruinNode2_1],
   monsterList: [
     {
@@ -58,7 +58,7 @@ export const ruinNode1_1: NormalMonsterNode = {
   description: "遗迹走廊",
   type: NodeType.NormalMonster,
   isCleared: false,
-  position: { x: 100, y: 100 },
+  position: { x: 500, y: 550 },
   toNodeList: [ruinNode2_1, ruinNode2_2],
   monsterList: [
     {
@@ -75,7 +75,7 @@ export const ruinNode0_1: StartNode = {
   description: "遗迹深处的房间",
   type: NodeType.Start,
   isCleared: true,
-  position: { x: 0, y: 0 },
+  position: { x: 300, y: 450 },
   toNodeList: [ruinNode1_1],
 };
 

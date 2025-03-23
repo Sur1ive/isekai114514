@@ -4,148 +4,165 @@ import { Node } from "../maps/Node";
 import { Region } from "../maps/Region";
 import ruinImage from "../assets/ruin.png";
 import { renderMainMenu } from "./mainMenu";
-import cytoscape from 'cytoscape';
+import * as d3 from "d3";
+import { Popover } from 'bootstrap';
 
 export function renderMapPage(player: Player, region: Region): void {
   const appElement = getAppElement();
 
+  // 设置页面结构：一个 SVG 容器和返回按钮
   appElement.innerHTML = `
-  <div id="cy" style="width: 100vw; height: 100vh;"></div>
-  <button id="return-btn" type="button" class="btn btn-primary" style="
+  <div id="map-container" class="d-flex flex-column" style="flex: 1;">
+
+    <svg id="map-svg" style="flex: 1;"></svg>
+
+    <button id="return-btn" type="button" class="btn btn-primary" style="
       position: absolute;
-      left: 20px;
-      top: 80px;
-      z-index: 999;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      z-index: 10;
     ">
-    返回营地
-  </button>
+      返回营地
+    </button>
+
+  </div>
   `;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const elements: any[] = [];
+  // 构造节点和边的数据
+  const nodes: { id: string; x: number; y: number; label: string }[] = [];
+  const edges: { source: string; target: string }[] = [];
   const visited = new Set<string>();
 
-  // 递归遍历节点，将所有节点和边添加到 elements 数组中
   function traverse(node: Node): void {
     if (visited.has(node.name)) return;
     visited.add(node.name);
 
-    // 添加当前节点
-    elements.push({
-      data: { id: node.name, label: node.name },
-      position: { x: node.position.x, y: node.position.y }
+    nodes.push({
+      id: node.name,
+      label: node.name,
+      x: node.position.x,
+      y: node.position.y
     });
 
-    // 遍历子节点，并添加边
     node.toNodeList.forEach(child => {
-      elements.push({
-        data: { source: node.name, target: child.name }
+      edges.push({
+        source: node.name,
+        target: child.name
       });
       traverse(child);
     });
   }
-
-  // 从区域的起始节点开始遍历
   traverse(region.startNode);
 
-  // 初始化 Cytoscape
-  const cy = cytoscape({
-    container: document.getElementById('cy'),
-    elements: elements,
-    style: [
-      // 背景节点样式：注意增加 active/selected 状态下的样式重写
-      {
-        selector: 'node.background',
-        style: {
-          'background-image': ruinImage,
-          'background-fit': 'cover',
-          'shape': 'rectangle',
-          'border-width': 0,
-          'z-index': 0
-        }
-      },
-      // 禁止背景节点在 active 和 selected 状态下显示特效
-      {
-        selector: 'node.background:selected, node.background:active',
-        style: {
-          'overlay-opacity': 0,
-          'background-color': 'inherit',
-          'border-width': 0
-        }
-      },
-      {
-        selector: 'node',
-        style: {
-          'label': 'data(label)',
-          'background-color': '#6FB1FC',
-          'text-valign': 'center',
-          'color': '#fff',
-          'width': '40px',
-          'height': '40px',
-          'font-size': '12px'
-        }
-      },
-      {
-        selector: 'edge',
-        style: {
-          'line-color': '#ccc',
-          'target-arrow-shape': 'triangle',
-          'curve-style': 'bezier'
-        }
-      }
-    ],
-    // 如果节点数据中已有坐标，则使用 preset 布局
-    layout: {
-      name: 'preset'
-    },
-    // 降低鼠标滚轮缩放灵敏度
-    wheelSensitivity: 0.1,
-    // 禁用节点拖拽
-    autoungrabify: true,
-    minZoom: 0.5,
-    maxZoom: 2,
-    userPanningEnabled: true,
-    userZoomingEnabled: true
-  });
+  // 选择 SVG 容器
+  const svg = d3.select<SVGSVGElement, unknown>("#map-svg");
+  // 创建包含所有图形的容器组
+  const zoomableGroup = svg.append("g").attr("class", "zoomable");
 
-  // 计算当前所有节点的边界，排除背景节点（如果已存在）
-  const otherNodes = cy.elements().filter(ele => ele.data('id') !== 'background');
-  const bbox = otherNodes.boundingBox();
-  const margin = 50; // 给背景增加一些边距
-  const bgWidth = bbox.x2 - bbox.x1 + margin * 2;
-  const bgHeight = bbox.y2 - bbox.y1 + margin * 2;
-  const bgCenterX = (bbox.x1 + bbox.x2) / 2;
-  const bgCenterY = (bbox.y1 + bbox.y2) / 2;
-
-  // 添加背景节点
-  cy.add({
-    group: 'nodes',
-    data: { id: 'background' },
-    position: { x: bgCenterX, y: bgCenterY },
-    selectable: false,
-    classes: 'background',
-    style: {
-      'width': bgWidth,
-      'height': bgHeight
-      // pointer-events 在 Cytoscape 中可能不起作用
-    }
-  });
-
-  // 将背景节点放到最底层
-  cy.getElementById('background').style('z-index', 0);
-  cy.elements().not('#background').style('z-index', 1);
-
-  // 为背景节点绑定事件处理，阻止事件冒泡
-  const bgNode = cy.getElementById('background');
-  ['tap', 'click', 'cxttap'].forEach(eventType => {
-    bgNode.on(eventType, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+  // 定义 zoom 行为
+  const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
+    .scaleExtent([0.5, 2])
+  // translateExtent 限制平移的区域范围：
+  // 左上角和右下角的坐标确定了背景图在 SVG 中能出现的极限位置
+    .translateExtent([[0, 0], [1000, 1000]])
+    .on("zoom", (event) => {
+      zoomableGroup.attr("transform", event.transform);
     });
+
+  // 将 zoom 行为绑定到 SVG 上，支持鼠标拖动、滚轮缩放和触摸手势
+  svg.call(zoomBehavior);
+
+  // 添加背景图像，确保它在最底层
+  zoomableGroup.append('image')
+    .attr('xlink:href', ruinImage)
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', 1000)
+    .attr('height', 1000)
+    .lower();
+
+
+  // 绘制边（采用二次贝塞尔曲线实现平滑过渡）
+  const edgeGroup = zoomableGroup.append("g").attr("class", "edges");
+  edges.forEach(edge => {
+    const sourceNode = nodes.find(n => n.id === edge.source);
+    const targetNode = nodes.find(n => n.id === edge.target);
+    if (!sourceNode || !targetNode) return;
+
+    // 计算控制点，这里简单让控制点在两个节点的中间并上移一定距离（可根据需求调整）
+    const cx = (sourceNode.x + targetNode.x) / 2;
+    const cy = (sourceNode.y + targetNode.y) / 2 - 50;
+    const pathData = `M ${sourceNode.x} ${sourceNode.y} Q ${cx} ${cy}, ${targetNode.x} ${targetNode.y}`;
+
+    edgeGroup.append("path")
+             .attr("d", pathData)
+             .attr("stroke", "#ccc")
+             .attr("stroke-width", 2)
+             .attr("fill", "none");
   });
 
-  // 绑定返回营地按钮事件
-  document.getElementById('return-btn')?.addEventListener('click', () => {
+  // 绘制节点（用圆形和文字组合）
+  const nodeGroup = zoomableGroup.append("g").attr("class", "nodes");
+  const nodeG = nodeGroup.selectAll("g.node")
+                         .data(nodes)
+                         .enter()
+                         .append("g")
+                         .attr("class", "node")
+                         .attr("transform", (d) => `translate(${d.x}, ${d.y})`)
+                         .style("cursor", "pointer")
+                         .on("click", (_event: MouseEvent, d) => {
+                           console.log(`点击了节点 ${d.id}`);
+                           // 这里可以扩展节点点击后的逻辑
+                         });
+
+  // 绘制节点圆形
+  nodeG.append("circle")
+       .attr("r", 10)
+       .attr("fill", "#6FB1FC")
+       .attr("stroke", "none");
+
+  // // 添加节点文字
+  // nodeG.append("text")
+  // .attr("x", 20)   // x轴偏移，可调整
+  // .attr("y", 5)    // y轴偏移（垂直居中）
+  // .text(d => d.label)
+  // .attr("text-anchor", "start")  // 标签左对齐
+  // .attr("font-size", "12px")
+  // .attr("fill", "#333");
+
+nodeG.on("click", function(event, d) {
+  // this 即为当前被点击的节点
+  // 如果已经存在 popover，先销毁它
+  const existingPopover = Popover.getInstance(this);
+  if(existingPopover) {
+    existingPopover.dispose();
+  }
+
+  // 设置 popover 所需的属性
+  this.setAttribute("data-bs-toggle", "popover");
+  this.setAttribute("data-bs-trigger", "focus"); // 手动触发 popover 的显示/隐藏
+  this.setAttribute("data-bs-title", `节点 ${d.id} 信息`);
+  this.setAttribute("data-bs-content", `这里可以显示节点 ${d.id} 的详细信息。`);
+
+  // 初始化 popover，指定 container 为 body 以防显示问题
+  const popover = new Popover(this, {
+    container: 'body',
+    trigger: 'focus'
+  });
+
+  // 显示 popover
+  popover.show();
+});
+
+  // 添加淡入动画
+  nodeG.attr("opacity", 0)
+       .transition()
+       .duration(500)
+       .attr("opacity", 1);
+
+  // 返回营地按钮绑定事件
+  document.getElementById("return-btn")?.addEventListener("click", () => {
     player.isAtHome = true;
     player.currentNode = null;
     renderMainMenu(player);
