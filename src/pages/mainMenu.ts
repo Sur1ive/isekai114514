@@ -10,6 +10,7 @@ import { renderMapListPage } from "./mapListPage";
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
   player.isAtHome = true;
+  player.currentNode = null;
   saveGame(player);
   console.log(player);
 

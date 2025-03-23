@@ -38,6 +38,8 @@ export function renderMapListPage(player: Player): void {
   // 绑定按钮事件
   document.getElementById("ruin-btn")?.addEventListener("click", () => {
     player.isAtHome = false;
+    player.currentRegion = ruinRegion;
+    player.currentNode = ruinRegion.startNode;
     renderMapPage(player, ruinRegion);
   });
   document.getElementById("battle-test-btn")?.addEventListener("click", () => {

@@ -9,6 +9,7 @@ import { getHitsDescription } from "../actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
 import { statusConfigs } from "../creatures/status/statusConfigs";
 import { Rarity } from "../types";
+import { renderMainMenu } from "./mainMenu";
 
 // 渲染战斗界面
 export function renderBattlePage(
@@ -70,6 +71,15 @@ export function renderBattlePage(
   saveGame(player);
 
   appElement.innerHTML = `
+  <button id="return-btn" type="button" class="btn btn-primary" style="
+    position: absolute;
+    left: 20px;
+    top: 80px;
+    z-index: 999;
+  ">
+    逃跑
+  </button>
+
   <div class="container mt-4">
     <h2 class="text-center mb-3">战斗</h2>
 
@@ -137,6 +147,10 @@ export function renderBattlePage(
   });
   document.getElementById("action2-btn")?.addEventListener("click", () => {
     renderBattlePage(player, enemy, action2, enemyAction, endHandler);
+  });
+
+  document.getElementById("return-btn")?.addEventListener("click", () => {
+    renderMainMenu(player);
   });
 }
 

@@ -2,14 +2,26 @@ import { Player } from "../creatures/Player";
 import { getAppElement } from "./utils";
 import { Node } from "../maps/Node";
 import { Region } from "../maps/Region";
-
+import ruinImage from "../assets/ruin.png";
+import { renderMainMenu } from "./mainMenu";
 import cytoscape from 'cytoscape';
 
 export function renderMapPage(player: Player, region: Region): void {
   const appElement = getAppElement();
 
-  appElement.innerHTML = `<div id="cy" style="width: 100%; height: 600px;"></div>`;
+  appElement.innerHTML = `
+  <div id="cy" style="width: 100vw; height: 100vh;"></div>
+  <button id="return-btn" type="button" class="btn btn-primary" style="
+      position: absolute;
+      left: 20px;
+      top: 80px;
+      z-index: 999;
+    ">
+    返回营地
+  </button>
+  `;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const elements: any[] = [];
   const visited = new Set<string>();
 
@@ -41,6 +53,26 @@ export function renderMapPage(player: Player, region: Region): void {
     container: document.getElementById('cy'),
     elements: elements,
     style: [
+      // 背景节点样式：注意增加 active/selected 状态下的样式重写
+      {
+        selector: 'node.background',
+        style: {
+          'background-image': ruinImage,
+          'background-fit': 'cover',
+          'shape': 'rectangle',
+          'border-width': 0,
+          'z-index': 0
+        }
+      },
+      // 禁止背景节点在 active 和 selected 状态下显示特效
+      {
+        selector: 'node.background:selected, node.background:active',
+        style: {
+          'overlay-opacity': 0,
+          'background-color': 'inherit',
+          'border-width': 0
+        }
+      },
       {
         selector: 'node',
         style: {
@@ -68,23 +100,54 @@ export function renderMapPage(player: Player, region: Region): void {
     },
     // 降低鼠标滚轮缩放灵敏度
     wheelSensitivity: 0.1,
-    // 禁用整体平移
-    // userPanningEnabled: false,
     // 禁用节点拖拽
-    autoungrabify: true
+    autoungrabify: true,
+    minZoom: 0.5,
+    maxZoom: 2,
+    userPanningEnabled: true,
+    userZoomingEnabled: true
   });
 
-  // 将玩家当前节点置于画布的指定位置（此处示例为视图中心）
-  const playerNodeId = region.startNode.name;
-  const playerNode = cy.getElementById(playerNodeId);
-  if (playerNode) {
-    cy.center(playerNode);
-    // 如果需要让玩家节点处于画布的其他位置（例如：右下角），可以通过调整 pan 来实现：
-    // const desiredPosition = { x: 500, y: 400 }; // 画布内的固定坐标
-    // const nodePosition = playerNode.position();
-    // cy.pan({
-    //   x: nodePosition.x - desiredPosition.x,
-    //   y: nodePosition.y - desiredPosition.y
-    // });
-  }
+  // 计算当前所有节点的边界，排除背景节点（如果已存在）
+  const otherNodes = cy.elements().filter(ele => ele.data('id') !== 'background');
+  const bbox = otherNodes.boundingBox();
+  const margin = 50; // 给背景增加一些边距
+  const bgWidth = bbox.x2 - bbox.x1 + margin * 2;
+  const bgHeight = bbox.y2 - bbox.y1 + margin * 2;
+  const bgCenterX = (bbox.x1 + bbox.x2) / 2;
+  const bgCenterY = (bbox.y1 + bbox.y2) / 2;
+
+  // 添加背景节点
+  cy.add({
+    group: 'nodes',
+    data: { id: 'background' },
+    position: { x: bgCenterX, y: bgCenterY },
+    selectable: false,
+    classes: 'background',
+    style: {
+      'width': bgWidth,
+      'height': bgHeight
+      // pointer-events 在 Cytoscape 中可能不起作用
+    }
+  });
+
+  // 将背景节点放到最底层
+  cy.getElementById('background').style('z-index', 0);
+  cy.elements().not('#background').style('z-index', 1);
+
+  // 为背景节点绑定事件处理，阻止事件冒泡
+  const bgNode = cy.getElementById('background');
+  ['tap', 'click', 'cxttap'].forEach(eventType => {
+    bgNode.on(eventType, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
+
+  // 绑定返回营地按钮事件
+  document.getElementById('return-btn')?.addEventListener('click', () => {
+    player.isAtHome = true;
+    player.currentNode = null;
+    renderMainMenu(player);
+  });
 }
