@@ -29,6 +29,7 @@
     "class-transformer": "^0.5.1",
     "d3": "^7.9.0",
     "reflect-metadata": "^0.2.2",
+    "tippy.js": "^6.3.7",
     "uuid": "^11.1.0"
   }
 }

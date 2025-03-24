@@ -3,9 +3,12 @@ import { getAppElement } from "./utils";
 import { Node } from "../maps/Node";
 import { Region } from "../maps/Region";
 import ruinImage from "../assets/ruin.png";
+import frameImage from "../assets/frame.png";
 import { renderMainMenu } from "./mainMenu";
 import * as d3 from "d3";
-import { Popover } from 'bootstrap';
+import { handleNodeClick } from "../maps/utils";
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
 export function renderMapPage(player: Player, region: Region): void {
   const appElement = getAppElement();
@@ -30,7 +33,7 @@ export function renderMapPage(player: Player, region: Region): void {
   `;
 
   // 构造节点和边的数据
-  const nodes: { id: string; x: number; y: number; label: string }[] = [];
+  const nodes: { id: string; x: number; y: number; label: string; node: Node }[] = [];
   const edges: { source: string; target: string }[] = [];
   const visited = new Set<string>();
 
@@ -42,7 +45,8 @@ export function renderMapPage(player: Player, region: Region): void {
       id: node.name,
       label: node.name,
       x: node.position.x,
-      y: node.position.y
+      y: node.position.y,
+      node: node
     });
 
     node.toNodeList.forEach(child => {
@@ -82,6 +86,15 @@ export function renderMapPage(player: Player, region: Region): void {
     .attr('height', 1000)
     .lower();
 
+  //添加frame
+  svg.append('image')
+  .attr('xlink:href', frameImage)
+  .attr('x', 0)
+  .attr('y', 0)
+  .attr('width', 1000)
+  .attr('height', 1000)
+  .style('z-index', '2')
+  .style('pointer-events', 'none');
 
   // 绘制边（采用二次贝塞尔曲线实现平滑过渡）
   const edgeGroup = zoomableGroup.append("g").attr("class", "edges");
@@ -111,10 +124,6 @@ export function renderMapPage(player: Player, region: Region): void {
                          .attr("class", "node")
                          .attr("transform", (d) => `translate(${d.x}, ${d.y})`)
                          .style("cursor", "pointer")
-                         .on("click", (_event: MouseEvent, d) => {
-                           console.log(`点击了节点 ${d.id}`);
-                           // 这里可以扩展节点点击后的逻辑
-                         });
 
   // 绘制节点圆形
   nodeG.append("circle")
@@ -131,29 +140,38 @@ export function renderMapPage(player: Player, region: Region): void {
   // .attr("font-size", "12px")
   // .attr("fill", "#333");
 
-nodeG.on("click", function(event, d) {
-  // this 即为当前被点击的节点
-  // 如果已经存在 popover，先销毁它
-  const existingPopover = Popover.getInstance(this);
-  if(existingPopover) {
-    existingPopover.dispose();
-  }
+  // tooltips
+  nodeG.each(function(d) {
+    const node = d.node;
 
-  // 设置 popover 所需的属性
-  this.setAttribute("data-bs-toggle", "popover");
-  this.setAttribute("data-bs-trigger", "focus"); // 手动触发 popover 的显示/隐藏
-  this.setAttribute("data-bs-title", `节点 ${d.id} 信息`);
-  this.setAttribute("data-bs-content", `这里可以显示节点 ${d.id} 的详细信息。`);
-
-  // 初始化 popover，指定 container 为 body 以防显示问题
-  const popover = new Popover(this, {
-    container: 'body',
-    trigger: 'focus'
+    tippy(this, {
+      content: `
+        <div>
+          <h3>${node.name}</h3>
+          <p>${node.description}</p>
+          <a class="btn btn-primary" id="go-${node.name}">
+            前往
+          </a>
+        </div>
+      `,
+      allowHTML: true,
+      interactive: true,      // 允许点击 popover 内部而不消失
+      trigger: 'click',       // 点击触发
+      hideOnClick: true,      // 点击外部自动隐藏
+      appendTo: document.body, // 将 tippy 插入 body
+      onShown(instance) {
+        // 在弹出后获取 popover 内部的按钮
+        const button = instance.popper.querySelector(`#go-${node.name}`);
+        if (button) {
+          button.addEventListener("click", (e) => {
+            e.stopPropagation(); // 防止点击传播关闭 popover
+            instance.hide();
+            handleNodeClick(node, player);
+          });
+        }
+      }
+    });
   });
-
-  // 显示 popover
-  popover.show();
-});
 
   // 添加淡入动画
   nodeG.attr("opacity", 0)
