@@ -7,6 +7,7 @@ import { Player } from "./creatures/Player";
 import { loadPlayer } from "./save";
 import { renderStartPage } from "./pages/startPages";
 import { renderMainMenu } from "./pages/mainMenu";
+import { renderMapPage } from "./pages/mapPage";
 
 // 初始加载时显示主菜单
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,5 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderStartPage();
     return;
   }
-  renderMainMenu(player);
+  if (player.currentNodeId) {
+    renderMapPage(player);
+  } else {
+    renderMainMenu(player);
+  }
 });

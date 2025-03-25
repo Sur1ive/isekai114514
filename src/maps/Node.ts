@@ -1,28 +1,40 @@
 import { CreatureType } from "../creatures/creatureConfigs";
 import { ItemType } from "../items/types";
+import { Region, RegionList } from "./Region";
 
 export enum NodeType {
   NormalMonster = "NormalMonster",
   EliteMonster = "EliteMonster",
   Boss = "Boss",
   Treasure = "Treasure",
-  Start = "Start",
+  Camp = "Camp",
   BackHome = "BackHome",
   Rest = "Rest",
   Event = "Event",
+  ToOtherRegion = "ToOtherRegion",
 }
 
 export interface Node {
+  id: string;
   name: string;
   description: string;
   type: NodeType;
-  isCleared: boolean;
   position: { x: number; y: number };
   toNodeList: Node[];
 }
 
-export interface StartNode extends Node {
-  type: NodeType.Start;
+export interface CampNode extends Node {
+  type: NodeType.Camp;
+}
+
+export interface TreasureNode extends Node {
+  type: NodeType.Treasure;
+  treasureList: {
+    item: ItemType;
+    minLevel: number;
+    maxLevel: number;
+    weight: number;
+  }[];
 }
 
 export interface NormalMonsterNode extends Node {
@@ -54,13 +66,22 @@ export interface EliteMonsterNode extends Node {
   }[];
 }
 
+export interface ToOtherRegionNode extends Node {
+  type: NodeType.ToOtherRegion;
+  region: Region;
+}
+
 export interface BossNode extends Node {
   type: NodeType.Boss;
-  monsterList: {
+  bossStageList: {
     monster: CreatureType;
     maxLevel: number;
     minLevel: number;
     maxIndividualStrength: number;
     minIndividualStrength: number;
   }[];
+}
+
+export function getNodeById(id: string): Node | undefined {
+  return Object.values(RegionList).flatMap((region) => region.nodeList).find((node) => node.id === id);
 }

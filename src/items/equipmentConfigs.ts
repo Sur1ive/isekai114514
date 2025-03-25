@@ -17,6 +17,7 @@ export enum EquipmentType {
   DragonSlayer = "DragonSlayer",
   KatanaOfTheHeart = "KatanaOfTheHeart",
   WomenDress = "WomenDress",
+  ToonoDefeaterBadge = "ToonoDefeaterBadge",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -321,6 +322,25 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       armor: 15,
     },
     armorGrowthCoeff: 3,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+  [EquipmentType.ToonoDefeaterBadge]: {
+    name: "远野击败者徽章",
+    description: "隐藏着一些原本属于你的力量",
+    rarity: Rarity.Masterpiece,
+    position: EquipmentPosition.Accessory,
+    extraActions: [
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.03 },
+      { actionType: ActionType.Yarimasune, weight: 0.03 },
+      { actionType: ActionType.Repent, weight: 0.03 },
+      { actionType: ActionType.SleepyTea, weight: 0.03 },
+    ],
+    ability: {
+      armor: 5,
+      piercing: 5,
+    },
+    armorGrowthCoeff: 0,
     piercingGrowthCoeff: 0,
     actionCoeff: {},
   },

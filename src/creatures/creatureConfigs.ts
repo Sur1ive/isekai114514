@@ -1,10 +1,12 @@
 import { ConsumableType } from "../items/consumableConfigs";
 import type { CreatureData } from "./types";
 import { ActionType } from "../actions/actionConfigs";
+import { EquipmentType } from "../items/equipmentConfigs";
 
 export enum CreatureType {
   Player = "Player",
   Player114514 = "Player114514",
+  FullPowerPlayer114514 = "FullPowerPlayer114514",
   Slime = "Slime",
   Dragon = "Dragon",
   AngryDragon = "AngryDragon",
@@ -45,20 +47,44 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     description: "24岁，是学生",
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },
-      int: { base: 5, growth: 0 },
-      con: { base: 7, growth: 0.3 }, // 小麦色的健康肤色
-      siz: { base: 5, growth: 0.05 }, // 24岁是学生，还在长身体很合理吧
-      app: { base: 7, growth: 0 }, // 没有魅力怎么能吸引后辈
-      dex: { base: 5, growth: 0.05 },
+      int: { base: 5, growth: 0.1 },
+      con: { base: 5, growth: 0.2 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 5, growth: 0.1 },
       armor: { base: 0, growth: 0 },
       piercing: { base: 0, growth: 0 },
     },
     actions: [
-      { actionType: ActionType.PowerfulDigAttack, weight: 0.4 },
-      { actionType: ActionType.Yarimasune, weight: 0.4 },
-      { actionType: ActionType.Capture, weight: 0.4 },
-      { actionType: ActionType.Repent, weight: 0.4 },
-      { actionType: ActionType.SleepyTea, weight: 0.4 },
+      { actionType: ActionType.Attack, weight: 0.5 },
+      { actionType: ActionType.Capture, weight: 0.1 },
+      { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.03 },
+      { actionType: ActionType.Yarimasune, weight: 0.03 },
+      { actionType: ActionType.Repent, weight: 0.03 },
+      { actionType: ActionType.SleepyTea, weight: 0.03 },
+    ],
+    dropItems: [],
+  },
+  [CreatureType.FullPowerPlayer114514]: {
+    typeName: "野兽仙贝",
+    description: "24岁，是学生",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.1 },
+      int: { base: 5, growth: 0.1 },
+      con: { base: 5, growth: 0.2 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 5, growth: 0.1 },
+      armor: { base: 0, growth: 0 },
+      piercing: { base: 0, growth: 0 },
+    },
+    actions: [
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.3 },
+      { actionType: ActionType.Yarimasune, weight: 0.3 },
+      { actionType: ActionType.Repent, weight: 0.3 },
+      { actionType: ActionType.SleepyTea, weight: 0.3 },
     ],
     dropItems: [],
   },
@@ -80,7 +106,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Counter, weight: 0.4 },
       { actionType: ActionType.Dodge, weight: 0.2 },
     ],
-    dropItems: [{ type: null, weight: 1 }],
+    dropItems: [{ type: EquipmentType.ToonoDefeaterBadge, weight: 1 }],
   },
   [CreatureType.Slime]: {
     typeName: "史莱姆",

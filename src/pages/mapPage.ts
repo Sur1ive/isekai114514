@@ -1,7 +1,6 @@
 import { Player } from "../creatures/Player";
 import { getAppElement } from "./utils";
 import { Node } from "../maps/Node";
-import { Region } from "../maps/Region";
 import ruinImage from "../assets/ruin.png";
 import frameImage from "../assets/frame.png";
 import { renderMainMenu } from "./mainMenu";
@@ -9,8 +8,9 @@ import * as d3 from "d3";
 import { handleNodeClick } from "../maps/utils";
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
+import { getRegionById } from "../maps/Region";
 
-export function renderMapPage(player: Player, region: Region): void {
+export function renderMapPage(player: Player): void {
   const appElement = getAppElement();
 
   // 设置页面结构：一个 SVG 容器和返回按钮
@@ -57,7 +57,7 @@ export function renderMapPage(player: Player, region: Region): void {
       traverse(child);
     });
   }
-  traverse(region.startNode);
+  traverse(getRegionById(player.currentRegionId).startNode);
 
   // 选择 SVG 容器
   const svg = d3.select<SVGSVGElement, unknown>("#map-svg");
@@ -182,7 +182,7 @@ export function renderMapPage(player: Player, region: Region): void {
   // 返回营地按钮绑定事件
   document.getElementById("return-btn")?.addEventListener("click", () => {
     player.isAtHome = true;
-    player.currentNode = null;
+    player.currentNodeId = null;
     renderMainMenu(player);
   });
 }

@@ -1,9 +1,6 @@
 import { Creature } from "./Creature";
 import { CreatureType } from "./creatureConfigs";
 import type { Monster } from "./Monster";
-import { Region } from "../maps/Region";
-import { ruinRegion } from "../maps/ruin";
-import { Node } from "../maps/Node";
 
 export class Player extends Creature {
   log: string[] = [];
@@ -12,8 +9,10 @@ export class Player extends Creature {
   isAtHome: boolean = true;
   exp: number = 0;
   isPlayer: boolean = true;
-  currentRegion: Region = ruinRegion;
-  currentNode: Node | null = null;
+  currentRegionId: string = "ruin";
+  currentNodeId: string | null = null;
+  unlockedRegionIdList: string[] = ["ruin"];
+  visitedNodeIdList: string[] = [];
 
   constructor(name: string, type: CreatureType) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义

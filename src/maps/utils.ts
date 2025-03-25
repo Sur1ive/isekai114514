@@ -10,7 +10,7 @@ export function handleAfterBattle(player: Player, _monster: Monster, result: boo
   if (!result) {
     renderMainMenu(player);
   }
-  renderMapPage(player, player.currentRegion);
+  renderMapPage(player);
 }
 
 export function handleNodeClick(node: Node, player: Player) {

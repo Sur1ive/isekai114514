@@ -5,12 +5,13 @@ import { saveGame } from "../save";
 import { CreatureType } from "../creatures/creatureConfigs";
 import { renderStatusPage } from "./statusPage";
 import { renderMapListPage } from "./mapListPage";
-
+import { renderMapPage } from "./mapPage";
+import { getRegionById } from "../maps/Region";
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
   player.isAtHome = true;
-  player.currentNode = null;
+  player.currentNodeId = null;
   saveGame(player);
   console.log(player);
 
@@ -49,8 +50,11 @@ export function renderMainMenu(player: Player): void {
       <div class="row g-3 justify-content-center">
         <div class="col-12 col-md-4">
           <button id="battle-btn" class="btn btn-primary w-100 py-3">
-            ${player.type === CreatureType.Player114514 ? "救世啊！" : "出击"}
+            ${player.type === CreatureType.Player114514 ? "救世啊！" : "动身"} 现在地点: ${getRegionById(player.currentRegionId).name}
           </button>
+        </div>
+        <div class="col-12 col-md-4">
+          <button id="travel-btn" class="btn btn-success w-100 py-3">快速旅行</button>
         </div>
         <div class="col-12 col-md-4">
           <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>
@@ -91,6 +95,9 @@ export function renderMainMenu(player: Player): void {
 
   // 绑定按钮事件
   document.getElementById("battle-btn")?.addEventListener("click", () => {
+    renderMapPage(player);
+  });
+  document.getElementById("travel-btn")?.addEventListener("click", () => {
     renderMapListPage(player);
   });
   document.getElementById("status-btn")?.addEventListener("click", () => {

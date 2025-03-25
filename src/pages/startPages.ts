@@ -39,14 +39,12 @@ export function renderStartPage(): void {
 
   document.getElementById("action1-btn")?.addEventListener("click", () => {
     const player = new Player("吴田所", CreatureType.Player);
-    player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
     setIntervals(player);
     renderStartPageNormal1(player);
   });
 
   document.getElementById("action2-btn")?.addEventListener("click", () => {
-    const player = new Player("田所", CreatureType.Player114514);
-    player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
+    const player = new Player("田所", CreatureType.FullPowerPlayer114514);
     setIntervals(player);
     const monster = new Monster(CreatureType.Toono, 1, 1, "远野");
     player.isAtHome = false;
@@ -169,6 +167,11 @@ export function renderStartPageNormal2(player: Player): void {
 
 // 渲染开始界面3
 export function renderStartPage1(player: Player): void {
+  if (player.type === CreatureType.FullPowerPlayer114514) {
+    const pack = player.pack;
+    player = new Player("田所", CreatureType.Player114514);
+    player.pack = pack;
+  }
   const appElement = getAppElement();
   appElement.innerHTML = `
     <h1>???</h1>
@@ -210,6 +213,7 @@ export function renderStartPage2(player: Player): void {
   `;
 
   document.getElementById("continue-btn")?.addEventListener("click", () => {
+    player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
     saveGame(player);
     renderMainMenu(player);
   });

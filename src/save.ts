@@ -5,8 +5,13 @@ import { Equipment } from "./items/Equipment";
 import { Consumable } from "./items/Consumable";
 import { ItemCategory } from "./items/types";
 import { EquipmentBar } from "./creatures/types";
+import { CreatureType } from "./creatures/creatureConfigs";
 
 export function saveGame(player: Player) {
+  // 不保存仅在开始流程中存在的满状态野兽仙贝
+  if (player.type === CreatureType.FullPowerPlayer114514) {
+    return;
+  }
   const plainPlayer = instanceToPlain(player);
   localStorage.setItem("playerData", JSON.stringify(plainPlayer));
 }
