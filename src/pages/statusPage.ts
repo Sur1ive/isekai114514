@@ -2,7 +2,6 @@ import { Player } from "../creatures/Player";
 import { saveGame } from "../save";
 import { Consumable } from "../items/Consumable";
 import { Equipment } from "../items/Equipment";
-import * as bootstrap from "bootstrap";
 import { renderMainMenu } from "./mainMenu";
 import { Rarity } from "../types";
 import { Ability } from "../creatures/types";
@@ -10,24 +9,13 @@ import { actionConfigs } from "../actions/actionConfigs";
 import { generateItemTooltipContent, getItemIcon } from "../items/itemUtils";
 import { getAppElement } from "./utils";
 import { generateActionPopoverContent } from "../actions/actionUtils";
+import { EquipmentPosition } from "../items/types";
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
   const appElement = getAppElement();
-
-  // 在渲染前清理所有 Tooltip 实例
-  function disposeTooltips(): void {
-    const tooltipElements = document.querySelectorAll(
-      '[data-bs-toggle="tooltip"]',
-    );
-    tooltipElements.forEach((el) => {
-      const tooltipInstance = bootstrap.Tooltip.getInstance(el);
-      if (tooltipInstance) {
-        tooltipInstance.dispose();
-      }
-    });
-  }
-  disposeTooltips();
 
   appElement.innerHTML = `
     <div class="container mt-4">
@@ -164,12 +152,12 @@ export function renderStatusPage(player: Player): void {
                       <span class="fw-bold">${position}</span>
                       ${
                         equipment
-                          ? `<span class="badge bg-${Rarity[equipment.rarity]}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${generateItemTooltipContent(equipment).replace(/"/g, "&quot;")}">${equipment.name}</span>`
-                          : '<span class="badge bg-secondary">空</span>'
+                            ? `<span id="equipment-slot-${position}" class="badge bg-${Rarity[equipment.rarity]}">${equipment.name}</span>`
+                            : '<span class="badge bg-secondary">空</span>'
                       }
                     </div>
                   </div>
-                `,
+                `
                   )
                   .join("")}
               </div>
@@ -213,12 +201,7 @@ export function renderStatusPage(player: Player): void {
                           .sort((a, b) => b.rarity - a.rarity)
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
-                            // 如果 item 属于 Consumable 或 Equipment，则调用 generateItemTooltipContent，否则使用 item.description
-                            const tooltipContent =
-                              item instanceof Consumable || item instanceof Equipment
-                                ? generateItemTooltipContent(item)
-                                : item.description;
-                            return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${tooltipContent.replace(/"/g, "&quot;")}">
+                            return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
                               ${getItemIcon(item)}${item.name}
                             </button>`;
                           })
@@ -237,8 +220,7 @@ export function renderStatusPage(player: Player): void {
                           .sort((a, b) => b.rarity - a.rarity)
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
-                            const tooltipContent = generateItemTooltipContent(item);
-                            return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${tooltipContent.replace(/"/g, "&quot;")}">
+                            return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
                               ${getItemIcon(item)}${item.name}
                             </button>`;
                           })
@@ -257,8 +239,7 @@ export function renderStatusPage(player: Player): void {
                           .sort((a, b) => b.rarity - a.rarity)
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
-                            const tooltipContent = generateItemTooltipContent(item);
-                            return `<button id="use-btn${item.uuid}" class="btn ${btnClass}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="${tooltipContent.replace(/"/g, "&quot;")}">
+                            return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
                               ${getItemIcon(item)}${item.name}
                             </button>`;
                           })
@@ -290,7 +271,7 @@ export function renderStatusPage(player: Player): void {
                           <span class="fw-bold">${monster.name}</span>
                           <span class="text-muted">Lv. ${monster.level}</span>
                         </div>
-                      `,
+                      `
                         )
                         .join("")
                     : '<p class="text-muted">暂无宠物</p>'
@@ -314,49 +295,92 @@ export function renderStatusPage(player: Player): void {
 
   // 为背包中的道具绑定点击事件
   for (const item of player.pack) {
-    if (item instanceof Consumable) {
-      document
-        .getElementById(`use-btn${item.uuid}`)
-        ?.addEventListener("click", () => {
-          item.useItem(player);
-          player.addLog(`${player.name} 使用了 ${item.name}`);
-          saveGame(player);
-          renderStatusPage(player);
-        });
-    }
-    if (item instanceof Equipment) {
-      document
-        .getElementById(`use-btn${item.uuid}`)
-        ?.addEventListener("click", () => {
-          player.wearEquipment(item);
-          saveGame(player);
-          renderStatusPage(player);
-        });
-    }
+    const tooltipContent = generateItemTooltipContent(item);
+    const btn = document.getElementById(`use-btn${item.uuid}`);
+    if (!btn) continue;
+
+    tippy(btn, {
+      theme: 'game',
+      content: `
+        ${tooltipContent}
+        <button id="use-btn${item.uuid}" class="btn btn-success">
+          ${item instanceof Consumable ? '使用' : '装备'}
+        </button>
+        <button id="discard-btn${item.uuid}" class="btn btn-danger">
+          丢弃
+        </button>
+      `,
+      allowHTML: true,
+      interactive: true,      // 允许点击 popover 内部而不消失
+      trigger: 'click',       // 点击触发
+      hideOnClick: true,      // 点击外部自动隐藏
+      appendTo: document.body, // 将 tippy 插入 body
+      onShown(instance) {
+        // 在弹出后获取 popover 内部的按钮
+        const button = instance.popper.querySelector(`#use-btn${item.uuid}`);
+        if (button) {
+          button.addEventListener("click", (e) => {
+            e.stopPropagation(); // 防止点击传播关闭 popover
+            instance.hide();
+            if (item instanceof Consumable) {
+              item.useItem(player);
+              player.addLog(`${player.name} 使用了 ${item.name}`);
+              saveGame(player);
+              renderStatusPage(player);
+            } else if (item instanceof Equipment) {
+              player.wearEquipment(item);
+              saveGame(player);
+              renderStatusPage(player);
+            }
+          });
+        }
+        const discardButton = instance.popper.querySelector(`#discard-btn${item.uuid}`);
+        if (discardButton) {
+          discardButton.addEventListener("click", (e) => {
+            e.stopPropagation(); // 防止点击传播关闭 popover
+            instance.hide();
+            player.discardItem(item);
+            saveGame(player);
+            renderStatusPage(player);
+          });
+        }
+      }
+    });
   }
 
-  // 为装备栏中的装备绑定点击事件（点击时卸下装备）
+  // 为装备栏中的装备绑定点击事件
   for (const [position, equipment] of Object.entries(player.equipments)) {
-    if (equipment) {
-      document
-        .getElementById(`equipment-slot-${position}`)
-        ?.addEventListener("click", () => {
-          player.removeEquipment(equipment.position);
-          saveGame(player);
-          renderStatusPage(player);
-        });
-    }
-  }
+    if (!equipment) continue;
+    const tooltipContent = generateItemTooltipContent(equipment);
+    const btn = document.getElementById(`equipment-slot-${position}`);
+    if (!btn) continue;
 
-  // 初始化 Bootstrap Tooltip
-  const tooltipTriggerList = Array.from(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]'),
-  );
-  tooltipTriggerList.forEach((tooltipTriggerEl) => {
-    new bootstrap.Tooltip(tooltipTriggerEl, { placement: "top", html: true });
-  });
-  const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-  popoverTriggerList.map(function (popoverTriggerEl) {
-    return new bootstrap.Popover(popoverTriggerEl);
-  });
+    tippy(btn, {
+      theme: 'game',
+      content: `
+        ${tooltipContent}
+        <button id="remove-btn${equipment.uuid}" class="btn btn-primary">
+          卸下
+        </button>
+      `,
+      allowHTML: true,
+      interactive: true,      // 允许点击 popover 内部而不消失
+      trigger: 'click',       // 点击触发
+      hideOnClick: true,      // 点击外部自动隐藏
+      appendTo: document.body, // 将 tippy 插入 body
+      onShown(instance) {
+        // 在弹出后获取 popover 内部的按钮
+        const button = instance.popper.querySelector(`#remove-btn${equipment.uuid}`);
+        if (button) {
+          button.addEventListener("click", (e) => {
+            e.stopPropagation(); // 防止点击传播关闭 popover
+            instance.hide();
+            player.removeEquipment(position as EquipmentPosition);
+            saveGame(player);
+            renderStatusPage(player);
+          });
+        }
+      }
+    });
+  }
 }

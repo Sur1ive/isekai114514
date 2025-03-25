@@ -106,6 +106,10 @@ export class Creature {
     }
   }
 
+  discardItem(item: Item): void {
+    this.pack.splice(this.pack.indexOf(item), 1);
+  }
+
   loseHp(amount: number) {
     this.health -= amount;
     if (this.health < 0) {

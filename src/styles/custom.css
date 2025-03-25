@@ -1,3 +1,29 @@
+.tippy-box[data-theme~="game"] {
+  /* 渐变背景，营造深邃科技感 */
+  background: linear-gradient(135deg, #000000, #001d2d);
+  /* 半透明 */
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  /* 圆角和内边距让整体感觉更友好 */
+  border-radius: 10px;
+  padding: 10px;
+  /* 轻微的白色边框让提示层次更分明 */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* 阴影效果提升浮动感 */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.tippy-box[data-theme~="game"] .tippy-arrow {
+  /* 设置箭头颜色，与背景协调 */
+  color: #2c3e50;
+}
+
+.tippy-box[data-theme~="game"] .tippy-content {
+  /* 内部内容的内边距可以微调 */
+  padding: 10px 12px;
+}
+
 /* ---------------------------tooltip 内部整体控制------------------------------ */
 .tooltip-inner {
   max-width: 300px;
