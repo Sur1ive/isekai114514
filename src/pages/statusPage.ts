@@ -10,11 +10,21 @@ import { generateItemTooltipContent, getItemIcon } from "../items/itemUtils";
 import { getAppElement } from "./utils";
 import { generateActionPopoverContent } from "../actions/actionUtils";
 import { EquipmentPosition } from "../items/types";
-import tippy from 'tippy.js';
+import tippy, { Instance as TippyInstance } from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
+import * as bootstrap from "bootstrap";
+
+// 存储物品UUID到tippy实例的映射，防止重复创建
+const itemTippyInstances: Map<string, TippyInstance[]> = new Map();
 
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
+  // 清除所有现有的tippy实例
+  itemTippyInstances.forEach(instances => {
+    instances.forEach(instance => instance.destroy());
+  });
+  itemTippyInstances.clear();
+
   const appElement = getAppElement();
 
   appElement.innerHTML = `
@@ -296,59 +306,68 @@ export function renderStatusPage(player: Player): void {
   // 为背包中的道具绑定点击事件
   for (const item of player.pack) {
     const tooltipContent = generateItemTooltipContent(item);
-    const btn = document.getElementById(`use-btn${item.uuid}`);
-    if (!btn) continue;
 
-    tippy(btn, {
-      theme: 'game',
-      content: `
-        ${tooltipContent}
-        <button id="use-btn${item.uuid}" class="btn btn-success">
-          ${item instanceof Consumable ? '使用' : '装备'}
-        </button>
-        <button id="discard-btn${item.uuid}" class="btn btn-danger">
-          丢弃
-        </button>
-      `,
-      allowHTML: true,
-      interactive: true,      // 允许点击 popover 内部而不消失
-      trigger: 'click',       // 点击触发
-      hideOnClick: true,      // 点击外部自动隐藏
-      appendTo: document.body, // 将 tippy 插入 body
-      onShown(instance) {
-        // 在弹出后获取 popover 内部的按钮
-        const button = instance.popper.querySelector(`#use-btn${item.uuid}`);
-        if (button) {
-          button.addEventListener("click", (e) => {
-            e.stopPropagation(); // 防止点击传播关闭 popover
-            instance.hide();
-            if (item instanceof Consumable) {
-              item.useItem(player);
-              player.addLog(`${player.name} 使用了 ${item.name}`);
+    // 查找所有tab中可能存在的该物品按钮
+    // 在全部、装备和消耗品三个tab中都可能有相同id的按钮
+    const btns = document.querySelectorAll(`[id="use-btn${item.uuid}"]`);
+
+    const instances: TippyInstance[] = [];
+    itemTippyInstances.set(item.uuid, instances);
+
+    btns.forEach(btn => {
+      const instance = tippy(btn, {
+        theme: 'game',
+        content: `
+          ${tooltipContent}
+          <button id="use-btn${item.uuid}" class="btn btn-success">
+            ${item instanceof Consumable ? '使用' : '装备'}
+          </button>
+          <button id="discard-btn${item.uuid}" class="btn btn-danger">
+            丢弃
+          </button>
+        `,
+        allowHTML: true,
+        interactive: true,      // 允许点击 popover 内部而不消失
+        trigger: 'click',       // 点击触发
+        hideOnClick: true,      // 点击外部自动隐藏
+        appendTo: document.body, // 将 tippy 插入 body
+        onShown(instance) {
+          // 在弹出后获取 popover 内部的按钮
+          const button = instance.popper.querySelector(`#use-btn${item.uuid}`);
+          if (button) {
+            button.addEventListener("click", (e) => {
+              e.stopPropagation(); // 防止点击传播关闭 popover
+              instance.hide();
+              if (item instanceof Consumable) {
+                item.useItem(player);
+                player.addLog(`${player.name} 使用了 ${item.name}`);
+                saveGame(player);
+                renderStatusPage(player);
+              } else if (item instanceof Equipment) {
+                player.wearEquipment(item);
+                saveGame(player);
+                renderStatusPage(player);
+              }
+            });
+          }
+          const discardButton = instance.popper.querySelector(`#discard-btn${item.uuid}`);
+          if (discardButton) {
+            discardButton.addEventListener("click", (e) => {
+              e.stopPropagation(); // 防止点击传播关闭 popover
+              instance.hide();
+              player.discardItem(item);
               saveGame(player);
               renderStatusPage(player);
-            } else if (item instanceof Equipment) {
-              player.wearEquipment(item);
-              saveGame(player);
-              renderStatusPage(player);
-            }
-          });
+            });
+          }
         }
-        const discardButton = instance.popper.querySelector(`#discard-btn${item.uuid}`);
-        if (discardButton) {
-          discardButton.addEventListener("click", (e) => {
-            e.stopPropagation(); // 防止点击传播关闭 popover
-            instance.hide();
-            player.discardItem(item);
-            saveGame(player);
-            renderStatusPage(player);
-          });
-        }
-      }
+      });
+
+      instances.push(instance);
     });
   }
 
-  // 为装备栏中的装备绑定点击事件
+  // 为装备栏中的装备绑定点击事件（点击时卸下装备）
   for (const [position, equipment] of Object.entries(player.equipments)) {
     if (!equipment) continue;
     const tooltipContent = generateItemTooltipContent(equipment);
@@ -383,4 +402,9 @@ export function renderStatusPage(player: Player): void {
       }
     });
   }
+
+  // 初始化所有Bootstrap popover
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach(popoverTrigger => {
+    new bootstrap.Popover(popoverTrigger);
+  });
 }
