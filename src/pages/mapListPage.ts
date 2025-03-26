@@ -38,8 +38,12 @@ export function renderMapListPage(player: Player): void {
 
   regionList.forEach((region) => {
     document.getElementById(`${region.id}-btn`)?.addEventListener("click", () => {
-      player.goToRegion(region.id);
-      renderMainMenu(player);
+      if (getRegionById(region.id).isOpen) {
+        player.goToRegion(region.id);
+        renderMainMenu(player);
+      } else {
+        alert("前面的区域以后再来探索吧？");
+      }
     });
   });
   document.getElementById("return-btn")?.addEventListener("click", () => {

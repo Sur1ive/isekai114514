@@ -12,11 +12,11 @@ export class Monster extends Creature {
     type: CreatureType,
     level: number,
     individualStrength: number,
-    name: string = creatureConfigs[type].typeName,
+    name?: string,
   ) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义
-    name = name || "未知";
     type = type || CreatureType.Slime;
+    name = name || creatureConfigs[type].typeName;
     level = level || 1;
     individualStrength = individualStrength || 1;
 

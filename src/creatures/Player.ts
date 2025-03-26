@@ -16,7 +16,6 @@ export class Player extends Creature {
     goingToNodeId: null,
     visitedNodeIdList: [],
     boss: [],
-    isCleared: false,
   };
   unlockedRegionIdList: string[] = ["ruin"];
   unlockedNodeIdList: string[] = [];
@@ -130,12 +129,15 @@ export class Player extends Creature {
     this.tempLog = [];
   }
 
-  clearCurrentMapData() {
+  clearCurrentMapDataWithoutBoss() {
     this.currentMapData.currentNodeId = null;
     this.currentMapData.goingToNodeId = null;
     this.currentMapData.visitedNodeIdList = [];
+  }
+
+  clearCurrentMapData() {
+    this.clearCurrentMapDataWithoutBoss();
     this.currentMapData.boss = [];
-    this.currentMapData.isCleared = false;
   }
 
   goToRegion(regionId: string) {

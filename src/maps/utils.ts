@@ -31,26 +31,48 @@ function goToNormalMonsterNode(node: NormalMonsterNode, player: Player) {
   renderBattlePage(player, monster, null, null, normalBattleHandler);
 }
 
+function bossBattleHandler(player: Player, monster: Monster, result: BattleResult) {
+  if (result === BattleResult.Lose || result === BattleResult.Withdraw) {
+    const bossHealthBefore = player.currentMapData.boss[0].health;
+    const bossHealthAfter = monster.health;
+    if (bossHealthBefore - bossHealthAfter > monster.maxHealth * 0.2) {
+      player.currentMapData.boss[0].health = bossHealthAfter;
+    }
+    renderMainMenu(player);
+    return;
+  }
+  player.currentMapData.boss.shift();
+  if (player.currentMapData.boss.length === 0) {
+    if (player.currentMapData.goingToNodeId) {
+      player.goToNode(player.currentMapData.goingToNodeId);
+      renderMapPage(player);
+      return;
+    } else {
+      renderMainMenu(player);
+      return;
+    }
+  }
+  renderBattlePage(player, player.currentMapData.boss[0] as Monster, null, null, bossBattleHandler);
+}
+
 function goToBossNode(node: BossNode, player: Player) {
-  // const bossStageList = (node as BossNode).bossStageList;
-  // if (!bossStageList) {
-  //   player.goToNode(node.id);
-  //   renderMapPage(player);
-  //   return;
-  // }
-  // if (!player.currentMapData.boss) {
-  //   bossStageList.forEach((bossStage) => {
-  //     const bossLevel = randomInt(bossStage.minLevel, bossStage.maxLevel);
-  //     const individualStrength = randomInt(bossStage.minIndividualStrength, bossStage.maxIndividualStrength);
-  //     const boss = new Monster(bossStage.monster, bossLevel, individualStrength);
-  //     player.currentMapData.boss.push(boss);
-  //   });
-  // } else {
-  //   const boss = player.currentMapData.boss;
-  // }
-  // renderBattlePage(player, boss, null, null, bossBattleHandler);
-  player.goToNode(node.id);
-  renderMapPage(player);
+  const bossStageList = (node as BossNode).bossStageList;
+  if (!bossStageList) {
+    player.goToNode(node.id);
+    renderMapPage(player);
+    return;
+  }
+  if (player.currentMapData.boss.length === 0) {
+    bossStageList.forEach((bossStage) => {
+      const bossLevel = randomInt(bossStage.minLevel, bossStage.maxLevel);
+      const individualStrength = randomInt(bossStage.minIndividualStrength, bossStage.maxIndividualStrength);
+      const boss = new Monster(bossStage.monster, bossLevel, individualStrength);
+      player.currentMapData.boss.push(boss);
+    });
+  }
+  const boss = player.currentMapData.boss[0] as Monster;
+  console.log(boss);
+  renderBattlePage(player, boss, null, null, bossBattleHandler);
 }
 
 function goToTreasureNode(node: TreasureNode, player: Player) {

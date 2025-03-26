@@ -42,6 +42,7 @@ export enum ActionType {
   CrowFly = "CrowFly",
   ParkDestroyer = "ParkDestroyer",
   SneakAttack = "SneakAttack",
+  RunAway = "RunAway",
 }
 
 export const NoHit: Hit = {
@@ -361,6 +362,29 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0.5, int: 0, con: 0, siz: 0.5, app: 0, dex: 0},
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}向${target.name}挥舞锐利的爪子`;
+        },
+      },
+    ],
+  },
+
+  // 抱头鼠窜
+  [ActionType.RunAway]: {
+    name: "抱头鼠窜",
+    description: "抱头鼠窜",
+    rarity: Rarity.Common,
+    hits: [
+      {
+        category: HitCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}抱头鼠窜`;
+        },
+      },
+      {
+        category: HitCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}抱头鼠窜`;
         },
       },
     ],

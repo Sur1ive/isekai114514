@@ -12,7 +12,7 @@ import { getRegionById } from "../maps/Region";
 export function renderMainMenu(player: Player): void {
   const appElement = getAppElement();
   player.isAtHome = true;
-  player.clearCurrentMapData();
+  player.clearCurrentMapDataWithoutBoss();
   saveGame(player);
   console.log(player);
 
@@ -55,7 +55,7 @@ export function renderMainMenu(player: Player): void {
           </button>
         </div>
         <div class="col-12 col-md-4">
-          <button id="travel-btn" class="btn btn-success w-100 py-3">快速旅行</button>
+          <button id="travel-btn" class="btn btn-primary w-100 py-3">快速旅行</button>
         </div>
         <div class="col-12 col-md-4">
           <button id="status-btn" class="btn btn-success w-100 py-3">状态</button>

@@ -23,9 +23,16 @@ export const ruinNode2_1: BossNode = {
   toNodeList: [ruinNode3_2],
   bossStageList: [
     {
-      monster: CreatureType.GoblinLeader,
+      monster: CreatureType.FrightenedGoblinLeader,
       maxLevel: 1,
-      minLevel: 0,
+      minLevel: 1,
+      maxIndividualStrength: 1.1,
+      minIndividualStrength: 1,
+    },
+    {
+      monster: CreatureType.AngryGoblinLeader,
+      maxLevel: 1,
+      minLevel: 1,
       maxIndividualStrength: 1.1,
       minIndividualStrength: 1,
     },
@@ -42,19 +49,12 @@ export const ruinNode2_2: TreasureNode = {
   firstTimeTreasureList: [
     {
       item: ConsumableType.GoldChest,
-      minLevel: 0,
-      maxLevel: 0,
+      minLevel: 1,
+      maxLevel: 1,
       weight: 1,
     },
   ],
-  repeatableTreasureList: [
-    {
-      item: ConsumableType.BrokenChest,
-      minLevel: 0,
-      maxLevel: 0,
-      weight: 1,
-    },
-  ],
+  repeatableTreasureList: [],
 };
 
 export const ruinNode1_1: NormalMonsterNode = {
@@ -67,8 +67,8 @@ export const ruinNode1_1: NormalMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.Goblin,
-      maxLevel: 0,
-      minLevel: 0,
+      maxLevel: 1,
+      minLevel: 1,
       weight: 1,
     },
   ],

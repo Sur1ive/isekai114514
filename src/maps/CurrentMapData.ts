@@ -6,5 +6,4 @@ export interface CurrentMapData {
   goingToNodeId: string | null;
   visitedNodeIdList: string[];
   boss: Creature[];
-  isCleared: boolean;
 }
