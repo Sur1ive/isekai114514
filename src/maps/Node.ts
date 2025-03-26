@@ -29,7 +29,13 @@ export interface CampNode extends Node {
 
 export interface TreasureNode extends Node {
   type: NodeType.Treasure;
-  treasureList: {
+  firstTimeTreasureList: {
+    item: ItemType;
+    minLevel: number;
+    maxLevel: number;
+    weight: number;
+  }[];
+  repeatableTreasureList: {
     item: ItemType;
     minLevel: number;
     maxLevel: number;

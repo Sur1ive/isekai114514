@@ -328,6 +328,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   [EquipmentType.ToonoDefeaterBadge]: {
     name: "远野击败者徽章",
     description: "隐藏着一些原本属于你的力量",
+    canNotObtainFromChest: true,
     rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Accessory,
     extraActions: [

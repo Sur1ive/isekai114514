@@ -39,6 +39,7 @@ export interface EquipmentData {
   armorGrowthCoeff: number;
   piercingGrowthCoeff: number;
   actionCoeff: EquipmentActionCoeff;
+  canNotObtainFromChest?: boolean;
 }
 
 export interface ConsumableData {

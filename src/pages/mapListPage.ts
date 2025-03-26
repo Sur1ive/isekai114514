@@ -38,7 +38,7 @@ export function renderMapListPage(player: Player): void {
 
   regionList.forEach((region) => {
     document.getElementById(`${region.id}-btn`)?.addEventListener("click", () => {
-      player.currentRegionId = region.id;
+      player.goToRegion(region.id);
       renderMainMenu(player);
     });
   });

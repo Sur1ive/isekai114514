@@ -2,6 +2,9 @@ import { ConsumableType } from "../items/consumableConfigs";
 import type { CreatureData } from "./types";
 import { ActionType } from "../actions/actionConfigs";
 import { EquipmentType } from "../items/equipmentConfigs";
+import dragon1 from "@/assets/dragon1.gif";
+import dragon2 from "@/assets/dragon2.gif";
+import dragon3 from "@/assets/dragon3.jpg";
 
 export enum CreatureType {
   Player = "Player",
@@ -136,6 +139,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.Dragon]: {
     typeName: "\"池沼之主\"龙",
+    image: dragon1,
     description:
       "生态位的顶端，人类在它庞大的身躯面前就像一只蝼蚁。它正用着锐利的目光打量着你，让你不寒而栗。<br>Tips: 你并不需要一次性击败Boss，对其造成20%最大生命值以上的伤害即可永久削减其生命值。你可以通过多次战斗来最终击败它。",
     abilityCoeff: {
@@ -161,6 +165,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.AngryDragon]: {
     typeName: "愤怒的龙",
+    image: dragon2,
     description:
       "龙彻底被激怒了，一只蝼蚁居然让它受了伤。它有些虚弱，但是攻击更加狂暴了",
     abilityCoeff: {
@@ -184,6 +189,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.WeakDragon]: {
     typeName: "虚弱的龙",
+    image: dragon3,
     description: "它抛弃了自己作为龙的尊严，现在一心只想活下去",
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },

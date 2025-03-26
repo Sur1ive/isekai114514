@@ -9,6 +9,7 @@ import angryImage from "../assets/1919.gif";
 import { Consumable } from "../items/Consumable";
 import { ConsumableType } from "../items/consumableConfigs";
 import { getAppElement } from "./utils";
+import { BattleResult } from "../battle/types";
 
 // 渲染开始界面
 export function renderStartPage(): void {
@@ -53,8 +54,8 @@ export function renderStartPage(): void {
       monster,
       null,
       null,
-      (player: Player, _enemy: Monster, result: boolean) => {
-        if (result) {
+      (player: Player, _enemy: Monster, result: BattleResult) => {
+        if (result === BattleResult.Win) {
           renderStartPageBeast1_1(player);
         } else {
           renderStartPageBeast1_2(player);

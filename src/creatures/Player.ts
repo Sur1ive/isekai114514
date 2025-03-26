@@ -1,6 +1,7 @@
 import { Creature } from "./Creature";
 import { CreatureType } from "./creatureConfigs";
 import type { Monster } from "./Monster";
+import { CurrentMapData } from "../maps/CurrentMapData";
 
 export class Player extends Creature {
   log: string[] = [];
@@ -9,10 +10,16 @@ export class Player extends Creature {
   isAtHome: boolean = true;
   exp: number = 0;
   isPlayer: boolean = true;
-  currentRegionId: string = "ruin";
-  currentNodeId: string | null = null;
+  currentMapData: CurrentMapData = {
+    currentRegionId: "ruin",
+    currentNodeId: null,
+    goingToNodeId: null,
+    visitedNodeIdList: [],
+    boss: [],
+    isCleared: false,
+  };
   unlockedRegionIdList: string[] = ["ruin"];
-  visitedNodeIdList: string[] = [];
+  unlockedNodeIdList: string[] = [];
 
   constructor(name: string, type: CreatureType) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义
@@ -121,5 +128,32 @@ export class Player extends Creature {
   joinTempLogs(): void {
     this.log.push(this.tempLog.join("<br>"));
     this.tempLog = [];
+  }
+
+  clearCurrentMapData() {
+    this.currentMapData.currentNodeId = null;
+    this.currentMapData.goingToNodeId = null;
+    this.currentMapData.visitedNodeIdList = [];
+    this.currentMapData.boss = [];
+    this.currentMapData.isCleared = false;
+  }
+
+  goToRegion(regionId: string) {
+    if (!this.unlockedRegionIdList.includes(regionId)) {
+      return;
+    }
+    this.clearCurrentMapData();
+    this.currentMapData.currentRegionId = regionId;
+  }
+
+  goToNode(nodeId: string) {
+    this.currentMapData.currentNodeId = nodeId;
+    if (!this.currentMapData.visitedNodeIdList.includes(nodeId)) {
+      this.currentMapData.visitedNodeIdList.push(nodeId);
+    }
+    this.currentMapData.goingToNodeId = null;
+    if (!this.unlockedNodeIdList.includes(nodeId)) {
+      this.unlockedNodeIdList.push(nodeId);
+    }
   }
 }

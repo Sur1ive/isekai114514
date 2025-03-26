@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderStartPage();
     return;
   }
-  if (player.currentNodeId) {
+  if (player.currentMapData.currentNodeId) {
     renderMapPage(player);
   } else {
     renderMainMenu(player);

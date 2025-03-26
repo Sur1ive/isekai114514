@@ -39,9 +39,17 @@ export const ruinNode2_2: TreasureNode = {
   type: NodeType.Treasure,
   position: { x: 700, y: 550 },
   toNodeList: [ruinNode2_1],
-  treasureList: [
+  firstTimeTreasureList: [
     {
       item: ConsumableType.GoldChest,
+      minLevel: 0,
+      maxLevel: 0,
+      weight: 1,
+    },
+  ],
+  repeatableTreasureList: [
+    {
+      item: ConsumableType.BrokenChest,
       minLevel: 0,
       maxLevel: 0,
       weight: 1,

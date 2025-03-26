@@ -9,7 +9,7 @@ import { getHitsDescription } from "../actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
 import { statusConfigs } from "../creatures/status/statusConfigs";
 import { Rarity } from "../types";
-import { renderMainMenu } from "./mainMenu";
+import { BattleResult } from "../battle/types";
 
 // 渲染战斗界面
 export function renderBattlePage(
@@ -17,7 +17,7 @@ export function renderBattlePage(
   enemy: Monster,
   lastPlayerAction: Action | null,
   lastEnemyAction: Action | null,
-  endHandler: (player: Player, enemy: Monster, result: boolean) => void,
+  endHandler: (player: Player, enemy: Monster, result: BattleResult) => void,
 ): void {
   const appElement = getAppElement();
 
@@ -56,14 +56,14 @@ export function renderBattlePage(
     player.addLog(player.name + "撑不住了");
     // 战斗结束时，清除所有非永久状态
     player.clearStatus();
-    renderBattleEndPage(player, enemy, false, endHandler);
+    renderBattleEndPage(player, enemy, BattleResult.Lose, endHandler);
     return;
   }
   if (enemy.health < 1) {
     player.addLog(player.name + "击败了" + enemy.name);
     // 战斗结束时，清除所有非永久状态
     player.clearStatus();
-    renderBattleEndPage(player, enemy, true, endHandler);
+    renderBattleEndPage(player, enemy, BattleResult.Win, endHandler);
     return;
   }
   player.updateStatusesOnTurnEnd();
@@ -148,9 +148,8 @@ export function renderBattlePage(
   document.getElementById("action2-btn")?.addEventListener("click", () => {
     renderBattlePage(player, enemy, action2, enemyAction, endHandler);
   });
-
   document.getElementById("return-btn")?.addEventListener("click", () => {
-    renderMainMenu(player);
+    renderBattleEndPage(player, enemy, BattleResult.Withdraw, endHandler);
   });
 }
 
@@ -158,13 +157,13 @@ export function renderBattlePage(
 function renderBattleEndPage(
   player: Player,
   enemy: Monster,
-  result: boolean,
-  endHandler: (player: Player, enemy: Monster, result: boolean) => void,
+  result: BattleResult,
+  endHandler: (player: Player, enemy: Monster, result: BattleResult) => void,
 ) {
   const appElement = getAppElement();
   let levelUp = false;
   let dropItem = null;
-  if (result) {
+  if (result === BattleResult.Win) {
     dropItem = enemy.randomDropItem();
     player.exp += Math.floor(enemy.giveExp);
     levelUp = player.checkLevelUp();
@@ -178,13 +177,17 @@ function renderBattleEndPage(
     if (dropItem) {
       player.pack.push(dropItem);
     }
-  } else {
+  } else if (result === BattleResult.Lose) {
     player.health = 1;
     player.addLog(
       player.name +
         "拼死从" +
         enemy.name +
         "的手中逃了出来，拖着残破的身躯，回到了城镇",
+    );
+  } else if (result === BattleResult.Withdraw) {
+    player.addLog(
+      player.name + "在与" + enemy.name + "的战斗中逃跑了",
     );
   }
 
@@ -197,13 +200,9 @@ function renderBattleEndPage(
       <div class="card-body">
         <h4 class="card-title">
           ${player.name}
-          ${
-            result
-              ? '<span class="text-success">胜利</span>'
-              : '<span class="text-danger">失败</span>'
-          }
+          ${result === BattleResult.Win ? "<span class='text-success'>胜利</span>" : result === BattleResult.Lose ? "<span class='text-danger'>失败</span>" : "<span class='text-warning'>逃跑</span>"}
           <p>lv: ${player.level}${levelUp ? "🔺" : ""} exp: ${player.exp}/${player.getNextLevelExp()}</p>
-          ${result ? `<p>获得经验: <span class="text-info">${Math.floor(enemy.giveExp)}</span>  ${dropItem ? `获得物品: <span class="text-${Rarity[dropItem.rarity]}">${dropItem.name}</span>` : ""}</p>` : ""}
+          ${result === BattleResult.Win ? `<p>获得经验: <span class="text-info">${Math.floor(enemy.giveExp)}</span>  ${dropItem ? `获得物品: <span class="text-${Rarity[dropItem.rarity]}">${dropItem.name}</span>` : ""}</p>` : ""}
         </h4>
         <hr>
         <h5>记录</h5>

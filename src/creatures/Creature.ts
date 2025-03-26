@@ -16,6 +16,7 @@ export class Creature {
   isPlayer: boolean = false;
   name: string;
   type: CreatureType;
+  image?: string;
   level: number;
   individualStrength: number;
   maxHealth: number;

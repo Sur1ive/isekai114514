@@ -7,6 +7,20 @@ import { Item } from "./Item";
 import { Rarity } from "../types";
 import { generateEquipmentTooltipContent } from "./equipmentUtils";
 
+// 按权重随机选择一个道具
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function randomItemType(itemList: { item: ItemType; weight: number; [key: string]: any }[]) {
+  const totalWeight = itemList.reduce((sum, item) => sum + item.weight, 0);
+  const randomValue = Math.random() * totalWeight;
+  let cumulativeWeight = 0;
+  for (const item of itemList) {
+    cumulativeWeight += item.weight;
+    if (randomValue <= cumulativeWeight) {
+      return item;
+    }
+  }
+}
+
 export function generateItem(type: ItemType, level: number = 0): Item {
   if (type in ConsumableType) {
     return new Consumable(type as ConsumableType, level);

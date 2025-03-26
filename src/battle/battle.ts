@@ -90,7 +90,7 @@ export function testBattle(player: Player): void {
     enemyLevel,
     enemyIndividualStrength,
   );
-  renderBattlePage(player, enemy, null, null, (player: Player, _enemy: Monster, _result: boolean) => {
+  renderBattlePage(player, enemy, null, null, (player: Player, _enemy, _result) => {
     renderMainMenu(player);
   });
 }

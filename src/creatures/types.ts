@@ -40,6 +40,7 @@ export interface CreatureData {
   actions: WeightedActionType[];
   dropItems: { type: ItemType | null; weight: number }[];
   description: string;
+  image?: string;
 }
 
 export interface EquipmentBar {
