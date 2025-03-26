@@ -237,7 +237,7 @@ export class Creature {
   }
 
   // 所有回合状态持续时间-1
-  updateStatusesOnTurnEnd() {
+  updateStatusesOnTurnStart() {
     this.statuses = this.statuses.filter((status) => {
       if (status.durationType === StatusDurationType.Turn) {
         status.duration -= 1;

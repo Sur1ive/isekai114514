@@ -48,7 +48,7 @@ export const ruinNode2_2: TreasureNode = {
   toNodeList: [ruinNode2_1],
   firstTimeTreasureList: [
     {
-      item: ConsumableType.GoldChest,
+      item: ConsumableType.SilverChest,
       minLevel: 1,
       maxLevel: 1,
       weight: 1,

@@ -21,6 +21,14 @@ export function renderBattlePage(
 ): void {
   const appElement = getAppElement();
 
+  // 上回合结算
+  if (lastPlayerAction && lastEnemyAction) {
+    player.addTempLog(
+      "--------------------------回合-----------------------------",
+    );
+    handleAction(player, enemy, lastPlayerAction, lastEnemyAction);
+  }
+
   // 本回合准备阶段
   let enemyAction = enemy.getRandomAction();
   const enemyActionObservation = observeEnemyAction(player, enemy, enemyAction);
@@ -34,6 +42,7 @@ export function renderBattlePage(
       const actions = effect(player, action1, action2);
       action1 = actions.action1;
       action2 = actions.action2;
+      console.log(action1, action2);
     }
   });
   enemy.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
@@ -44,14 +53,10 @@ export function renderBattlePage(
     }
   });
 
-  // 上回合结算
-  if (lastPlayerAction && lastEnemyAction) {
-    player.addTempLog(
-      "--------------------------回合-----------------------------",
-    );
-    handleAction(player, enemy, lastPlayerAction, lastEnemyAction);
-  }
+  player.updateStatusesOnTurnStart();
+  enemy.updateStatusesOnTurnStart();
 
+  // 检查是否结束
   if (player.health <= 0) {
     player.addLog(player.name + "撑不住了");
     // 战斗结束时，清除所有非永久状态
@@ -66,8 +71,6 @@ export function renderBattlePage(
     renderBattleEndPage(player, enemy, BattleResult.Win, endHandler);
     return;
   }
-  player.updateStatusesOnTurnEnd();
-  enemy.updateStatusesOnTurnEnd();
   saveGame(player);
 
   appElement.innerHTML = `

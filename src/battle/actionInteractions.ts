@@ -16,6 +16,8 @@ function handleHit(
   playerHit: Hit,
   enemyHit: Hit,
 ): BattleResult {
+  let result = BattleResult.Draw;
+
   if (playerHit.category === HitCategory.Capture) {
     playerHit.category = HitCategory.Attack;
   }
@@ -24,28 +26,28 @@ function handleHit(
     playerHit.category === HitCategory.Attack &&
     enemyHit.category === HitCategory.Attack
   ) {
-    return attackAgainstAttack(player, enemy, playerHit, enemyHit);
+    result = attackAgainstAttack(player, enemy, playerHit, enemyHit);
   } else if (
     (playerHit.category === HitCategory.Attack &&
       enemyHit.category === HitCategory.None) ||
     (playerHit.category === HitCategory.None &&
       enemyHit.category === HitCategory.Attack)
   ) {
-    return attackAgainstNone(player, enemy, playerHit, enemyHit);
+    result = attackAgainstNone(player, enemy, playerHit, enemyHit);
   } else if (
     (playerHit.category === HitCategory.Attack &&
       enemyHit.category === HitCategory.Defend) ||
     (playerHit.category === HitCategory.Defend &&
       enemyHit.category === HitCategory.Attack)
   ) {
-    return attackAgainstDefend(player, enemy, playerHit, enemyHit);
+    result = attackAgainstDefend(player, enemy, playerHit, enemyHit);
   } else if (
     (playerHit.category === HitCategory.Dodge &&
       enemyHit.category === HitCategory.Attack) ||
     (playerHit.category === HitCategory.Attack &&
       enemyHit.category === HitCategory.Dodge)
   ) {
-    return attackAgainstDodge(player, enemy, playerHit, enemyHit);
+    result = attackAgainstDodge(player, enemy, playerHit, enemyHit);
   } else {
     player.addTempLog(
       "无事发生(" +
@@ -56,8 +58,13 @@ function handleHit(
         getHitIcon(enemyHit) +
         ")",
     );
-    return BattleResult.Draw;
   }
+  if (result === BattleResult.PlayerWin) {
+    playerHit.extraEffect?.(player, enemy);
+  } else if (result === BattleResult.EnemyWin) {
+    enemyHit.extraEffect?.(enemy, player);
+  }
+  return result;
 }
 
 export function handleAction(
@@ -145,9 +152,6 @@ function attackAgainstAttack (
         Math.round(damage) +
         "</span>点伤害",
     );
-    if (playerHit.extraEffect) {
-      playerHit.extraEffect(player, enemy);
-    }
     return BattleResult.PlayerWin;
   } else {
     const damage = calculateDamage(enemyPower, player.getAbility().armor, enemy.getAbility().piercing);
@@ -158,9 +162,6 @@ function attackAgainstAttack (
         Math.round(damage) +
         "</span>点伤害",
     );
-    if (enemyHit.extraEffect) {
-      enemyHit.extraEffect(enemy, player);
-    }
     return BattleResult.EnemyWin;
   }
 }
@@ -203,9 +204,6 @@ function attackAgainstNone(
       Math.round(damage) +
       "</span>点伤害",
   );
-  if (action.extraEffect) {
-    action.extraEffect(actor, target);
-  }
   return actor instanceof Player ? BattleResult.PlayerWin : BattleResult.EnemyWin;
 }
 
@@ -248,9 +246,6 @@ function attackAgainstDefend(
         Math.round(damage) +
         `(-${defenderPower})</span>点伤害`,
     );
-    if (attackerAction.extraEffect) {
-      attackerAction.extraEffect(attacker, defender);
-    }
     return isPlayerAttack ? BattleResult.PlayerWin : BattleResult.EnemyWin;
 
   } else {
@@ -307,7 +302,7 @@ function attackAgainstDodge(
   } else {
     attacker.addStatus(StatusType.Unbalance, 1);
     player.addTempLog(
-      dodgerAction.messageGenerator(attacker, dodger) +
+      dodgerAction.messageGenerator(dodger, attacker) +
       "," +
       attacker.name +
       "失衡了",
