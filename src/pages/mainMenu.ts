@@ -10,6 +10,11 @@ import { getRegionById } from "../maps/Region";
 
 // 渲染主菜单
 export function renderMainMenu(player: Player): void {
+  const titleElement = document.getElementById("game-title") as HTMLSpanElement;
+  if (player.type === CreatureType.Player) {
+    titleElement.textContent = "异世界" + player.name;
+  }
+
   const appElement = getAppElement();
   player.isAtHome = true;
   player.clearCurrentMapDataWithoutBoss();

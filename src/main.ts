@@ -8,6 +8,7 @@ import { loadPlayer } from "./save";
 import { renderStartPage } from "./pages/startPages";
 import { renderMainMenu } from "./pages/mainMenu";
 import { renderMapPage } from "./pages/mapPage";
+import { CreatureType } from "./creatures/creatureConfigs";
 
 // 初始加载时显示主菜单
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,6 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
   if (player.currentMapData.currentNodeId) {
+    const titleElement = document.getElementById("game-title") as HTMLSpanElement;
+    if (player.type === CreatureType.Player) {
+      titleElement.textContent = "异世界" + player.name;
+    }
     renderMapPage(player);
   } else {
     renderMainMenu(player);
