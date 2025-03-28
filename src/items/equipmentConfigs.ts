@@ -131,14 +131,14 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Mikiri, weight: 0.15 },
     ],
     ability: {
-      piercing: 35,
+      piercing: 40,
     },
     armorGrowthCoeff: 0,
     piercingGrowthCoeff: 5.5,
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 3,
-        multiply: 1.1,
+        plus: 1,
+        multiply: 1.2,
       },
     },
   },
@@ -160,7 +160,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     piercingGrowthCoeff: 6,
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 10,
+        plus: 6,
         multiply: 1,
       },
       [HitCategory.Dodge]: {
@@ -184,11 +184,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     piercingGrowthCoeff: 6.5,
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 10,
+        plus: 6,
         multiply: 1.2,
       },
       [HitCategory.Dodge]: {
-        plus: 10,
+        plus: 6,
         multiply: 1.2,
       },
     },
@@ -267,7 +267,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
-  [EquipmentType.DragonSlayer]: { //todo
+  [EquipmentType.DragonSlayer]: {
     name: "\"弑龙者\"",
     description: "传说这把剑上的龙之力来源于被它杀死的龙的灵魂。你握着它，仿佛能感受到龙的气息",
     rarity: Rarity.Epic,
@@ -285,8 +285,8 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     piercingGrowthCoeff: 6,
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 3,
-        multiply: 1.1,
+        plus: 2,
+        multiply: 1,
       },
     },
   },
@@ -315,9 +315,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     description: "女装",
     rarity: Rarity.Rare,
     position: EquipmentPosition.Body,
-    extraActions: [
-      { actionType: ActionType.CrowFly, weight: 0.05 },
-    ],
+    extraActions: [],
     ability: {
       armor: 15,
     },
