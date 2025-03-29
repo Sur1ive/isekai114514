@@ -153,7 +153,7 @@ export function renderMapPage(player: Player): void {
   const svg = d3.select<SVGSVGElement, unknown>("#map-svg");
 
   // 保存对地图的全局引用
-  window.currentMapSvg = svg;
+  window.currentMapSvg = svg as unknown as d3.Selection<SVGSVGElement, unknown, null, undefined>;
 
   // 创建包含所有图形的容器组
   const zoomableGroup = svg.append("g").attr("class", "zoomable");
@@ -181,7 +181,7 @@ export function renderMapPage(player: Player): void {
     });
 
   // 保存对缩放行为的全局引用
-  window.currentZoomBehavior = zoomBehavior;
+  window.currentZoomBehavior = zoomBehavior as unknown as d3.ZoomBehavior<Element, unknown>;
 
   // 将 zoom 行为绑定到 SVG 上，支持鼠标拖动、滚轮缩放和触摸手势
   svg.call(zoomBehavior);
@@ -315,7 +315,7 @@ export function renderMapPage(player: Player): void {
                          });
 
   // 保存对节点和边的全局引用
-  window.currentNodeElements = nodeG;
+  window.currentNodeElements = nodeG as unknown as d3.Selection<d3.BaseType, NodeDatum, d3.BaseType, unknown>;
   window.currentEdgeElements = edgeGroup.selectAll("path");
 
   // 绘制节点圆形，添加更精美的样式
@@ -529,10 +529,12 @@ export function renderMapPage(player: Player): void {
       // 2. 更新节点颜色和样式
       if (window.currentNodeElements) {
         window.currentNodeElements.selectAll("circle:first-child")
-          .attr("fill", function(d) {
+          .attr("fill", function(_d) {
             try {
               // 安全地访问属性
-              const nodeData = d3.select(this.parentNode).datum();
+              const element = this as Element;
+              const parent = element.parentNode as Element;
+              const nodeData = d3.select(parent).datum() as NodeDatum;
               if (!nodeData || !nodeData.node) return "#6c757d"; // 默认灰色
 
               // 当前节点显示为蓝色
@@ -558,9 +560,11 @@ export function renderMapPage(player: Player): void {
 
         // 更新发光效果
         window.currentNodeElements.selectAll("circle:nth-child(2)")
-          .attr("stroke", function(d) {
+          .attr("stroke", function(_d) {
             try {
-              const nodeData = d3.select(this.parentNode).datum();
+              const element = this as Element;
+              const parent = element.parentNode as Element;
+              const nodeData = d3.select(parent).datum() as NodeDatum;
               if (!nodeData || !nodeData.node) return "transparent";
 
               if (newNodeId === nodeData.node.id) {
@@ -577,10 +581,11 @@ export function renderMapPage(player: Player): void {
       // 3. 更新边的样式 - 使用更安全的方法
       if (window.currentEdgeElements) {
         window.currentEdgeElements
-          .attr("stroke", function(d) {
+          .attr("stroke", function(_d) {
             try {
               // 从DOM属性获取数据，避免依赖d3数据绑定
-              const pathData = this.getAttribute("d");
+              const element = this as SVGPathElement;
+              const pathData = element.getAttribute("d");
               if (!pathData) return "#aaa"; // 如果没有路径数据，返回默认灰色
 
               // 使用正则表达式或手动解析从pathData中提取连接的节点
@@ -645,9 +650,13 @@ export function renderMapPage(player: Player): void {
           .scale(currentScale)
           .translate(-targetNode.x, -targetNode.y);
 
+        // 使用类型断言修复类型错误
+        const zoomTransform = window.currentZoomBehavior.transform as unknown as
+          (transition: d3.Transition<SVGSVGElement, unknown, null, undefined>, transform: d3.ZoomTransform) => void;
+
         window.currentMapSvg.transition()
           .duration(750)
-          .call(window.currentZoomBehavior.transform, transform);
+          .call(zoomTransform, transform);
       }
     } catch (e) {
       console.error("Error in updateMapForNode:", e);

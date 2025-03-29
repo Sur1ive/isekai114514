@@ -14,11 +14,25 @@ import * as d3 from "d3";
 
 // 全局变量，用于存储当前地图的引用
 declare global {
+  // 首先定义节点和边的数据类型
+  interface NodeDatum {
+    id: string;
+    x: number;
+    y: number;
+    label: string;
+    node: Node;
+  }
+
+  interface EdgeDatum {
+    source: string;
+    target: string;
+  }
+
   interface Window {
     currentMapSvg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
     currentZoomBehavior?: d3.ZoomBehavior<Element, unknown>;
-    currentNodeElements?: d3.Selection<d3.BaseType, any, d3.BaseType, unknown>;
-    currentEdgeElements?: d3.Selection<d3.BaseType, any, d3.BaseType, unknown>;
+    currentNodeElements?: d3.Selection<d3.BaseType, NodeDatum, d3.BaseType, unknown>;
+    currentEdgeElements?: d3.Selection<d3.BaseType, EdgeDatum, d3.BaseType, unknown>;
     updateMapForNode?: (player: Player, newNodeId: string) => void;
   }
 }
