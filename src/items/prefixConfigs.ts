@@ -34,7 +34,21 @@ export enum PrefixType {
   Blessed = "Blessed",
   RageCursed = "RageCursed",
   Weighty = "Weighty",
-
+  BloodCursed = "BloodCursed",
+  HeavenForge = "HeavenForge",
+  CrowFly = "CrowFly",
+  IronWall = "IronWall",
+  GodBlessed = "GodBlessed",
+  WindSpeed = "WindSpeed",
+  DragonScaleArmor = "DragonScaleArmor",
+  DragonScaleWeapon = "DragonScaleWeapon",
+  SteelForgeWeapon = "SteelForgeWeapon",
+  SteelForgeArmor = "SteelForgeArmor",
+  MasterMa = "MasterMa",
+  SharpBuffed = "SharpBuffed",
+  QuickBuffed = "QuickBuffed",
+  DefendBuffed = "DefendBuffed",
+  Bloodthirsty = "Bloodthirsty",
 }
 
 export const prefixConfigs: Record<PrefixType, Prefix> = {
@@ -98,7 +112,7 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
         multiply: 1,
       },
       [HitCategory.Dodge]: {
-        plus: -1,
+        plus: -2,
         multiply: 1,
       },
     },
@@ -135,16 +149,13 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
   },
   [PrefixType.Sturdy]: {
     name: "结实的",
-    position: "AnyPosition",
+    position: EquipmentPosition.Body,
     rarity: Rarity.Common,
     extraActions: [],
-    ability: {},
-    actionCoeff: {
-      [HitCategory.Defend]: {
-        plus: 1,
-        multiply: 1,
-      },
+    ability: {
+      armor: 5,
     },
+    actionCoeff: {},
   },
   [PrefixType.Sneaky]: {
     name: "卑鄙的",
@@ -171,7 +182,7 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
     position: EquipmentPosition.Hand,
     rarity: Rarity.Common,
     extraActions: [
-      { actionType: ActionType.Attack, weight: 0.5 },
+      { actionType: ActionType.Attack, weight: 0.6 },
     ],
     ability: { str: 1 },
     actionCoeff: {
@@ -215,20 +226,35 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
       },
     },
   },
-  [PrefixType.RageCursed]: {
-    name: "狂化诅咒的",
-    position: "AnyPosition",
+  [PrefixType.BloodCursed]: {
+    name: "嗜血诅咒之",
+    position: EquipmentPosition.Hand,
     rarity: Rarity.Rare,
     extraActions: [],
     ability: {
-      con: -1,
-      int: -1,
-      str: 1,
+      con: -3,
+      str: 3,
     },
+    actionCoeff: {},
+  },
+  [PrefixType.RageCursed]: {
+    name: "狂化诅咒的",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Rare,
+    extraActions: [],
+    ability: {},
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 1,
-        multiply: 1,
+        plus: 0,
+        multiply: 1.3,
+      },
+      [HitCategory.Dodge]: {
+        plus: 0,
+        multiply: 0.5,
+      },
+      [HitCategory.Defend]: {
+        plus: 0,
+        multiply: 0.5,
       },
     },
   },
@@ -323,6 +349,26 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
     },
     actionCoeff: {},
   },
+  [PrefixType.SteelForgeWeapon]: {
+    name: "精钢锻造的",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {
+      piercing: 15,
+    },
+    actionCoeff: {},
+  },
+  [PrefixType.SteelForgeArmor]: {
+    name: "精钢锻造的",
+    position: EquipmentPosition.Body,
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {
+      armor: 20,
+    },
+    actionCoeff: {},
+  },
   [PrefixType.Blessed]: {
     name: "祝福的",
     position: "AnyPosition",
@@ -363,59 +409,125 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
       },
     },
   },
-  // [PrefixType.BloodCursed]: {
-  //   name: "嗜血诅咒之",
-  //   position: EquipmentPosition.Hand,
-  //   rarity: Rarity.Masterpiece,
-  //   extraActions: [],
-  //   ability: {
-  //     str: 2,
-  //     con: -2,
-  //     piercing: 5,
-  //   },
-  //   actionCoeff: {
-  //     [HitCategory.Attack]: {
-  //       plus: 2,
-  //       multiply: 1,
-  //     },
-  //   },
-  // },
-  // [PrefixType.Bloodthirsty]: {
-  //   name: "鲜血饥渴 ",
-  //   position: EquipmentPosition.Hand,
-  //   rarity: Rarity.Epic,
-  //   extraActions: [
-  //     { actionType: ActionType.Repent, weight: 0.1 },
-  //     { actionType: ActionType.GodStrike, weight: 0.01 },
-  //   ],
-  //   ability: {
-  //     piercing: 10,
-  //   },
-  //   actionCoeff: {
-  //     [HitCategory.Attack]: {
-  //       plus: 1,
-  //       multiply: 1,
-  //     },
-  //   },
-  // },
-  // [PrefixType.GodBlessed]: {
-  //   name: "神佑 ",
-  //   position: EquipmentPosition.Hand,
-  //   rarity: Rarity.Epic,
-  //   extraActions: [
-  //     { actionType: ActionType.Repent, weight: 0.1 },
-  //     { actionType: ActionType.GodStrike, weight: 0.01 },
-  //   ],
-  //   ability: {
-  //     piercing: 10,
-  //   },
-  //   actionCoeff: {
-  //     [HitCategory.Attack]: {
-  //       plus: 1,
-  //       multiply: 1,
-  //     },
-  //   },
-  // },
+  [PrefixType.CrowFly]: {
+    name: "乌鸦坐飞机 ",
+    position: "AnyPosition",
+    rarity: Rarity.Masterpiece,
+    extraActions: [
+      { actionType: ActionType.CrowFly, weight: 0.3 },
+    ],
+    ability: {},
+    actionCoeff: {},
+  },
+  [PrefixType.MasterMa]: {
+    name: "马老师的",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Masterpiece,
+    extraActions: [
+      { actionType: ActionType.LightningFiveStrikes, weight: 0.3 },
+    ],
+    ability: {},
+    actionCoeff: {},
+  },
+  [PrefixType.IronWall]: {
+    name: "铁壁的",
+    position: EquipmentPosition.Body,
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {
+      armor: 10,
+    },
+    actionCoeff: {
+      [HitCategory.Defend]: {
+        plus: 1,
+        multiply: 1,
+      },
+    },
+  },
+  [PrefixType.WindSpeed]: {
+    name: "迅疾如风 ",
+    position: "AnyPosition",
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {
+      dex: 1,
+    },
+    actionCoeff: {
+      [HitCategory.Dodge]: {
+        plus: 2,
+        multiply: 1,
+      },
+    },
+  },
+  [PrefixType.SharpBuffed]: {
+    name: "附有锋利魔法的",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {},
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 0,
+        multiply: 1.1,
+      },
+    },
+  },
+  [PrefixType.QuickBuffed]: {
+    name: "附有迅疾魔法的",
+    position: "AnyPosition",
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {},
+    actionCoeff: {
+      [HitCategory.Dodge]: {
+        plus: 0,
+        multiply: 1.2,
+      },
+    },
+  },
+  [PrefixType.DefendBuffed]: {
+    name: "附有防护魔法的",
+    position: "AnyPosition",
+    rarity: Rarity.Masterpiece,
+    extraActions: [],
+    ability: {},
+    actionCoeff: {
+      [HitCategory.Defend]: {
+        plus: 0,
+        multiply: 1.2,
+      },
+    },
+  },
+  [PrefixType.Bloodthirsty]: {
+    name: "鲜血饥渴 ",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Epic,
+    extraActions: [],
+    ability: {
+      con: -3,
+      piercing: 30,
+    },
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 3,
+        multiply: 1,
+      },
+    },
+  },
+  [PrefixType.GodBlessed]: {
+    name: "神佑 ",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Epic,
+    extraActions: [
+      { actionType: ActionType.Repent, weight: 0.1 },
+      { actionType: ActionType.GodStrike, weight: 0.01 },
+    ],
+    ability: {
+      con: 2,
+      armor: 10,
+    },
+    actionCoeff: {},
+  },
   [PrefixType.DragonForge]: {
     name: "龙息锻造的",
     position: EquipmentPosition.Hand,
@@ -426,12 +538,23 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
     ability: {
       piercing: 10,
     },
-    actionCoeff: {
-      [HitCategory.Attack]: {
-        plus: 2,
-        multiply: 1,
-      },
-    },
+    actionCoeff: {},
+  },
+  [PrefixType.DragonScaleArmor]: {
+    name: "龙鳞制成的",
+    position: EquipmentPosition.Body,
+    rarity: Rarity.Epic,
+    extraActions: [],
+    ability: { armor: 30 },
+    actionCoeff: {},
+  },
+  [PrefixType.DragonScaleWeapon]: {
+    name: "龙鳞制成的",
+    position: EquipmentPosition.Hand,
+    rarity: Rarity.Epic,
+    extraActions: [],
+    ability: { piercing: 30 },
+    actionCoeff: {},
   },
   [PrefixType.Epic]: {
     name: "吟游诗人的歌谣中的",
@@ -443,7 +566,7 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
       armor: 10,
     },
     actionCoeff: {
-      [HitCategory.Attack]: {
+      [HitCategory.Dodge]: {
         plus: 2,
         multiply: 1,
       },
@@ -490,5 +613,20 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
         multiply: 1,
       },
     },
+  },
+  [PrefixType.HeavenForge]: {
+    name: "天堂造物 ",
+    position: "AnyPosition",
+    rarity: Rarity.Mythical,
+    extraActions: [
+      { actionType: ActionType.GodStrike, weight: 0.1 },
+    ],
+    ability: {
+      con: 1,
+      int: 1,
+      piercing: 10,
+      armor: 10,
+    },
+    actionCoeff: {},
   },
 };

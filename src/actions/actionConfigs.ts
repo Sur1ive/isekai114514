@@ -813,4 +813,28 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
     ],
   },
+
+  // [ActionType.Repent]: {
+  //   name: "鲜血斩击",
+  //   description: "燃烧生命",
+  //   rarity: Rarity.Epic,
+  //   hits: [
+  //     {
+  //       category: HitCategory.Attack,
+  //       coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+  //       messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 来！骗！来！偷袭！`,
+  //       extraEffect: (actor: Creature, target: Creature) => {
+  //         actor.loseHp(actor.getMaxHp() * 0.1);
+  //       }
+  //     },
+  //     {
+  //       category: HitCategory.Attack,
+  //       coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+  //       messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 来！骗！来！偷袭！`,
+  //       extraEffect: (actor: Creature, target: Creature) => {
+  //         actor.loseHp(actor.getMaxHp() * 0.1);
+  //       }
+  //     },
+  //   ]
+  // }
 };
