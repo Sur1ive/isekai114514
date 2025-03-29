@@ -6,4 +6,10 @@ export interface CurrentMapData {
   goingToNodeId: string | null;
   visitedNodeIdList: string[];
   boss: Creature[];
+  viewState?: {
+    x: number;
+    y: number;
+    scale: number;
+  };
+  isMovingBetweenNodes?: boolean;
 }

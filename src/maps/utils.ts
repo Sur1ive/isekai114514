@@ -10,6 +10,18 @@ import { BattleResult } from "../battle/types";
 import { getRegionById } from "./Region";
 import { randomItemType, generateItem } from "../items/itemUtils";
 import * as bootstrap from "bootstrap";
+import * as d3 from "d3";
+
+// 全局变量，用于存储当前地图的引用
+declare global {
+  interface Window {
+    currentMapSvg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+    currentZoomBehavior?: d3.ZoomBehavior<Element, unknown>;
+    currentNodeElements?: d3.Selection<d3.BaseType, any, d3.BaseType, unknown>;
+    currentEdgeElements?: d3.Selection<d3.BaseType, any, d3.BaseType, unknown>;
+    updateMapForNode?: (player: Player, newNodeId: string) => void;
+  }
+}
 
 function normalBattleHandler(player: Player, _monster: Monster, result: BattleResult) {
   if (result === BattleResult.Lose || result === BattleResult.Withdraw || player.currentMapData.goingToNodeId === null) {
@@ -139,6 +151,21 @@ function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
 export function goToNode(node: Node, player: Player) {
   player.currentMapData.goingToNodeId = node.id;
 
+  // 如果节点已访问且我们有可用的地图引用，执行平滑过渡
+  if (player.currentMapData.visitedNodeIdList.includes(node.id) &&
+      window.currentMapSvg &&
+      window.updateMapForNode) {
+
+    // 更新玩家位置
+    player.goToNode(player.currentMapData.goingToNodeId);
+
+    // 执行平滑过渡而不是重新渲染
+    window.updateMapForNode(player, node.id);
+
+    return;
+  }
+
+  // 原有逻辑，处理未访问过的节点
   if (player.currentMapData.visitedNodeIdList.includes(node.id)) {
     player.goToNode(player.currentMapData.goingToNodeId);
     renderMapPage(player);
