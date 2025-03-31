@@ -384,14 +384,31 @@ export function renderMapPage(player: Player): void {
   nodeG.each(function(d) {
     const node = d.node;
 
+    // 检查是否为当前节点或起始节点
+    const isCurrentNode = player.currentMapData.currentNodeId === node.id;
+    const isStartNode = !player.currentMapData.currentNodeId &&
+                       node === getRegionById(player.currentMapData.currentRegionId).startNode;
+
+    // 检查节点是否可前往
+    const isAccessible = player.currentMapData.currentNodeId
+      ? nodesData.find(n => n.id === player.currentMapData.currentNodeId)?.node.toNodeList.some(n => n.id === node.id)
+      : false;
+    const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
+
+    // 只有可前往的节点（当前节点的toNodeList中的节点）或已访问的节点才显示前往按钮
+    const canGo = (!isCurrentNode && !isStartNode) && (isAccessible || isVisited);
+
     tippy(this, {
       content: `
         <div>
           <h3>${node.name}</h3>
           <p>${node.description}</p>
-          <a class="btn btn-primary" id="go-${node.id}">
-            前往
-          </a>
+          ${canGo ?
+            `<a class="btn btn-primary" id="go-${node.id}">
+              前往
+            </a>` :
+            ''
+          }
         </div>
       `,
       allowHTML: true,
@@ -400,21 +417,21 @@ export function renderMapPage(player: Player): void {
       hideOnClick: true,      // 点击外部自动隐藏
       appendTo: document.body, // 将 tippy 插入 body
       onShown(instance) {
-        // 在弹出后获取 popover 内部的按钮
-        const button = instance.popper.querySelector(`#go-${node.id}`);
-        if (button) {
-          button.addEventListener("click", (e) => {
-            e.stopPropagation(); // 防止点击传播关闭 popover
-            instance.hide();
+        // 只有可前往的节点才添加点击事件
+        if (canGo) {
+          const button = instance.popper.querySelector(`#go-${node.id}`);
+          if (button) {
+            button.addEventListener("click", (e) => {
+              e.stopPropagation(); // 防止点击传播关闭 popover
+              instance.hide();
 
-            // 设置标志，表示正在进行节点间移动
-            player.currentMapData.isMovingBetweenNodes = true;
+              // 设置标志，表示正在进行节点间移动
+              player.currentMapData.isMovingBetweenNodes = true;
 
-            // 保存视图状态(可以在这里设置，也可以使用zoom事件中已经保存的)
-
-            // 前往新节点
-            goToNode(node, player);
-          });
+              // 前往新节点
+              goToNode(node, player);
+            });
+          }
         }
       }
     });
