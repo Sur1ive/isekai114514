@@ -62,7 +62,7 @@ function bossBattleHandler(player: Player, monster: Monster, result: BattleResul
   if (result === BattleResult.Lose || result === BattleResult.Withdraw) {
     const bossHealthBefore = player.currentMapData.boss[0].health;
     const bossHealthAfter = monster.health;
-    if (bossHealthBefore - bossHealthAfter > monster.maxHealth * 0.2) {
+    if (bossHealthBefore - bossHealthAfter > monster.getMaxHealth() * 0.2) {
       player.currentMapData.boss[0].health = bossHealthAfter;
     }
     renderMainMenu(player);

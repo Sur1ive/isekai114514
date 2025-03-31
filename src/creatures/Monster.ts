@@ -26,7 +26,7 @@ export class Monster extends Creature {
     if (creatureConfigs[type].image) {
       this.image = creatureConfigs[type].image;
     }
-    this.giveExp = Math.floor(this.maxHealth) * (1 + this.level / 10);
+    this.giveExp = Math.floor(this.getMaxHealth()) * (1 + this.level / 10);
   }
 
   randomDropItem() {

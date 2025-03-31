@@ -98,12 +98,18 @@ export class Creature {
     }
     this.equipments[equipment.position] = equipment;
     this.pack.splice(this.pack.indexOf(equipment), 1);
+    if (this.health > this.getMaxHealth()) {
+      this.health = this.getMaxHealth();
+    }
   }
 
   removeEquipment(position: EquipmentPosition): void {
     if (this.equipments[position]) {
       this.pack.push(this.equipments[position] as Equipment);
       this.equipments[position] = null;
+    }
+    if (this.health > this.getMaxHealth()) {
+      this.health = this.getMaxHealth();
     }
   }
 
@@ -120,8 +126,8 @@ export class Creature {
 
   recoverHp(amount: number) {
     this.health += amount;
-    if (this.health > this.maxHealth) {
-      this.health = this.maxHealth;
+    if (this.health > this.getMaxHealth()) {
+      this.health = this.getMaxHealth();
     }
   }
 
@@ -177,6 +183,11 @@ export class Creature {
       ability[key] += extraAbility[key];
     }
     return ability;
+  }
+
+  getMaxHealth(): number {
+    const ability = this.getAbility();
+    return ability.con * 10 + ability.siz * 5;
   }
 
   // 获取装备的额外行动列表

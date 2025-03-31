@@ -94,7 +94,6 @@ function renderStartPageBeast1_2(player: Player): void {
   `;
 
   document.getElementById("continue-btn")?.addEventListener("click", () => {
-    player.health = player.maxHealth * 0.8;
     renderStartPage1(player);
   });
 }

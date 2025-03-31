@@ -69,16 +69,18 @@ export class Player extends Creature {
   }
 
   getHealthDisplay(): string {
-    const percent = Math.min(100, (this.health / this.maxHealth) * 100);
-    const regen = ((this.ability.con / 5) * this.maxHealth) / 900;
+    const ability = this.getAbility();
+    const maxHealth = this.getMaxHealth();
+    const percent = Math.min(100, (this.health / maxHealth) * 100);
+    const regen = ((ability.con / 5) * maxHealth) / 900;
     return `
     <div class="progress" style="height: 20px; position: relative; background-color: #444;">
       <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: ${percent}%;"
-           aria-valuenow="${this.health}" aria-valuemin="0" aria-valuemax="${this.maxHealth}">
+           aria-valuenow="${this.health}" aria-valuemin="0" aria-valuemax="${maxHealth}">
       </div>
       <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
         <div style="text-align: center; line-height: 20px; font-size: 0.9rem; font-weight: bold; color: #fff;">
-          hp: ${this.health.toFixed(1)} / ${this.maxHealth.toFixed(1)}
+          hp: ${this.health.toFixed(1)} / ${maxHealth.toFixed(1)}
         </div>
         <div style="position: absolute; top: 0; right: 5px; height: 100%; display: flex; align-items: center; font-size: 0.9rem; font-weight: bold; color: #fff;">
           +${regen.toFixed(2)}
@@ -96,7 +98,9 @@ export class Player extends Creature {
   }
 
   autoRecoverHpDot(num: number = 1): void {
-    const amount = ((this.ability.con / 5) * this.maxHealth) / 900 * num;
+    const ability = this.getAbility();
+    const maxHealth = this.getMaxHealth();
+    const amount = ((ability.con / 5) * maxHealth) / 900 * num;
     this.recoverHp(amount);
   }
 

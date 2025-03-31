@@ -20,11 +20,11 @@ export function capture(actor: Creature, target: Creature): void {
   const dexSuccessRate =
     ((actor.ability.dex / target.ability.dex) *
       (actor.ability.siz / target.ability.siz)) /
-    ((10 * target.health) / target.maxHealth);
+    ((10 * target.health) / target.getMaxHealth());
   const strSuccessRate =
     ((actor.ability.str / target.ability.str) *
       (actor.ability.siz / target.ability.siz)) /
-    ((10 * target.health) / target.maxHealth);
+    ((10 * target.health) / target.getMaxHealth());
   if (Math.random() < strSuccessRate && Math.random() < dexSuccessRate) {
     target.health = 0.9;
     actor.capturedMonster.push(target as Monster);
