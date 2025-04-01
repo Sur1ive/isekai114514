@@ -15,6 +15,7 @@ export function saveGame(player: Player) {
   }
   const plainPlayer = instanceToPlain(player);
   localStorage.setItem("playerData", JSON.stringify(plainPlayer));
+  localStorage.setItem("saveTime", JSON.stringify(Date.now()));
 }
 
 export function loadPlayer(): Player {
@@ -58,6 +59,13 @@ export function loadPlayer(): Player {
 
   // 清除状态。不保存的时候清除是为了保留secondStatus
   player.clearStatus();
+
+  // 按照时间回血
+  const saveTime = localStorage.getItem("saveTime");
+  if (saveTime) {
+    const timeDiff = (Date.now() - JSON.parse(saveTime)) / 1000;
+    player.autoRecoverHpDot(timeDiff);
+  }
 
   return player;
 }
