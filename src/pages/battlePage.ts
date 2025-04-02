@@ -89,7 +89,7 @@ export function renderBattlePage(
     <!-- 敌人信息 -->
     <div class="card mb-3">
       <div class="card-header bg-danger text-white">
-        <h4 class="mb-0">${enemy.name}</h4>
+        <h4 class="mb-0">${enemy.name}<span style="font-size: 12px; margin-left: 10px;" class="badge bg-secondary">lv.${enemy.level}</span></h4>
       </div>
       <div class="card-body">
         <p class="card-text fst-italic">"${enemy.description}"</p>
