@@ -33,8 +33,8 @@ const attributeNameMap: Record<string, string> = {
 
 // 添加属性描述映射
 const attributeDescMap: Record<string, string> = {
-  str: "影响具有力量系数的动作，例如需要一部分攻击的成功率和伤害。",
-  dex: "影响具有敏捷系数的动作，例如需要精确度或闪避率的动作。",
+  str: "影响具有力量系数的动作。大部分的攻击动作都具有力量系数。",
+  dex: "影响具有敏捷系数的动作，一部分迅捷的攻击动作，以及大部分闪避动作都具有敏捷系数。",
   con: "影响具有体质系数的动作，同时影响生命值上限和自然回复生命值的速度。",
   int: "影响具有智力系数的动作。",
   siz: "影响具有体型系数的动作。",
@@ -460,9 +460,10 @@ export function renderStatusPage(player: Player): void {
         content: `<div class="p-2">${description}</div>`,
         allowHTML: true,
         theme: 'game',
-        placement: 'right',
-        arrow: true,
-        animation: 'fade'
+        placement: 'top',
+        interactive: true,      // 允许点击 popover 内部而不消失
+        trigger: 'click',       // 点击触发
+        hideOnClick: true,      // 点击外部自动隐藏
       });
 
       attributeTippyInstances.push(instance);
