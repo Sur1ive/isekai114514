@@ -16,6 +16,40 @@ import * as bootstrap from "bootstrap";
 
 // 存储物品UUID到tippy实例的映射，防止重复创建
 const itemTippyInstances: Map<string, TippyInstance[]> = new Map();
+// 存储属性tippy实例的映射
+const attributeTippyInstances: TippyInstance[] = [];
+
+// 添加属性名称中英文映射
+const attributeNameMap: Record<string, string> = {
+  str: "力量",
+  dex: "敏捷",
+  con: "体质",
+  int: "智力",
+  siz: "体型",
+  app: "魅力",
+  armor: "护甲",
+  piercing: "穿刺",
+};
+
+// 添加属性描述映射
+const attributeDescMap: Record<string, string> = {
+  str: "影响具有力量系数的动作，例如需要一部分攻击的成功率和伤害。",
+  dex: "影响具有敏捷系数的动作，例如需要精确度或闪避率的动作。",
+  con: "影响具有体质系数的动作，同时影响生命值上限和自然回复生命值的速度。",
+  int: "影响具有智力系数的动作。",
+  siz: "影响具有体型系数的动作。",
+  app: "暂时没用",
+  armor: "护甲值决定对伤害的减免程度。",
+  piercing: "穿刺值决定攻击时无视目标护甲的能力。",
+};
+
+// 添加装备位置中英文映射
+const equipmentPositionMap: Record<string, string> = {
+  body: "防具",
+  hand: "武器",
+  foot: "鞋子",
+  accessory: "饰品",
+};
 
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
@@ -24,6 +58,10 @@ export function renderStatusPage(player: Player): void {
     instances.forEach(instance => instance.destroy());
   });
   itemTippyInstances.clear();
+
+  // 清除属性tippy实例
+  attributeTippyInstances.forEach(instance => instance.destroy());
+  attributeTippyInstances.length = 0;
 
   const appElement = getAppElement();
 
@@ -53,7 +91,7 @@ export function renderStatusPage(player: Player): void {
                     }
                     return `
                       <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <span class="fw-bold text-capitalize">${attribute}</span>
+                        <span class="fw-bold">${attributeNameMap[attribute] || attribute}</span>
                         <div>
                           <span class="text-muted">${value}</span>
                           ${extraBadge}
@@ -159,7 +197,7 @@ export function renderStatusPage(player: Player): void {
                     ([position, equipment]) => `
                   <div id="equipment-slot-${position}" class="list-group-item">
                     <div class="d-flex align-items-center gap-2">
-                      <span class="fw-bold">${position}</span>
+                      <span class="fw-bold">${equipmentPositionMap[position] || position}</span>
                       ${
                         equipment
                             ? `<span id="equipment-slot-${position}" class="badge bg-${Rarity[equipment.rarity]}">${equipment.name}</span>`
@@ -402,6 +440,34 @@ export function renderStatusPage(player: Player): void {
       }
     });
   }
+
+  // 为属性添加tippy提示
+  setTimeout(() => {
+    const attributeElements = document.querySelectorAll('#attribute-bar .list-group-item');
+    attributeElements.forEach(element => {
+      const attributeNameElement = element.querySelector('.fw-bold');
+      if (!attributeNameElement) return;
+
+      const attributeName = attributeNameElement.textContent?.trim() || '';
+      // 查找对应的英文属性名
+      const englishAttrName = Object.keys(attributeNameMap).find(
+        key => attributeNameMap[key] === attributeName
+      ) || attributeName;
+
+      const description = attributeDescMap[englishAttrName] || '暂无描述';
+
+      const instance = tippy(element, {
+        content: `<div class="p-2">${description}</div>`,
+        allowHTML: true,
+        theme: 'game',
+        placement: 'right',
+        arrow: true,
+        animation: 'fade'
+      });
+
+      attributeTippyInstances.push(instance);
+    });
+  }, 100); // 短暂延迟确保DOM已经渲染
 
   // 初始化所有Bootstrap popover
   document.querySelectorAll('[data-bs-toggle="popover"]').forEach(popoverTrigger => {
