@@ -1,7 +1,7 @@
 import { CreatureType } from "../creatures/creatureConfigs";
 import { NodeType, CampNode, NormalMonsterNode, ToOtherRegionNode, BossNode, TreasureNode } from "./Node";
 import { Region } from "./Region";
-import { forestRegion } from "./forest";
+import { southforestRegion } from "./forest";
 import { ConsumableType } from "../items/consumableConfigs";
 
 export const ruinNode3_2: ToOtherRegionNode = {
@@ -11,7 +11,7 @@ export const ruinNode3_2: ToOtherRegionNode = {
   type: NodeType.ToOtherRegion,
   position: { x: 450, y: 900 },
   toNodeList: [],
-  region: forestRegion,
+  region: southforestRegion,
 };
 
 export const ruinNode2_1: BossNode = {

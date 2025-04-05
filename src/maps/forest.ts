@@ -28,10 +28,10 @@ export const forestNode0_1: CampNode = {
   toNodeList: [forestNode1_1],
 };
 
-export const forestRegion: Region = {
-  name: "森林",
-  id: "forest",
-  description: "森林",
+export const southforestRegion: Region = {
+  name: "池沼森林・南部",
+  id: "southforest",
+  description: "池沼森林・南部",
   isOpen: false,
   startNode: forestNode0_1,
   nodeList: [forestNode0_1, forestNode1_1],
