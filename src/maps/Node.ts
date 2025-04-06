@@ -6,6 +6,7 @@ export enum NodeType {
   NormalMonster = "NormalMonster",
   EliteMonster = "EliteMonster",
   Boss = "Boss",
+  Empty = "Empty",
   Treasure = "Treasure",
   Camp = "Camp",
   BackHome = "BackHome",
@@ -21,6 +22,10 @@ export interface Node {
   type: NodeType;
   position: { x: number; y: number };
   toNodeList: Node[];
+}
+
+export function getNodeById(id: string): Node | undefined {
+  return Object.values(RegionList).flatMap((region) => region.nodeList).find((node) => node.id === id);
 }
 
 export interface CampNode extends Node {
@@ -77,6 +82,10 @@ export interface ToOtherRegionNode extends Node {
   region: Region;
 }
 
+export interface EmptyNode extends Node {
+  type: NodeType.Empty;
+}
+
 export interface BossNode extends Node {
   type: NodeType.Boss;
   bossStageList: {
@@ -86,8 +95,4 @@ export interface BossNode extends Node {
     maxIndividualStrength: number;
     minIndividualStrength: number;
   }[];
-}
-
-export function getNodeById(id: string): Node | undefined {
-  return Object.values(RegionList).flatMap((region) => region.nodeList).find((node) => node.id === id);
 }
