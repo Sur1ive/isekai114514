@@ -335,10 +335,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.Repent, weight: 0.03 },
       { actionType: ActionType.SleepyTea, weight: 0.03 },
     ],
-    ability: {
-      armor: 5,
-      piercing: 5,
-    },
+    ability: {},
     armorGrowthCoeff: 0,
     piercingGrowthCoeff: 0,
     actionCoeff: {},
