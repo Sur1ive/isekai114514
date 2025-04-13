@@ -22,6 +22,7 @@ export enum CreatureType {
   Goblin = "Goblin",
   FrightenedGoblinLeader = "FrightenedGoblinLeader",
   AngryGoblinLeader = "AngryGoblinLeader",
+  TreasureSlime = "TreasureSlime",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -369,14 +370,14 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     typeName: "暴怒的哥布林首领",
     description: "哥布林们的首领愤怒了，它难听地吼叫着，挥舞着武器向你冲来<p>Tips: 你并不需要一次性击败Boss，对其造成20%最大生命值以上的伤害即可永久削减其生命值。你可以通过多次战斗来最终击败它。</p>",
     abilityCoeff: {
-      str: { base: 6, growth: 0.2 },
+      str: { base: 5, growth: 0.1 },
       int: { base: 4, growth: 0 },
       con: { base: 5, growth: 0.2 },
-      siz: { base: 6, growth: 0.05 },
+      siz: { base: 5, growth: 0.05 },
       app: { base: 3, growth: 0 },
       dex: { base: 5, growth: 0.1 },
-      armor: { base: 20, growth: 5 },
-      piercing: { base: 5, growth: 5 },
+      armor: { base: 10, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.PowerAttack, weight: 1 },
@@ -391,6 +392,32 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { type: ConsumableType.WoodenChest, weight: 0.6 },
       { type: ConsumableType.SilverChest, weight: 0.02 },
       { type: ConsumableType.GoldChest, weight: 0.001 },
+    ],
+  },
+
+  [CreatureType.TreasureSlime]: {
+    typeName: "宝箱史莱姆",
+    description: "那边的史莱姆肚子里怎么有个闪闪发光的宝箱？等等别跑！谁家史莱姆动作这么敏捷？？",
+    abilityCoeff: {
+      str: { base: 3, growth: 0.05 },
+      int: { base: 0, growth: 0 },
+      con: { base: 3, growth: 0.1 },
+      siz: { base: 2, growth: 0.05 },
+      app: { base: 0, growth: 0 },
+      dex: { base: 1, growth: 0.05 },
+      armor: { base: 25, growth: 5.5 },
+      piercing: { base: 0, growth: 4.5 },
+    },
+    actions: [
+      { actionType: ActionType.Attack, weight: 1 },
+      { actionType: ActionType.Defend, weight: 1 },
+      { actionType: ActionType.Dazed, weight: 2 },
+    ],
+    dropItems: [
+      { type: null, weight: 0.6 },
+      { type: ConsumableType.BrokenChest, weight: 0.4 },
+      { type: ConsumableType.WoodenChest, weight: 0.02 },
+      { type: ConsumableType.SilverChest, weight: 0.001 },
     ],
   },
 };

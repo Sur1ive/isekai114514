@@ -1,5 +1,5 @@
 import { CampNode, Node } from "./Node";
-import { southforestRegion } from "./forest";
+import { centerMarshForestRegion } from "./centerMarshForest";
 import { ruinRegion } from "./ruin";
 
 export interface Region {
@@ -13,7 +13,7 @@ export interface Region {
 
 // regionId: Region
 export const RegionList = {
-  southforest: southforestRegion,
+  centerMarshForest: centerMarshForestRegion,
   ruin: ruinRegion,
 } as const;
 

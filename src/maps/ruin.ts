@@ -1,7 +1,7 @@
 import { CreatureType } from "../creatures/creatureConfigs";
 import { NodeType, CampNode, NormalMonsterNode, ToOtherRegionNode, BossNode, TreasureNode } from "./Node";
 import { Region } from "./Region";
-import { southforestRegion } from "./forest";
+import { centerMarshForestRegion } from "./centerMarshForest";
 import { ConsumableType } from "../items/consumableConfigs";
 
 export const ruinNode3_2: ToOtherRegionNode = {
@@ -11,7 +11,7 @@ export const ruinNode3_2: ToOtherRegionNode = {
   type: NodeType.ToOtherRegion,
   position: { x: 450, y: 900 },
   toNodeList: [],
-  region: southforestRegion,
+  region: centerMarshForestRegion,
 };
 
 export const ruinNode2_1: BossNode = {
@@ -84,9 +84,9 @@ export const ruinNode0_1: CampNode = {
 };
 
 export const ruinRegion: Region = {
-  name: "遗迹",
+  name: "池沼森林・遗迹",
   id: "ruin",
-  description: "遗迹",
+  description: "池沼森林・遗迹",
   isOpen: true,
 	startNode: ruinNode0_1,
   nodeList: [ruinNode0_1, ruinNode1_1, ruinNode2_1, ruinNode2_2, ruinNode3_2],
