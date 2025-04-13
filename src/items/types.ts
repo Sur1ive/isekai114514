@@ -46,5 +46,6 @@ export interface ConsumableData {
   name: string;
   description: string;
   rarity: Rarity;
-  effect: (target: Creature) => void;
+  effect: (target: Creature, level: number) => void;
+  canNotBeUsed?: boolean;
 }

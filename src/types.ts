@@ -6,9 +6,3 @@ export enum Rarity {
   Mythical = 4, // 神话
   Unique = 5, // 独特
 }
-
-export enum BattleResult {
-  PlayerWin = "PlayerWin",
-  EnemyWin = "EnemyWin",
-  Draw = "Draw",
-}

@@ -7,7 +7,7 @@ import { Player } from "../creatures/Player";
 import { Action } from "../actions/Action";
 import { getHitsDescription } from "../actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "../creatures/status/Status";
-import { statusConfigs } from "../creatures/status/statusConfigs";
+import { statusConfigs, StatusType } from "../creatures/status/statusConfigs";
 import { Rarity } from "../types";
 import { BattleResult } from "../battle/types";
 
@@ -69,6 +69,11 @@ export function renderBattlePage(
     // 战斗结束时，清除所有非永久状态
     player.clearStatus();
     renderBattleEndPage(player, enemy, BattleResult.Win, endHandler);
+    return;
+  }
+  if (enemy.statuses.some(status => status.type === StatusType.Escaped)) {
+    player.addLog(enemy.name + "逃跑了");
+    renderBattleEndPage(player, enemy, BattleResult.EnemyEscape, endHandler);
     return;
   }
   saveGame(player);
@@ -192,6 +197,10 @@ function renderBattleEndPage(
     player.addLog(
       player.name + "在与" + enemy.name + "的战斗中逃跑了",
     );
+  } else if (result === BattleResult.EnemyEscape) {
+    player.addLog(
+      enemy.name + "逃跑了",
+    );
   }
 
   appElement.innerHTML = `
@@ -203,7 +212,7 @@ function renderBattleEndPage(
       <div class="card-body">
         <h4 class="card-title">
           ${player.name}
-          ${result === BattleResult.Win ? "<span class='text-success'>胜利</span>" : result === BattleResult.Lose ? "<span class='text-danger'>失败</span>" : "<span class='text-warning'>逃跑</span>"}
+          ${result === BattleResult.Win ? "<span class='text-success'>胜利</span>" : result === BattleResult.Lose ? "<span class='text-danger'>失败</span>" : result === BattleResult.EnemyEscape ? "<span class='text-warning'>敌人逃跑了</span>" : "<span class='text-warning'>逃跑</span>"}
           <p>lv: ${player.level}${levelUp ? "🔺" : ""} exp: ${player.exp}/${player.getNextLevelExp()}</p>
           ${result === BattleResult.Win ? `<p>获得经验: <span class="text-info">${Math.floor(enemy.giveExp)}</span>  ${dropItem ? `获得物品: <span class="text-${Rarity[dropItem.rarity]}">${dropItem.name}</span>` : ""}</p>` : ""}
         </h4>

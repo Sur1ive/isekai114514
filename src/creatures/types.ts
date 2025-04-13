@@ -1,6 +1,7 @@
 import type { WeightedActionType } from "../actions/types";
 import type { ItemType } from "../items/types";
 import type { Equipment } from "../items/Equipment";
+import type { StatusType } from "../creatures/status/statusConfigs";
 
 export interface Range {
   min: number;
@@ -40,6 +41,7 @@ export interface CreatureData {
   actions: WeightedActionType[];
   dropItems: { type: ItemType | null; weight: number }[];
   description: string;
+  initStatus?: { type: StatusType; duration: number }[];
   image?: string;
 }
 

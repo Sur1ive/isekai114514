@@ -26,6 +26,12 @@ export class Monster extends Creature {
     if (creatureConfigs[type].image) {
       this.image = creatureConfigs[type].image;
     }
+    const initStatus = creatureConfigs[type].initStatus;
+    if (initStatus) {
+      for (const status of initStatus) {
+        this.addStatus(status.type, status.duration);
+      }
+    }
     this.giveExp = Math.floor(this.getMaxHealth()) * (1 + this.level / 10);
   }
 

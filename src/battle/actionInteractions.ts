@@ -4,7 +4,7 @@ import type { Action, Hit } from "../actions/Action";
 import { HitCategory } from "../actions/types";
 import { NoHit } from "../actions/actionConfigs";
 import { calculateDamage, generatePointString } from "./battle";
-import { BattleResult } from "../types";
+import { PointComparisonResult } from "./types";
 import { calculatePower, getHitIcon } from "../actions/actionUtils";
 import { StatusCategory } from "../creatures/status/Status";
 import { statusConfigs, StatusType } from "../creatures/status/statusConfigs";
@@ -15,8 +15,8 @@ function handleHit(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-): BattleResult {
-  let result = BattleResult.Draw;
+): PointComparisonResult {
+  let result = PointComparisonResult.Draw;
 
   if (playerHit.category === HitCategory.Capture) {
     playerHit.category = HitCategory.Attack;
@@ -59,9 +59,9 @@ function handleHit(
         ")",
     );
   }
-  if (result === BattleResult.PlayerWin) {
+  if (result === PointComparisonResult.PlayerWin) {
     playerHit.extraEffect?.(player, enemy);
-  } else if (result === BattleResult.EnemyWin) {
+  } else if (result === PointComparisonResult.EnemyWin) {
     enemyHit.extraEffect?.(enemy, player);
   }
   return result;
@@ -109,11 +109,11 @@ export function handleAction(
     const result = handleHit(player, enemy, playerHit, enemyHit);
 
     // 连续hit未命中会导致后续hit无法释放
-    if (playerHit.continuous && result !== BattleResult.PlayerWin) {
+    if (playerHit.continuous && result !== PointComparisonResult.PlayerWin) {
       playerAction.hits.splice(i + 1);
       player.addTempLog(player.name + "的连续hit中断");
     }
-    if (enemyHit.continuous && result !== BattleResult.EnemyWin) {
+    if (enemyHit.continuous && result !== PointComparisonResult.EnemyWin) {
       enemyAction.hits.splice(i + 1);
       player.addTempLog(enemy.name + "的连续hit中断");
     }
@@ -130,7 +130,7 @@ function attackAgainstAttack (
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-): BattleResult {
+): PointComparisonResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
   player.addTempLog(
@@ -152,7 +152,7 @@ function attackAgainstAttack (
         Math.round(damage) +
         "</span>点伤害",
     );
-    return BattleResult.PlayerWin;
+    return PointComparisonResult.PlayerWin;
   } else {
     const damage = calculateDamage(enemyPower, player.getAbility().armor, enemy.getAbility().piercing);
     player.loseHp(damage);
@@ -162,7 +162,7 @@ function attackAgainstAttack (
         Math.round(damage) +
         "</span>点伤害",
     );
-    return BattleResult.EnemyWin;
+    return PointComparisonResult.EnemyWin;
   }
 }
 
@@ -171,7 +171,7 @@ function attackAgainstNone(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-): BattleResult {
+): PointComparisonResult {
   let actor;
   let target;
   let action;
@@ -204,7 +204,7 @@ function attackAgainstNone(
       Math.round(damage) +
       "</span>点伤害",
   );
-  return actor instanceof Player ? BattleResult.PlayerWin : BattleResult.EnemyWin;
+  return actor instanceof Player ? PointComparisonResult.PlayerWin : PointComparisonResult.EnemyWin;
 }
 
 function attackAgainstDefend(
@@ -212,7 +212,7 @@ function attackAgainstDefend(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-): BattleResult {
+): PointComparisonResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
   player.addTempLog(
@@ -246,7 +246,7 @@ function attackAgainstDefend(
         Math.round(damage) +
         `(-${defenderPower})</span>点伤害`,
     );
-    return isPlayerAttack ? BattleResult.PlayerWin : BattleResult.EnemyWin;
+    return isPlayerAttack ? PointComparisonResult.PlayerWin : PointComparisonResult.EnemyWin;
 
   } else {
     player.addTempLog(
@@ -255,7 +255,7 @@ function attackAgainstDefend(
         attackerAction.messageGenerator(attacker, defender) +
         "但没有造成伤害",
     );
-    return isPlayerAttack ? BattleResult.EnemyWin : BattleResult.PlayerWin;
+    return isPlayerAttack ? PointComparisonResult.EnemyWin : PointComparisonResult.PlayerWin;
   }
 }
 
@@ -264,7 +264,7 @@ function attackAgainstDodge(
   enemy: Monster,
   playerHit: Hit,
   enemyHit: Hit,
-): BattleResult {
+): PointComparisonResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
   player.addTempLog(
@@ -298,7 +298,7 @@ function attackAgainstDodge(
         Math.round(damage) +
         "</span>点伤害",
     );
-    return isPlayerAttack ? BattleResult.PlayerWin : BattleResult.EnemyWin;
+    return isPlayerAttack ? PointComparisonResult.PlayerWin : PointComparisonResult.EnemyWin;
   } else {
     attacker.addStatus(StatusType.Unbalance, 1);
     player.addTempLog(
@@ -307,6 +307,6 @@ function attackAgainstDodge(
       attacker.name +
       "失衡了",
     );
-    return isPlayerAttack ? BattleResult.EnemyWin : BattleResult.PlayerWin;
+    return isPlayerAttack ? PointComparisonResult.EnemyWin : PointComparisonResult.PlayerWin;
   }
 }

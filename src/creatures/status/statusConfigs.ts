@@ -14,6 +14,8 @@ export enum StatusType {
   Burning = "Burning",
   QuickRecovery = "QuickRecovery",
   Dizzy = "Dizzy",
+  Escaped = "Escaped",
+  WillEscape = "WillEscape",
 }
 
 export const statusConfigs: Record<StatusType, StatusData> = {
@@ -103,6 +105,33 @@ export const statusConfigs: Record<StatusType, StatusData> = {
     priority: 1,
     effect: (self: Creature, statusLevel?: number) => {
       (self as Player).autoRecoverHpDot(statusLevel || 1);
+    },
+  },
+  [StatusType.Escaped]: {
+    name: "跑掉了",
+    description: "ta逃走了...",
+    durationType: StatusDurationType.Turn,
+    category: StatusCategory.OnTurnStart,
+    priority: 999,
+    effect: (_self: Creature, action1: Action, action2: Action) => {
+      return { action1, action2 };
+    },
+  },
+  [StatusType.WillEscape]: {
+    name: "将要逃跑",
+    description: "ta即将逃跑...",
+    durationType: StatusDurationType.Turn,
+    category: StatusCategory.OnTurnStart,
+    priority: 999,
+    effect: (self: Creature, action1: Action, action2: Action) => {
+      // 检查WillEscape状态的剩余回合数，如果为1，则设置为Escaped状态。
+      // 如果有多个WillEscape状态，剩余回合数按最小计算。
+      const escapeStatusList = self.statuses.filter(status => status.type === StatusType.WillEscape);
+      const turnsUntilEscape = escapeStatusList.reduce((min, status) => Math.min(min, status.duration), Infinity);
+      if (turnsUntilEscape === 1) {
+        self.addStatus(StatusType.Escaped, 999);
+      }
+      return { action1, action2 };
     },
   },
 };

@@ -2,6 +2,7 @@ import { ConsumableType } from "../items/consumableConfigs";
 import type { CreatureData } from "./types";
 import { ActionType } from "../actions/actionConfigs";
 import { EquipmentType } from "../items/equipmentConfigs";
+import { StatusType } from "./status/statusConfigs";
 import dragon1 from "@/assets/dragon1.gif";
 import dragon2 from "@/assets/dragon2.gif";
 import dragon3 from "@/assets/dragon3.jpg";
@@ -397,27 +398,25 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.TreasureSlime]: {
     typeName: "宝箱史莱姆",
-    description: "那边的史莱姆肚子里怎么有个闪闪发光的宝箱？等等别跑！谁家史莱姆动作这么敏捷？？",
+    description: "那边的史莱姆肚子里怎么有个闪闪发光的宝箱？等等别跑！谁家史莱姆跑这么快！？",
     abilityCoeff: {
       str: { base: 3, growth: 0.05 },
       int: { base: 0, growth: 0 },
       con: { base: 3, growth: 0.1 },
       siz: { base: 2, growth: 0.05 },
       app: { base: 0, growth: 0 },
-      dex: { base: 1, growth: 0.05 },
+      dex: { base: 5, growth: 0.2 },
       armor: { base: 25, growth: 5.5 },
       piercing: { base: 0, growth: 4.5 },
     },
     actions: [
-      { actionType: ActionType.Attack, weight: 1 },
-      { actionType: ActionType.Defend, weight: 1 },
-      { actionType: ActionType.Dazed, weight: 2 },
+      { actionType: ActionType.Dodge, weight: 1 },
+      { actionType: ActionType.RunAway, weight: 1 },
+      { actionType: ActionType.Dazed, weight: 1 },
     ],
     dropItems: [
-      { type: null, weight: 0.6 },
-      { type: ConsumableType.BrokenChest, weight: 0.4 },
-      { type: ConsumableType.WoodenChest, weight: 0.02 },
-      { type: ConsumableType.SilverChest, weight: 0.001 },
+      { type: ConsumableType.SlimeChest, weight: 1 },
     ],
+    initStatus: [{ type: StatusType.WillEscape, duration: 10 }],
   },
 };
