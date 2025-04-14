@@ -9,6 +9,9 @@ export interface Region {
   isOpen: boolean;
   startNode: CampNode;
   nodeList: Node[];
+  mapImage: string;
+  mapWidth: number;
+  mapHeight: number;
 }
 
 // regionId: Region

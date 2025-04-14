@@ -1,6 +1,7 @@
 import { CreatureType } from "../creatures/creatureConfigs";
 import { NodeType, CampNode, NormalMonsterNode } from "./Node";
 import { Region } from "./Region";
+import centerMarshForestImage from "../assets/centerMarshForest.png";
 
 export const centerMarshForestNode1_1: NormalMonsterNode = {
   name: "森林1-1",
@@ -32,7 +33,10 @@ export const centerMarshForestRegion: Region = {
   name: "池沼森林・中部",
   id: "centerMarshForest",
   description: "池沼森林・中部",
-  isOpen: false,
+  isOpen: true,
   startNode: centerMarshForestNearRuinNode,
   nodeList: [centerMarshForestNearRuinNode, centerMarshForestNode1_1],
+  mapImage: centerMarshForestImage,
+  mapWidth: 1536,
+  mapHeight: 1024,
 };

@@ -3,6 +3,7 @@ import { NodeType, CampNode, NormalMonsterNode, ToOtherRegionNode, BossNode, Tre
 import { Region } from "./Region";
 import { centerMarshForestRegion } from "./centerMarshForest";
 import { ConsumableType } from "../items/consumableConfigs";
+import ruinImage from "../assets/ruin.png";
 
 export const ruinNode3_2: ToOtherRegionNode = {
   name: "遗迹出口",
@@ -90,4 +91,7 @@ export const ruinRegion: Region = {
   isOpen: true,
 	startNode: ruinNode0_1,
   nodeList: [ruinNode0_1, ruinNode1_1, ruinNode2_1, ruinNode2_2, ruinNode3_2],
+  mapImage: ruinImage,
+  mapWidth: 1280,
+  mapHeight: 1280,
 };

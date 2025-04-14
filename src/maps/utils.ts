@@ -7,7 +7,6 @@ import { renderMapPage } from "../pages/mapPage";
 import { randomMonsterType } from "../creatures/utils";
 import { randomInt } from "../utils";
 import { BattleResult } from "../battle/types";
-import { getRegionById } from "./Region";
 import { randomItemType, generateItem } from "../items/itemUtils";
 import * as bootstrap from "bootstrap";
 import * as d3 from "d3";
@@ -148,7 +147,7 @@ function goToTreasureNode(node: TreasureNode, player: Player) {
 }
 
 function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
-  const region = getRegionById(node.region.id);
+  const region = node.region;
   if (!player.unlockedRegionIdList.includes(region.id)) {
     player.unlockedRegionIdList.push(region.id);
   }

@@ -1,15 +1,15 @@
 import { Player } from "../creatures/Player";
 import { renderMainMenu } from "./mainMenu";
 import { getAppElement } from "./utils";
-import { getRegionById } from "../maps/Region";
+import { getRegionById, Region } from "../maps/Region";
 
 // 渲染地图列表
 export function renderMapListPage(player: Player): void {
   const appElement = getAppElement();
 
-  const regionList = player.unlockedRegionIdList.map((regionId) => {
-    return getRegionById(regionId);
-  });
+  const regionList = player.unlockedRegionIdList
+    .map((regionId) => getRegionById(regionId))
+    .filter((region): region is Region => !!region);
 
   appElement.innerHTML = `
     <div class="mt-auto">

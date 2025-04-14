@@ -12,6 +12,14 @@ import { getRegionById } from "../maps/Region";
 export function renderMapPage(player: Player): void {
   const appElement = getAppElement();
 
+  // 获取当前区域
+  const currentRegion = getRegionById(player.currentMapData.currentRegionId);
+
+  // 获取地图尺寸和图像
+  const mapWidth = currentRegion.mapWidth || 1000;
+  const mapHeight = currentRegion.mapHeight || 1000;
+  const mapImage = currentRegion.mapImage || ruinImage;
+
   // 构造节点和边的数据 - 移到HTML渲染前
   const nodesData: { id: string; x: number; y: number; label: string; node: Node }[] = [];
   const edgesData: { source: string; target: string }[] = [];
@@ -37,7 +45,7 @@ export function renderMapPage(player: Player): void {
       traverse(child);
     });
   }
-  traverse(getRegionById(player.currentMapData.currentRegionId).startNode);
+  traverse(currentRegion.startNode);
 
   // 获取当前位置名称
   let currentLocationName = '营地';
@@ -66,7 +74,7 @@ export function renderMapPage(player: Player): void {
     ">
       <div>
         <h2 style="margin: 0; font-size: 1.5rem;">
-          ${getRegionById(player.currentMapData.currentRegionId).name || '未知区域'}
+          ${currentRegion.name || '未知区域'}
         </h2>
         <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">
           已探索: ${player.currentMapData.visitedNodeIdList.length} 个地点
@@ -158,10 +166,10 @@ export function renderMapPage(player: Player): void {
   // 创建包含所有图形的容器组
   const zoomableGroup = svg.append("g").attr("class", "zoomable");
 
-  // 定义 zoom 行为
+  // 定义 zoom 行为 - 根据地图尺寸调整
   const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
     .scaleExtent([0.5, 2])
-    .translateExtent([[0, 0], [1000, 1000]])
+    .translateExtent([[0, 0], [mapWidth, mapHeight]])
     .on("zoom", (event) => {
       zoomableGroup.attr("transform", event.transform);
 
@@ -201,33 +209,33 @@ export function renderMapPage(player: Player): void {
     }
   }
 
-  // 添加背景图像，确保它在最底层
+  // 添加背景图像，使用动态尺寸
   zoomableGroup.append('image')
-    .attr('xlink:href', ruinImage)
+    .attr('xlink:href', mapImage)
     .attr('x', 0)
     .attr('y', 0)
-    .attr('width', 1000)
-    .attr('height', 1000)
+    .attr('width', mapWidth)
+    .attr('height', mapHeight)
     .attr('filter', 'brightness(0.9) contrast(1.1)')
     .lower();
 
-  // 添加网格背景增加深度感
-  const gridSize = 50;
+  // 添加网格背景增加深度感，根据地图尺寸调整
+  const gridSize = Math.min(mapWidth, mapHeight) / 20; // 动态计算网格尺寸
   const gridGroup = zoomableGroup.append("g").attr("class", "grid").lower();
-  for(let x = 0; x <= 1000; x += gridSize) {
+  for(let x = 0; x <= mapWidth; x += gridSize) {
     gridGroup.append("line")
       .attr("x1", x)
       .attr("y1", 0)
       .attr("x2", x)
-      .attr("y2", 1000)
+      .attr("y2", mapHeight)
       .attr("stroke", "rgba(255, 255, 255, 0.05)")
       .attr("stroke-width", 1);
   }
-  for(let y = 0; y <= 1000; y += gridSize) {
+  for(let y = 0; y <= mapHeight; y += gridSize) {
     gridGroup.append("line")
       .attr("x1", 0)
       .attr("y1", y)
-      .attr("x2", 1000)
+      .attr("x2", mapWidth)
       .attr("y2", y)
       .attr("stroke", "rgba(255, 255, 255, 0.05)")
       .attr("stroke-width", 1);
@@ -270,7 +278,7 @@ export function renderMapPage(player: Player): void {
     const isUnlocked = player.unlockedNodeIdList.includes(node.id);
     const isCurrentNode = player.currentMapData.currentNodeId === node.id;
     const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
-    const isStartNode = !player.currentMapData.currentNodeId && node === getRegionById(player.currentMapData.currentRegionId).startNode;
+    const isStartNode = !player.currentMapData.currentNodeId && node === currentRegion.startNode;
     const isAccessible = player.currentMapData.currentNodeId
       ? nodesData.find(n => n.id === player.currentMapData.currentNodeId)?.node.toNodeList.some(n => n.id === node.id)
       : false;
@@ -329,7 +337,7 @@ export function renderMapPage(player: Player): void {
 
          // 如果当前没有节点，且是区域起始节点，则显示为蓝色
          if (!player.currentMapData.currentNodeId &&
-             d.node === getRegionById(player.currentMapData.currentRegionId).startNode) {
+             d.node === currentRegion.startNode) {
            return "#007bff"; // 蓝色
          }
 
@@ -359,7 +367,7 @@ export function renderMapPage(player: Player): void {
            return "#007bff";
          }
          if (!player.currentMapData.currentNodeId &&
-             d.node === getRegionById(player.currentMapData.currentRegionId).startNode) {
+             d.node === currentRegion.startNode) {
            return "#007bff";
          }
          return "transparent";
@@ -387,7 +395,7 @@ export function renderMapPage(player: Player): void {
     // 检查是否为当前节点或起始节点
     const isCurrentNode = player.currentMapData.currentNodeId === node.id;
     const isStartNode = !player.currentMapData.currentNodeId &&
-                       node === getRegionById(player.currentMapData.currentRegionId).startNode;
+                       node === currentRegion.startNode;
 
     // 检查节点是否可前往
     const isAccessible = player.currentMapData.currentNodeId
@@ -395,7 +403,7 @@ export function renderMapPage(player: Player): void {
       : false;
     const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
 
-    // 只有可前往的节点（当前节点的toNodeList中的节点）或已访问的节点才显示前往按钮
+    // 只有可前往的节点才显示前往按钮
     const canGo = (!isCurrentNode && !isStartNode) && (isAccessible || isVisited);
 
     tippy(this, {
@@ -462,7 +470,7 @@ export function renderMapPage(player: Player): void {
     const currentNodeId = player.currentMapData.currentNodeId;
     const targetNode = currentNodeId
       ? nodesData.find(n => n.id === currentNodeId)
-      : nodesData.find(n => n.node === getRegionById(player.currentMapData.currentRegionId).startNode);
+      : nodesData.find(n => n.node === currentRegion.startNode);
 
     centerToNode(targetNode);
   });
@@ -480,7 +488,7 @@ export function renderMapPage(player: Player): void {
         const currentNodeId = player.currentMapData.currentNodeId;
         const targetNode = currentNodeId
           ? nodesData.find(n => n.id === currentNodeId)
-          : nodesData.find(n => n.node === getRegionById(player.currentMapData.currentRegionId).startNode);
+          : nodesData.find(n => n.node === currentRegion.startNode);
 
         if (targetNode) {
           // 计算目标变换
@@ -514,7 +522,7 @@ export function renderMapPage(player: Player): void {
       const currentNodeId = player.currentMapData.currentNodeId;
       const targetNode = currentNodeId
         ? nodesData.find(n => n.id === currentNodeId)
-        : nodesData.find(n => n.node === getRegionById(player.currentMapData.currentRegionId).startNode);
+        : nodesData.find(n => n.node === currentRegion.startNode);
 
       centerToNode(targetNode);
     }
