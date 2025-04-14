@@ -7,9 +7,32 @@ import { getRegionById, Region } from "../maps/Region";
 export function renderMapListPage(player: Player): void {
   const appElement = getAppElement();
 
+  // 添加过滤操作，确保只包含有效的地区对象
   const regionList = player.unlockedRegionIdList
     .map((regionId) => getRegionById(regionId))
-    .filter((region): region is Region => !!region);
+    .filter((region): region is Region => !!region); // 过滤掉undefined的结果
+
+  // 如果没有可用区域，显示提示信息并提供返回选项
+  if (regionList.length === 0) {
+    appElement.innerHTML = `
+      <div class="mt-auto">
+        <div class="row g-3 justify-content-center">
+          <div class="col-12 text-center">
+            <p class="text-danger">没有可用的地图区域。</p>
+          </div>
+          <div class="col-12 col-md-4">
+            <button id="return-btn" class="btn btn-success w-100 py-3">返回主菜单</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("return-btn")?.addEventListener("click", () => {
+      renderMainMenu(player);
+    });
+
+    return;
+  }
 
   appElement.innerHTML = `
     <div class="mt-auto">
