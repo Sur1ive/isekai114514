@@ -24,50 +24,46 @@ export function loadPlayer(): Player | null {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const plainPlayer: Record<string, any> = JSON.parse(data);
-  let player: Player;
 
-  // 尝试把plainPlayer转换为Player，如果失败则尝试通过逐个复原属性以复原存档(这样的话只会丢失报错的属性)
-  try {
-    player = plainToInstance(Player, plainPlayer);
-  } catch (error) {
-    console.error("loadPlayer error", error);
-    alert("存档损坏，尝试自动修复");
-    player = new Player(plainPlayer.name, plainPlayer.type);
+  // 不使用player = plainToInstance(Player, plainPlayer);，而是new一个Player，然后手动复原必要的属性，以应对版本更新
+  // 即便某个属性读取失败，也不会影响其他属性
+  const player = new Player(plainPlayer.name, plainPlayer.type);
 
-    // 从Creature类复原基础属性
-    const creatureProps = [
-      "level", "maxHealth", "health", "ability",
-      "statuses", "pack", "equipments"
-    ];
+  // 从Creature类复原基础属性
+  const creatureProps = [
+    "level", "health", "statuses", "equipments"
+  ];
 
-    creatureProps.forEach(prop => {
-      if (plainPlayer[prop] !== undefined) {
-        try {
-          // @ts-expect-error 动态复制属性，类型无法静态检查
-          player[prop] = plainPlayer[prop];
-        } catch (e) {
-          console.error(`无法复原属性 ${prop}`, e);
-        }
+  creatureProps.forEach(prop => {
+    if (plainPlayer[prop] !== undefined) {
+      try {
+        // @ts-expect-error 动态复制属性，类型无法静态检查
+        player[prop] = plainPlayer[prop];
+      } catch (e) {
+        console.error(`无法复原属性 ${prop}`, e);
       }
-    });
+    }
+  });
 
-    // 从Player类复原特有属性
-    const playerProps = [
-      "log", "capturedMonster", "exp",
-      "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList"
-    ];
+  player.ability = player.calculateAbility();
+  player.maxHealth = player.calculateMaxHealth();
 
-    playerProps.forEach(prop => {
-      if (plainPlayer[prop] !== undefined) {
-        try {
-          // @ts-expect-error 动态复制属性，类型无法静态检查
-          player[prop] = plainPlayer[prop];
-        } catch (e) {
-          console.error(`无法复原属性 ${prop}`, e);
-        }
+  // 从Player类复原特有属性
+  const playerProps = [
+    "log", "capturedMonster", "exp",
+    "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList"
+  ];
+
+  playerProps.forEach(prop => {
+    if (plainPlayer[prop] !== undefined) {
+      try {
+        // @ts-expect-error 动态复制属性，类型无法静态检查
+        player[prop] = plainPlayer[prop];
+      } catch (e) {
+        console.error(`无法复原属性 ${prop}`, e);
       }
-    });
-  }
+    }
+  });
 
   setIntervals(player);
 

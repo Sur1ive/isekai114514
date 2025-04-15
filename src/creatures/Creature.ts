@@ -43,9 +43,13 @@ export class Creature {
     this.level = level;
     this.individualStrength = individualStrength;
     this.ability = this.calculateAbility();
-    this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
+    this.maxHealth = this.calculateMaxHealth();
     this.health = this.maxHealth;
     this.actions = creatureConfigs[this.type].actions;
+  }
+
+  calculateMaxHealth(): number {
+    return this.ability.con * 10 + this.ability.siz * 5;
   }
 
   calculateAbility(): Ability {
