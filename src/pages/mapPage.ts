@@ -20,6 +20,10 @@ export function renderMapPage(player: Player): void {
     return;
   }
 
+  if (!player.currentMapData.currentNodeId) {
+    player.currentMapData.currentNodeId = currentRegion.startNode.id;
+  }
+
   // 获取地图尺寸和图像
   const mapWidth = currentRegion.mapWidth || 1000;
   const mapHeight = currentRegion.mapHeight || 1000;
@@ -31,13 +35,11 @@ export function renderMapPage(player: Player): void {
 
   // 获取当前位置名称
   let currentLocationName = '营地';
-  if (player.currentMapData.currentNodeId) {
-    const currentNode = nodes.find(n => n.id === player.currentMapData.currentNodeId);
-    if (currentNode) {
-      currentLocationName = currentNode.name;
-    } else {
-      currentLocationName = '未知';
-    }
+  const currentNode = nodes.find(n => n.id === player.currentMapData.currentNodeId);
+  if (currentNode) {
+    currentLocationName = currentNode.name;
+  } else {
+    currentLocationName = '未知';
   }
 
   // 设置页面结构：一个 SVG 容器和返回按钮
@@ -260,34 +262,24 @@ export function renderMapPage(player: Player): void {
     const isUnlocked = player.unlockedNodeIdList.includes(node.id);
     const isCurrentNode = player.currentMapData.currentNodeId === node.id;
     const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
-    const isStartNode = !player.currentMapData.currentNodeId && node === currentRegion!.startNode;
-    const isAccessible = player.currentMapData.currentNodeId
-      ? nodes.find(n => n.id === player.currentMapData.currentNodeId)?.toNodeList.some(n => n.id === node.id)
-      : false;
+    const isStartNode = node.id === currentRegion!.startNode.id;
+    const isAdjoinVisitedNode = player.currentMapData.visitedNodeIdList.some(id => {
+      const visitedNode = nodes.find(n => n.id === id);
+      if (visitedNode) {
+        return visitedNode.toNodeList.some(n => n.id === node.id) || visitedNode.fromNodeList?.some(n => n.id === node.id);
+      }
+      return false;
+    });
 
-    return isUnlocked || isCurrentNode || isVisited || isAccessible || isStartNode;
+    return isUnlocked || isCurrentNode || isVisited || isAdjoinVisitedNode || isStartNode;
   }
 
   // 判断连线是否可访问的辅助函数
   function isAccessibleEdge(sourceNode: Node, targetNode: Node, player: Player): boolean {
-    // 如果源节点是当前节点，且目标节点在 toNodeList 中，则连线可访问
-    if (player.currentMapData.currentNodeId === sourceNode.id &&
-        sourceNode.toNodeList.some(n => n.id === targetNode.id)) {
+    // player当前节点是源节点或目标节点，则连线可访问
+    if (player.currentMapData.currentNodeId === sourceNode.id || player.currentMapData.currentNodeId === targetNode.id) {
       return true;
     }
-
-    // 如果目标节点是当前节点，且源节点在 toNodeList 中，则连线可访问
-    if (player.currentMapData.currentNodeId === targetNode.id &&
-        targetNode.toNodeList.some(n => n.id === sourceNode.id)) {
-      return true;
-    }
-
-    // 如果源节点和目标节点都是已访问节点，则连线可访问
-    if (player.currentMapData.visitedNodeIdList.includes(sourceNode.id) &&
-        player.currentMapData.visitedNodeIdList.includes(targetNode.id)) {
-      return true;
-    }
-
     return false;
   }
 
@@ -317,23 +309,19 @@ export function renderMapPage(player: Player): void {
            return "#007bff"; // 蓝色
          }
 
-         // 如果当前没有节点，且是区域起始节点，则显示为蓝色
-         if (!player.currentMapData.currentNodeId &&
-             d === currentRegion.startNode) {
-           return "#007bff"; // 蓝色
-         }
-
-         // 可前往节点显示为绿色（当前节点的toNodeList或已访问节点）
-         const isAccessible = player.currentMapData.currentNodeId
-           ? nodes.find(n => n.id === player.currentMapData.currentNodeId)?.toNodeList.some(n => n.id === d.id)
-           : false;
-         const isVisited = player.currentMapData.visitedNodeIdList.includes(d.id);
-
-         if (isAccessible || isVisited) {
+         // 可前往节点显示为绿色（当前节点的相邻节点）
+         const currentNode = nodes.find(n => n.id === player.currentMapData.currentNodeId);
+         const isAccessible = currentNode!.toNodeList.some(n => n.id === d.id) || currentNode!.fromNodeList?.some(n => n.id === d.id);
+         if (isAccessible) {
            return "#28a745"; // 绿色
          }
 
-         // 已解锁但不可访问的节点显示为灰色
+         // 可见但不可前往的节点显示为灰色
+         if (isNodeVisible(d, player, nodes)) {
+           return "#6c757d"; // 灰色
+         }
+
+         // 其他节点不可见（ToDo）
          return "#6c757d"; // 灰色
        })
        .attr("stroke", "#f8f9fa")
@@ -376,17 +364,13 @@ export function renderMapPage(player: Player): void {
 
     // 检查是否为当前节点或起始节点
     const isCurrentNode = player.currentMapData.currentNodeId === node.id;
-    const isStartNode = !player.currentMapData.currentNodeId &&
-                       node === currentRegion.startNode;
 
     // 检查节点是否可前往
-    const isAccessible = player.currentMapData.currentNodeId
-      ? nodes.find(n => n.id === player.currentMapData.currentNodeId)?.toNodeList.some(n => n.id === node.id)
-      : false;
-    const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
+    const currentNode = nodes.find(n => n.id === player.currentMapData.currentNodeId);
+    const isAccessible = currentNode!.toNodeList.some(n => n.id === d.id) || currentNode!.fromNodeList?.some(n => n.id === d.id);
 
     // 只有可前往的节点才显示前往按钮
-    const canGo = (!isCurrentNode && !isStartNode) && (isAccessible || isVisited);
+    const canGo = !isCurrentNode && isAccessible;
 
     tippy(this, {
       content: `
@@ -448,11 +432,9 @@ export function renderMapPage(player: Player): void {
   });
 
   document.getElementById("center-map-btn")?.addEventListener("click", () => {
-    // 居中到当前节点或起始节点
+    // 居中到当前节点
     const currentNodeId = player.currentMapData.currentNodeId;
-    const targetNode = currentNodeId
-      ? nodes.find(n => n.id === currentNodeId)
-      : nodes.find(n => n === currentRegion.startNode);
+    const targetNode = nodes.find(n => n.id === currentNodeId);
 
     centerToNode(targetNode);
   });
@@ -468,9 +450,7 @@ export function renderMapPage(player: Player): void {
       if (player.currentMapData.isMovingBetweenNodes) {
         // 获取当前节点
         const currentNodeId = player.currentMapData.currentNodeId;
-        const targetNode = currentNodeId
-          ? nodes.find(n => n.id === currentNodeId)
-          : nodes.find(n => n === currentRegion.startNode);
+        const targetNode = nodes.find(n => n.id === currentNodeId);
 
         if (targetNode) {
           // 计算目标变换
@@ -502,9 +482,7 @@ export function renderMapPage(player: Player): void {
     } else {
       // 如果没有保存状态，则默认居中到当前节点
       const currentNodeId = player.currentMapData.currentNodeId;
-      const targetNode = currentNodeId
-        ? nodes.find(n => n.id === currentNodeId)
-        : nodes.find(n => n === currentRegion.startNode);
+      const targetNode = nodes.find(n => n.id === currentNodeId);
 
       centerToNode(targetNode);
     }
