@@ -77,7 +77,7 @@ export function renderMapPage(player: Player): void {
           ${currentRegion.name || '未知区域'}
         </h2>
         <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">
-          已探索: ${player.currentMapData.visitedNodeIdList.length} 个地点
+          当前生命值: <span style="color: #4caf50; font-weight: bold;">${player.health}/${player.maxHealth}</span>
         </p>
       </div>
       <div id="player-location" style="font-size: 0.9rem;">
