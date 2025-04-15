@@ -90,7 +90,6 @@ export const ruinRegion: Region = {
   description: "池沼森林 遗迹",
   isOpen: true,
 	startNode: ruinNode0_1,
-  nodeList: [ruinNode0_1, ruinNode1_1, ruinNode2_1, ruinNode2_2, ruinNode3_2],
   mapImage: ruinImage,
   mapWidth: 1280,
   mapHeight: 1280,

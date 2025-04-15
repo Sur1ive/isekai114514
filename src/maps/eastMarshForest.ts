@@ -17,7 +17,6 @@ export const eastMarshForestRegion: Region = {
   description: "池沼森林东部 风和日丽的森林",
   isOpen: false,
   startNode: eastMarshForestStartNode,
-  nodeList: [],
   mapImage: eastMarshForestImage,
   mapWidth: 1536,
   mapHeight: 1024,

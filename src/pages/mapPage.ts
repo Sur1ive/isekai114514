@@ -14,45 +14,27 @@ export function renderMapPage(player: Player): void {
 
   // 获取当前区域
   const currentRegion = getRegionById(player.currentMapData.currentRegionId);
+  if (!currentRegion) {
+    console.error("当前区域不存在");
+    renderMainMenu(player);
+    return;
+  }
 
   // 获取地图尺寸和图像
   const mapWidth = currentRegion.mapWidth || 1000;
   const mapHeight = currentRegion.mapHeight || 1000;
   const mapImage = currentRegion.mapImage || ruinImage;
 
-  // 构造节点和边的数据 - 移到HTML渲染前
-  const nodesData: { id: string; x: number; y: number; label: string; node: Node }[] = [];
-  const edgesData: { source: string; target: string }[] = [];
-  const visited = new Set<string>();
-
-  function traverse(node: Node): void {
-    if (visited.has(node.id)) return;
-    visited.add(node.id);
-
-    nodesData.push({
-      id: node.id,
-      label: node.name,
-      x: node.position.x,
-      y: node.position.y,
-      node: node
-    });
-
-    node.toNodeList.forEach(child => {
-      edgesData.push({
-        source: node.id,
-        target: child.id
-      });
-      traverse(child);
-    });
-  }
-  traverse(currentRegion.startNode);
+  // 使用预计算的节点和边数据
+  const nodes = [...currentRegion.nodeList!]; // 克隆数组避免修改原始数据
+  const edgesData = [...currentRegion.edgesData!];
 
   // 获取当前位置名称
   let currentLocationName = '营地';
   if (player.currentMapData.currentNodeId) {
-    const currentNode = nodesData.find(n => n.id === player.currentMapData.currentNodeId);
+    const currentNode = nodes.find(n => n.id === player.currentMapData.currentNodeId);
     if (currentNode) {
-      currentLocationName = currentNode.label;
+      currentLocationName = currentNode.name;
     } else {
       currentLocationName = '未知';
     }
@@ -195,7 +177,7 @@ export function renderMapPage(player: Player): void {
   svg.call(zoomBehavior);
 
   // 定义居中函数，方便复用
-  function centerToNode(targetNode: { x: number; y: number; } | undefined) {
+  function centerToNode(targetNode: { position: { x: number; y: number; } } | undefined) {
     if (targetNode) {
       const svgWidth = svg.node()?.clientWidth || 800;
       const svgHeight = svg.node()?.clientHeight || 600;
@@ -203,7 +185,7 @@ export function renderMapPage(player: Player): void {
       const transform = d3.zoomIdentity
         .translate(svgWidth / 2, svgHeight / 2)
         .scale(1.2)
-        .translate(-targetNode.x, -targetNode.y);
+        .translate(-targetNode.position.x, -targetNode.position.y);
 
       svg.transition().duration(750).call(zoomBehavior.transform, transform);
     }
@@ -244,16 +226,16 @@ export function renderMapPage(player: Player): void {
   // 绘制边（采用二次贝塞尔曲线实现平滑过渡）
   const edgeGroup = zoomableGroup.append("g").attr("class", "edges");
   edgesData.forEach(edge => {
-    const sourceNode = nodesData.find(n => n.id === edge.source);
-    const targetNode = nodesData.find(n => n.id === edge.target);
+    const sourceNode = nodes.find(n => n.id === edge.source);
+    const targetNode = nodes.find(n => n.id === edge.target);
     if (!sourceNode || !targetNode) return;
 
     // 计算连线是否可见
-    const isSourceVisible = isNodeVisible(sourceNode.node, player, nodesData);
-    const isTargetVisible = isNodeVisible(targetNode.node, player, nodesData);
+    const isSourceVisible = isNodeVisible(sourceNode, player, nodes);
+    const isTargetVisible = isNodeVisible(targetNode, player, nodes);
 
     // 连线样式根据节点可访问性决定
-    const isAccessiblePath = isAccessibleEdge(sourceNode.node, targetNode.node, player);
+    const isAccessiblePath = isAccessibleEdge(sourceNode, targetNode, player);
 
     // 如果源节点和目标节点至少有一个不可见，或路径不可访问，则不显示连线
     if (!isSourceVisible || !isTargetVisible) {
@@ -261,9 +243,9 @@ export function renderMapPage(player: Player): void {
     }
 
     // 计算控制点，这里简单让控制点在两个节点的中间并上移一定距离（可根据需求调整）
-    const cx = (sourceNode.x + targetNode.x) / 2;
-    const cy = (sourceNode.y + targetNode.y) / 2 - 50;
-    const pathData = `M ${sourceNode.x} ${sourceNode.y} Q ${cx} ${cy}, ${targetNode.x} ${targetNode.y}`;
+    const cx = (sourceNode.position.x + targetNode.position.x) / 2;
+    const cy = (sourceNode.position.y + targetNode.position.y) / 2 - 50;
+    const pathData = `M ${sourceNode.position.x} ${sourceNode.position.y} Q ${cx} ${cy}, ${targetNode.position.x} ${targetNode.position.y}`;
 
     edgeGroup.append("path")
              .attr("d", pathData)
@@ -274,13 +256,13 @@ export function renderMapPage(player: Player): void {
   });
 
   // 判断节点是否可见的辅助函数
-  function isNodeVisible(node: Node, player: Player, nodesData: { id: string; x: number; y: number; label: string; node: Node }[]): boolean {
+  function isNodeVisible(node: Node, player: Player, nodes: Node[]): boolean {
     const isUnlocked = player.unlockedNodeIdList.includes(node.id);
     const isCurrentNode = player.currentMapData.currentNodeId === node.id;
     const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
-    const isStartNode = !player.currentMapData.currentNodeId && node === currentRegion.startNode;
+    const isStartNode = !player.currentMapData.currentNodeId && node === currentRegion!.startNode;
     const isAccessible = player.currentMapData.currentNodeId
-      ? nodesData.find(n => n.id === player.currentMapData.currentNodeId)?.node.toNodeList.some(n => n.id === node.id)
+      ? nodes.find(n => n.id === player.currentMapData.currentNodeId)?.toNodeList.some(n => n.id === node.id)
       : false;
 
     return isUnlocked || isCurrentNode || isVisited || isAccessible || isStartNode;
@@ -312,18 +294,18 @@ export function renderMapPage(player: Player): void {
   // 绘制节点（用圆形和文字组合）
   const nodeGroup = zoomableGroup.append("g").attr("class", "nodes");
   const nodeG = nodeGroup.selectAll("g.node")
-                         .data(nodesData)
+                         .data(nodes)
                          .enter()
                          .append("g")
                          .attr("class", "node")
-                         .attr("transform", (d) => `translate(${d.x}, ${d.y})`)
+                         .attr("transform", (d) => `translate(${d.position.x}, ${d.position.y})`)
                          .style("cursor", "pointer")
                          .style("display", (d) => {
-                           return isNodeVisible(d.node, player, nodesData) ? "block" : "none";
+                           return isNodeVisible(d, player, nodes) ? "block" : "none";
                          });
 
   // 保存对节点和边的全局引用
-  window.currentNodeElements = nodeG as unknown as d3.Selection<d3.BaseType, NodeDatum, d3.BaseType, unknown>;
+  window.currentNodeElements = nodeG as unknown as d3.Selection<d3.BaseType, Node, d3.BaseType, unknown>;
   window.currentEdgeElements = edgeGroup.selectAll("path");
 
   // 绘制节点圆形，添加更精美的样式
@@ -331,21 +313,21 @@ export function renderMapPage(player: Player): void {
        .attr("r", 12)
        .attr("fill", (d) => {
          // 当前节点显示为蓝色
-         if (player.currentMapData.currentNodeId === d.node.id) {
+         if (player.currentMapData.currentNodeId === d.id) {
            return "#007bff"; // 蓝色
          }
 
          // 如果当前没有节点，且是区域起始节点，则显示为蓝色
          if (!player.currentMapData.currentNodeId &&
-             d.node === currentRegion.startNode) {
+             d === currentRegion.startNode) {
            return "#007bff"; // 蓝色
          }
 
          // 可前往节点显示为绿色（当前节点的toNodeList或已访问节点）
          const isAccessible = player.currentMapData.currentNodeId
-           ? nodesData.find(n => n.id === player.currentMapData.currentNodeId)?.node.toNodeList.some(n => n.id === d.node.id)
+           ? nodes.find(n => n.id === player.currentMapData.currentNodeId)?.toNodeList.some(n => n.id === d.id)
            : false;
-         const isVisited = player.currentMapData.visitedNodeIdList.includes(d.node.id);
+         const isVisited = player.currentMapData.visitedNodeIdList.includes(d.id);
 
          if (isAccessible || isVisited) {
            return "#28a745"; // 绿色
@@ -363,11 +345,11 @@ export function renderMapPage(player: Player): void {
        .attr("r", 20)
        .attr("fill", "none")
        .attr("stroke", (d) => {
-         if (player.currentMapData.currentNodeId === d.node.id) {
+         if (player.currentMapData.currentNodeId === d.id) {
            return "#007bff";
          }
          if (!player.currentMapData.currentNodeId &&
-             d.node === currentRegion.startNode) {
+             d === currentRegion.startNode) {
            return "#007bff";
          }
          return "transparent";
@@ -381,7 +363,7 @@ export function renderMapPage(player: Player): void {
   nodeG.append("text")
      .attr("x", 0)
      .attr("y", -20)
-     .text(d => d.label)
+     .text(d => d.name)
      .attr("text-anchor", "middle")
      .attr("font-size", "12px")
      .attr("fill", "#f8f9fa")
@@ -390,7 +372,7 @@ export function renderMapPage(player: Player): void {
 
   // tooltips
   nodeG.each(function(d) {
-    const node = d.node;
+    const node = d;
 
     // 检查是否为当前节点或起始节点
     const isCurrentNode = player.currentMapData.currentNodeId === node.id;
@@ -399,7 +381,7 @@ export function renderMapPage(player: Player): void {
 
     // 检查节点是否可前往
     const isAccessible = player.currentMapData.currentNodeId
-      ? nodesData.find(n => n.id === player.currentMapData.currentNodeId)?.node.toNodeList.some(n => n.id === node.id)
+      ? nodes.find(n => n.id === player.currentMapData.currentNodeId)?.toNodeList.some(n => n.id === node.id)
       : false;
     const isVisited = player.currentMapData.visitedNodeIdList.includes(node.id);
 
@@ -469,8 +451,8 @@ export function renderMapPage(player: Player): void {
     // 居中到当前节点或起始节点
     const currentNodeId = player.currentMapData.currentNodeId;
     const targetNode = currentNodeId
-      ? nodesData.find(n => n.id === currentNodeId)
-      : nodesData.find(n => n.node === currentRegion.startNode);
+      ? nodes.find(n => n.id === currentNodeId)
+      : nodes.find(n => n === currentRegion.startNode);
 
     centerToNode(targetNode);
   });
@@ -487,8 +469,8 @@ export function renderMapPage(player: Player): void {
         // 获取当前节点
         const currentNodeId = player.currentMapData.currentNodeId;
         const targetNode = currentNodeId
-          ? nodesData.find(n => n.id === currentNodeId)
-          : nodesData.find(n => n.node === currentRegion.startNode);
+          ? nodes.find(n => n.id === currentNodeId)
+          : nodes.find(n => n === currentRegion.startNode);
 
         if (targetNode) {
           // 计算目标变换
@@ -499,7 +481,7 @@ export function renderMapPage(player: Player): void {
           const transform = d3.zoomIdentity
             .translate(svgWidth / 2, svgHeight / 2)
             .scale(savedState.scale)
-            .translate(-targetNode.x, -targetNode.y);
+            .translate(-targetNode.position.x, -targetNode.position.y);
 
           // 应用带动画的变换
           svg.transition()
@@ -521,8 +503,8 @@ export function renderMapPage(player: Player): void {
       // 如果没有保存状态，则默认居中到当前节点
       const currentNodeId = player.currentMapData.currentNodeId;
       const targetNode = currentNodeId
-        ? nodesData.find(n => n.id === currentNodeId)
-        : nodesData.find(n => n.node === currentRegion.startNode);
+        ? nodes.find(n => n.id === currentNodeId)
+        : nodes.find(n => n === currentRegion.startNode);
 
       centerToNode(targetNode);
     }
@@ -543,11 +525,11 @@ export function renderMapPage(player: Player): void {
   window.updateMapForNode = function(player: Player, newNodeId: string) {
     try {
       // 1. 更新当前位置标签
-      const currentNode = nodesData.find(n => n.id === newNodeId);
+      const currentNode = nodes.find(n => n.id === newNodeId);
       if (currentNode) {
         const playerLocationEl = document.getElementById("player-location");
         if (playerLocationEl) {
-          playerLocationEl.innerHTML = `当前位置: <span style="color: #4caf50; font-weight: bold;">${currentNode.label}</span>`;
+          playerLocationEl.innerHTML = `当前位置: <span style="color: #4caf50; font-weight: bold;">${currentNode.name}</span>`;
         }
       }
 
@@ -559,17 +541,17 @@ export function renderMapPage(player: Player): void {
               // 安全地访问属性
               const element = this as Element;
               const parent = element.parentNode as Element;
-              const nodeData = d3.select(parent).datum() as NodeDatum;
-              if (!nodeData || !nodeData.node) return "#6c757d"; // 默认灰色
+              const nodeData = d3.select(parent).datum() as Node;
+              if (!nodeData) return "#6c757d"; // 默认灰色
 
               // 当前节点显示为蓝色
-              if (newNodeId === nodeData.node.id) {
+              if (newNodeId === nodeData.id) {
                 return "#007bff"; // 蓝色
               }
 
               // 可前往节点显示为绿色
-              const isAccessible = currentNode?.node.toNodeList.some(n => n.id === nodeData.node.id);
-              const isVisited = player.currentMapData.visitedNodeIdList.includes(nodeData.node.id);
+              const isAccessible = currentNode?.toNodeList.some(n => n.id === nodeData.id);
+              const isVisited = player.currentMapData.visitedNodeIdList.includes(nodeData.id);
 
               if (isAccessible || isVisited) {
                 return "#28a745"; // 绿色
@@ -589,10 +571,10 @@ export function renderMapPage(player: Player): void {
             try {
               const element = this as Element;
               const parent = element.parentNode as Element;
-              const nodeData = d3.select(parent).datum() as NodeDatum;
-              if (!nodeData || !nodeData.node) return "transparent";
+              const nodeData = d3.select(parent).datum() as Node;
+              if (!nodeData) return "transparent";
 
-              if (newNodeId === nodeData.node.id) {
+              if (newNodeId === nodeData.id) {
                 return "#007bff"; // 当前节点发光
               }
               return "transparent";
@@ -621,8 +603,8 @@ export function renderMapPage(player: Player): void {
               const [, x1, y1, x2, y2] = matches.map(Number);
 
               // 根据坐标找出相应的节点
-              const sourceNode = nodesData.find(n => Math.abs(n.x - x1) < 1 && Math.abs(n.y - y1) < 1)?.node;
-              const targetNode = nodesData.find(n => Math.abs(n.x - x2) < 1 && Math.abs(n.y - y2) < 1)?.node;
+              const sourceNode = nodes.find(n => Math.abs(n.position.x - x1) < 1 && Math.abs(n.position.y - y1) < 1);
+              const targetNode = nodes.find(n => Math.abs(n.position.x - x2) < 1 && Math.abs(n.position.y - y2) < 1);
 
               if (!sourceNode || !targetNode) return "#aaa";
 
@@ -661,7 +643,7 @@ export function renderMapPage(player: Player): void {
       }
 
       // 4. 平滑过渡到新节点
-      const targetNode = nodesData.find(n => n.id === newNodeId);
+      const targetNode = nodes.find(n => n.id === newNodeId);
       if (targetNode && window.currentMapSvg && window.currentZoomBehavior) {
         const svgWidth = window.currentMapSvg.node()?.clientWidth || 800;
         const svgHeight = window.currentMapSvg.node()?.clientHeight || 600;
@@ -673,7 +655,7 @@ export function renderMapPage(player: Player): void {
         const transform = d3.zoomIdentity
           .translate(svgWidth / 2, svgHeight / 2)
           .scale(currentScale)
-          .translate(-targetNode.x, -targetNode.y);
+          .translate(-targetNode.position.x, -targetNode.position.y);
 
         // 使用类型断言修复类型错误
         const zoomTransform = window.currentZoomBehavior.transform as unknown as

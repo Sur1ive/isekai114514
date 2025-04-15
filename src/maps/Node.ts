@@ -25,7 +25,8 @@ export interface Node {
 }
 
 export function getNodeById(id: string): Node | undefined {
-  return Object.values(RegionList).flatMap((region) => region.nodeList).find((node) => node.id === id);
+  const nodesList = Object.values(RegionList).flatMap((region) => region.nodeList!);
+  return nodesList.find((node) => node.id === id);
 }
 
 export interface CampNode extends Node {

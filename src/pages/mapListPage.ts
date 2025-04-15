@@ -61,7 +61,7 @@ export function renderMapListPage(player: Player): void {
 
   regionList.forEach((region) => {
     document.getElementById(`${region.id}-btn`)?.addEventListener("click", () => {
-      if (getRegionById(region.id).isOpen) {
+      if (getRegionById(region.id)?.isOpen) {
         player.goToRegion(region.id);
         renderMainMenu(player);
       } else {

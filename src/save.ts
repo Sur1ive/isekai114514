@@ -4,9 +4,7 @@ import { setIntervals } from "./globalIntervals";
 import { Equipment } from "./items/Equipment";
 import { Consumable } from "./items/Consumable";
 import { ItemCategory } from "./items/types";
-import { EquipmentBar } from "./creatures/types";
 import { CreatureType } from "./creatures/creatureConfigs";
-import { Monster } from "./creatures/Monster";
 
 export function saveGame(player: Player) {
   // 不保存仅在开始流程中存在的满状态野兽仙贝
@@ -18,44 +16,76 @@ export function saveGame(player: Player) {
   localStorage.setItem("saveTime", JSON.stringify(Date.now()));
 }
 
-export function loadPlayer(): Player {
+export function loadPlayer(): Player | null {
   const data = localStorage.getItem("playerData");
   if (!data) {
-    throw new Error("No player data found");
+    console.log("No player data found");
+    return null;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const plainPlayer: Record<string, any> = JSON.parse(data);
-  const player = plainToInstance(Player, plainPlayer);
+  let player: Player;
+
+  // 尝试把plainPlayer转换为Player，如果失败则尝试通过逐个复原属性以复原存档(这样的话只会丢失报错的属性)
+  try {
+    player = plainToInstance(Player, plainPlayer);
+  } catch (error) {
+    console.error("loadPlayer error", error);
+    alert("存档损坏，尝试自动修复");
+    player = new Player(plainPlayer.name, plainPlayer.type);
+
+    // 从Creature类复原基础属性
+    const creatureProps = [
+      "level", "maxHealth", "health", "ability",
+      "statuses", "pack", "equipments"
+    ];
+
+    creatureProps.forEach(prop => {
+      if (plainPlayer[prop] !== undefined) {
+        try {
+          // @ts-expect-error 动态复制属性，类型无法静态检查
+          player[prop] = plainPlayer[prop];
+        } catch (e) {
+          console.error(`无法复原属性 ${prop}`, e);
+        }
+      }
+    });
+
+    // 从Player类复原特有属性
+    const playerProps = [
+      "log", "capturedMonster", "exp",
+      "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList"
+    ];
+
+    playerProps.forEach(prop => {
+      if (plainPlayer[prop] !== undefined) {
+        try {
+          // @ts-expect-error 动态复制属性，类型无法静态检查
+          player[prop] = plainPlayer[prop];
+        } catch (e) {
+          console.error(`无法复原属性 ${prop}`, e);
+        }
+      }
+    });
+  }
+
   setIntervals(player);
 
-  // 把背包中装备转换回Equipment，消耗品转换回Consumable
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  player.pack = plainPlayer.pack.map((item: any) => {
-    if (item.category === ItemCategory.Equipment) {
-      return plainToInstance(Equipment, item);
+  // 由于背包是Item[]，所以需要把背包中装备转换回Equipment，消耗品转换回Consumable
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    player.pack = plainPlayer.pack.map((item: any) => {
+      if (item.category === ItemCategory.Equipment) {
+        return plainToInstance(Equipment, item);
     } else if (item.category === ItemCategory.Consumable) {
       return plainToInstance(Consumable, item);
     }
-    return item;
-  });
-  // 把装备栏转换回Equipment
-  const equipmentKeys = Object.keys(
-    player.equipments,
-  ) as (keyof EquipmentBar)[];
-  equipmentKeys.forEach((key) => {
-    if (player.equipments[key]) {
-      player.equipments[key] = plainToInstance(
-        Equipment,
-        player.equipments[key],
-      );
-    }
-  });
-
-  // 把boss转换回Monster
-  player.currentMapData.boss = player.currentMapData.boss.map((boss) => {
-    console.log(boss);
-    return plainToInstance(Monster, boss);
-  });
+      return item;
+    });
+  } catch (e) {
+    player.pack = [];
+    console.error("load player pack error", e);
+  }
 
   // 清除状态。不保存的时候清除是为了保留secondStatus
   player.clearStatus();

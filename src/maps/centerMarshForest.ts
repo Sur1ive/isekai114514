@@ -147,7 +147,6 @@ export const centerMarshForestRegion: Region = {
   description: "池沼森林中部 黄金平原",
   isOpen: true,
   startNode: centerMarshForestNearRuinNode,
-  nodeList: [centerMarshForestNearRuinNode, centerMarshForestRiverBankNode, centerMarshForestRoadNode, centerMarshForestFarRoadNode, centerMarshForestHillFootNode, centerMarshForestOppositeRoadNode, centerMarshForestToEastNode, centerMarshForestToVeryEastNode],
   mapImage: centerMarshForestImage,
   mapWidth: 1536,
   mapHeight: 1024,

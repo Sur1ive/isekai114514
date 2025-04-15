@@ -42,7 +42,6 @@ export function renderBattlePage(
       const actions = effect(player, action1, action2);
       action1 = actions.action1;
       action2 = actions.action2;
-      console.log(action1, action2);
     }
   });
   enemy.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
