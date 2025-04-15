@@ -56,7 +56,7 @@ export function renderMainMenu(player: Player): void {
       <div class="row g-3 justify-content-center">
         <div class="col-12 col-md-4">
           <button id="battle-btn" class="btn btn-primary w-100 py-3">
-            ${player.type === CreatureType.Player114514 ? "救世啊！" : "动身"} 现在地点: ${getRegionById(player.currentMapData.currentRegionId).name}
+            ${player.type === CreatureType.Player114514 ? "救世啊！" : "动身"} 现在地点: ${getRegionById(player.currentMapData.currentRegionId)?.name}
           </button>
         </div>
         <div class="col-12 col-md-4">
@@ -101,8 +101,11 @@ export function renderMainMenu(player: Player): void {
 
   // 绑定按钮事件
   document.getElementById("battle-btn")?.addEventListener("click", () => {
-    player.goToNode(getRegionById(player.currentMapData.currentRegionId).startNode.id);
-    renderMapPage(player);
+    const currentRegion = getRegionById(player.currentMapData.currentRegionId);
+    if (currentRegion) {
+      player.goToNode(currentRegion.startNode.id);
+      renderMapPage(player);
+    }
   });
   document.getElementById("travel-btn")?.addEventListener("click", () => {
     renderMapListPage(player);

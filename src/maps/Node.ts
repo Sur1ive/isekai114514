@@ -22,6 +22,7 @@ export interface Node {
   type: NodeType;
   position: { x: number; y: number };
   toNodeList: Node[];
+  fromNodeList?: Node[];
 }
 
 export function getNodeById(id: string): Node | undefined {

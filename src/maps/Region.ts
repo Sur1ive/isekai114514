@@ -39,9 +39,13 @@ export function calculateMapData(region: Region): void {
   const edgesData: EdgeData[] = [];
   const visited = new Set<string>();
 
-  function traverse(node: Node): void {
-    if (visited.has(node.id)) return;
+  function traverse(node: Node, fromNode: Node | null): void {
+    if (visited.has(node.id)) {
+      node.fromNodeList!.push(fromNode!);
+      return;
+    }
     visited.add(node.id);
+    node.fromNodeList = fromNode ? [fromNode] : [];
 
     // 添加节点到列表
     nodeList.push(node);
@@ -51,11 +55,12 @@ export function calculateMapData(region: Region): void {
         source: node.id,
         target: child.id
       });
-      traverse(child);
+
+      traverse(child, node);
     });
   }
 
-  traverse(region.startNode);
+  traverse(region.startNode, null);
 
   // 保存计算结果
   region.nodeList = nodeList;
