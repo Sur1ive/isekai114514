@@ -5,6 +5,7 @@ import { Equipment } from "./items/Equipment";
 import { Consumable } from "./items/Consumable";
 import { ItemCategory } from "./items/types";
 import { CreatureType } from "./creatures/creatureConfigs";
+import { Monster } from "./creatures/Monster";
 
 export function saveGame(player: Player) {
   // 不保存仅在开始流程中存在的满状态野兽仙贝
@@ -81,6 +82,22 @@ export function loadPlayer(): Player | null {
   } catch (e) {
     player.pack = [];
     console.error("load player pack error", e);
+  }
+
+  // 恢复currentMapData.boss和capturedMonster的Monster实例
+  try {
+    player.currentMapData.boss = player.currentMapData.boss.map((boss: Monster) => {
+      return plainToInstance(Monster, boss);
+    });
+  } catch (e) {
+    console.error("load player currentMapData.boss error", e);
+  }
+  try {
+    player.capturedMonster = player.capturedMonster.map((monster: Monster) => {
+      return plainToInstance(Monster, monster);
+    });
+  } catch (e) {
+    console.error("load player capturedMonster error", e);
   }
 
   // 清除状态。不保存的时候清除是为了保留secondStatus
