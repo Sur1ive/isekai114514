@@ -1,6 +1,10 @@
 import { CampNode, Node } from "./Node";
 import { centerMarshForestRegion } from "./centerMarshForest";
+import { eastMarshForestRegion } from "./eastMarshForest";
+import { northwestMarshForestRegion } from "./northwestMarshForest";
 import { ruinRegion } from "./ruin";
+import { dragonValleyRegion } from "./dragonValley";
+import { forestDungeonRegion } from "./forestDungeon";
 
 export interface EdgeData {
   source: string;
@@ -24,8 +28,12 @@ export interface Region {
 
 // regionId: Region
 export const RegionList = {
-  centerMarshForest: centerMarshForestRegion,
   ruin: ruinRegion,
+  centerMarshForest: centerMarshForestRegion,
+  eastMarshForest: eastMarshForestRegion,
+  northwestMarshForest: northwestMarshForestRegion,
+  dragonValley: dragonValleyRegion,
+  forestDungeon: forestDungeonRegion,
 };
 
 // 预计算地图的节点和边数据
