@@ -42,6 +42,39 @@ export function renderMapPage(player: Player): void {
     currentLocationName = '未知';
   }
 
+  // 辅助函数：获取节点颜色
+  function getNodeColor(node: Node, currentNodeId: string): string {
+    // 当前节点显示为蓝色
+    if (currentNodeId === node.id) {
+      return "#007bff"; // 蓝色
+    }
+
+    // 可前往节点显示为绿色（当前节点的相邻节点）
+    const currNode = nodes.find(n => n.id === currentNodeId);
+    const isAccessible = currNode!.toNodeList.some(n => n.id === node.id) ||
+                        currNode!.fromNodeList?.some(n => n.id === node.id);
+    if (isAccessible) {
+      return "#28a745"; // 绿色
+    }
+
+    // 可见但不可前往的节点显示为灰色
+    if (isNodeVisible(node, player, nodes)) {
+      return "#6c757d"; // 灰色
+    }
+
+    // 其他节点不可见
+    return "#6c757d"; // 灰色
+  }
+
+  // 辅助函数：判断边是否可访问
+  function isEdgeAccessible(sourceNode: Node, targetNode: Node, currentNodeId: string): boolean {
+    // player当前节点是源节点或目标节点，则连线可访问
+    if (currentNodeId === sourceNode.id || currentNodeId === targetNode.id) {
+      return true;
+    }
+    return false;
+  }
+
   // 设置页面结构：一个 SVG 容器和返回按钮
   appElement.innerHTML = `
   <div id="map-container" class="d-flex flex-column" style="flex: 1; position: relative;">
@@ -303,27 +336,7 @@ export function renderMapPage(player: Player): void {
   // 绘制节点圆形，添加更精美的样式
   nodeG.append("circle")
        .attr("r", 12)
-       .attr("fill", (d) => {
-         // 当前节点显示为蓝色
-         if (player.currentMapData.currentNodeId === d.id) {
-           return "#007bff"; // 蓝色
-         }
-
-         // 可前往节点显示为绿色（当前节点的相邻节点）
-         const currentNode = nodes.find(n => n.id === player.currentMapData.currentNodeId);
-         const isAccessible = currentNode!.toNodeList.some(n => n.id === d.id) || currentNode!.fromNodeList?.some(n => n.id === d.id);
-         if (isAccessible) {
-           return "#28a745"; // 绿色
-         }
-
-         // 可见但不可前往的节点显示为灰色
-         if (isNodeVisible(d, player, nodes)) {
-           return "#6c757d"; // 灰色
-         }
-
-         // 其他节点不可见（ToDo）
-         return "#6c757d"; // 灰色
-       })
+       .attr("fill", (d) => getNodeColor(d, player.currentMapData.currentNodeId!))
        .attr("stroke", "#f8f9fa")
        .attr("stroke-width", 2)
        .attr("filter", "drop-shadow(0px 2px 3px rgba(0,0,0,0.5))");
@@ -522,21 +535,8 @@ export function renderMapPage(player: Player): void {
               const nodeData = d3.select(parent).datum() as Node;
               if (!nodeData) return "#6c757d"; // 默认灰色
 
-              // 当前节点显示为蓝色
-              if (newNodeId === nodeData.id) {
-                return "#007bff"; // 蓝色
-              }
-
-              // 可前往节点显示为绿色
-              const isAccessible = currentNode?.toNodeList.some(n => n.id === nodeData.id);
-              const isVisited = player.currentMapData.visitedNodeIdList.includes(nodeData.id);
-
-              if (isAccessible || isVisited) {
-                return "#28a745"; // 绿色
-              }
-
-              // 已解锁但不可访问的节点显示为灰色
-              return "#6c757d"; // 灰色
+              // 使用相同的节点颜色逻辑
+              return getNodeColor(nodeData, newNodeId);
             } catch (e) {
               console.warn("Error updating node color:", e);
               return "#6c757d"; // 出错时返回默认灰色
@@ -586,21 +586,8 @@ export function renderMapPage(player: Player): void {
 
               if (!sourceNode || !targetNode) return "#aaa";
 
-              // 如果源节点是当前节点，且目标节点在 toNodeList 中，则连线可访问
-              if (newNodeId === sourceNode.id &&
-                  sourceNode.toNodeList.some(n => n.id === targetNode.id)) {
-                return "#4caf50";
-              }
-
-              // 如果目标节点是当前节点，且源节点在 toNodeList 中，则连线可访问
-              if (newNodeId === targetNode.id &&
-                  targetNode.toNodeList.some(n => n.id === sourceNode.id)) {
-                return "#4caf50";
-              }
-
-              // 如果源节点和目标节点都是已访问节点，则连线可访问
-              if (player.currentMapData.visitedNodeIdList.includes(sourceNode.id) &&
-                  player.currentMapData.visitedNodeIdList.includes(targetNode.id)) {
+              // 使用相同的边可访问性逻辑
+              if (isEdgeAccessible(sourceNode, targetNode, newNodeId)) {
                 return "#4caf50";
               }
 
@@ -620,7 +607,71 @@ export function renderMapPage(player: Player): void {
           });
       }
 
-      // 4. 平滑过渡到新节点
+      // 4. 更新tippy提示，销毁现有的并重新创建
+      if (window.currentNodeElements) {
+        window.currentNodeElements.each(function(d) {
+          const node = d as Node;
+
+          // 销毁现有的tippy实例
+          // @ts-expect-error - tippy可能在某些类型定义中不存在这个属性
+          const tippyInstance = (this as Element)._tippy;
+          if (tippyInstance) {
+            tippyInstance.destroy();
+          }
+
+          // 检查是否为当前节点
+          const isCurrentNode = newNodeId === node.id;
+
+          // 检查节点是否可前往
+          const currNode = nodes.find(n => n.id === newNodeId);
+          const isAccessible = currNode?.toNodeList.some(n => n.id === node.id) ||
+                               currNode?.fromNodeList?.some(n => n.id === node.id);
+
+          // 只有可前往的节点才显示前往按钮
+          const canGo = !isCurrentNode && isAccessible;
+
+          // 创建新的tippy实例
+          tippy(this as SVGGElement, {
+            content: `
+              <div>
+                <h3>${node.name}</h3>
+                <p>${node.description}</p>
+                ${canGo ?
+                  `<a class="btn btn-primary" id="go-${node.id}">
+                    前往
+                  </a>` :
+                  ''
+                }
+              </div>
+            `,
+            allowHTML: true,
+            interactive: true,
+            trigger: 'click',
+            hideOnClick: true,
+            appendTo: document.body,
+            onShown(instance) {
+              // 只有可前往的节点才添加点击事件
+              if (canGo) {
+                const button = instance.popper.querySelector(`#go-${node.id}`);
+                if (button) {
+                  button.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    instance.hide();
+
+                    // 设置标志，表示正在进行节点间移动
+                    player.currentMapData.isMovingBetweenNodes = true;
+
+                    // 前往新节点
+                    goToNode(node, player);
+                  });
+                }
+              }
+            }
+          });
+        });
+      }
+
+      // 5. 平滑过渡到新节点
       const targetNode = nodes.find(n => n.id === newNodeId);
       if (targetNode && window.currentMapSvg && window.currentZoomBehavior) {
         const svgWidth = window.currentMapSvg.node()?.clientWidth || 800;
