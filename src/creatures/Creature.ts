@@ -19,9 +19,32 @@ export class Creature {
   image?: string;
   level: number;
   individualStrength: number;
-  maxHealth: number;
+  // 基础最大生命值
+  private maxHealth: number = 0;
   health: number;
-  ability: Ability;
+  // 基础能力值
+  private ability: Ability = {
+    str: 0,
+    int: 0,
+    con: 0,
+    siz: 0,
+    app: 0,
+    dex: 0,
+    armor: 0,
+    piercing: 0,
+  };
+  // 属性加点(每10级1点)
+  plusAbilityPoint: number = 1;
+  plusAbility: Ability = {
+    str: 0,
+    int: 0,
+    con: 0,
+    siz: 0,
+    app: 0,
+    dex: 0,
+    armor: 0,
+    piercing: 0,
+  };
   statuses: Status[] = [];
   pack: Item[] = [];
   equipments: EquipmentBar = {
@@ -42,17 +65,17 @@ export class Creature {
     this.type = type;
     this.level = level;
     this.individualStrength = individualStrength;
-    this.ability = this.calculateAbility();
-    this.maxHealth = this.calculateMaxHealth();
-    this.health = this.maxHealth;
+    this.calculateAbility();
+    this.calculateMaxHealth();
+    this.health = this.getMaxHealth();
     this.actions = creatureConfigs[this.type].actions;
   }
 
-  calculateMaxHealth(): number {
-    return this.ability.con * 10 + this.ability.siz * 5;
+  calculateMaxHealth() {
+    this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
   }
 
-  calculateAbility(): Ability {
+  calculateAbility() {
     const coeffs = creatureConfigs[this.type].abilityCoeff;
     const keys: (keyof Ability)[] = [
       "str",
@@ -70,12 +93,15 @@ export class Creature {
         coeffs[key].base +
         coeffs[key].growth * this.level * this.individualStrength;
     });
-    return ability;
+    this.ability = ability;
   }
 
   levelup() {
     this.level++;
-    this.ability = this.calculateAbility();
+    if (this.level % 10 === 0) {
+      this.plusAbilityPoint++;
+    }
+    this.calculateAbility();
     const oldMaxHealth = this.maxHealth;
     this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
     this.recoverHp(this.maxHealth - oldMaxHealth);
@@ -184,7 +210,7 @@ export class Creature {
     // 累加装备的基础属性，若不存在则默认 0
     const extraAbility = this.getExtraAbility();
     for (const key of keys) {
-      ability[key] += extraAbility[key];
+      ability[key] += extraAbility[key] + this.plusAbility[key];
     }
     return ability;
   }

@@ -32,7 +32,7 @@ export function loadPlayer(): Player | null {
 
   // 从Creature类复原基础属性
   const creatureProps = [
-    "level", "health", "statuses", "equipments"
+    "level", "health", "statuses", "equipments", "plusAbilityPoint", "plusAbility"
   ];
 
   creatureProps.forEach(prop => {
@@ -46,8 +46,8 @@ export function loadPlayer(): Player | null {
     }
   });
 
-  player.ability = player.calculateAbility();
-  player.maxHealth = player.calculateMaxHealth();
+  player.calculateAbility();
+  player.calculateMaxHealth();
 
   // 从Player类复原特有属性
   const playerProps = [

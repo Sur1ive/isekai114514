@@ -51,6 +51,9 @@ const equipmentPositionMap: Record<string, string> = {
   accessory: "饰品",
 };
 
+// 不能加点的属性列表
+const nonPlusableAttributes = ["armor", "piercing"];
+
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
   // 清除所有现有的tippy实例
@@ -73,8 +76,11 @@ export function renderStatusPage(player: Player): void {
         <!-- 属性栏区域 -->
         <div class="col-md-6 mb-4">
           <div class="card shadow-sm">
-            <div class="card-header bg-secondary text-white">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
               <h4 class="card-title mb-0">${player.name} 的属性</h4>
+              <div>
+                <span class="badge bg-primary">可用加点: <span id="available-points">${player.plusAbilityPoint}</span></span>
+              </div>
             </div>
             <div class="card-body">
               <div id="attribute-bar" class="list-group list-group-flush">
@@ -83,18 +89,35 @@ export function renderStatusPage(player: Player): void {
                   const extraAbilities = player.getExtraAbility();
                   return Object.entries(baseAbilities).map(([attribute, value]) => {
                     const extra = extraAbilities[attribute as keyof Ability] || 0;
+                    const plusValue = player.plusAbility[attribute as keyof Ability] || 0;
                     let extraBadge = '';
+
+                    // 显示装备加成
                     if (extra > 0) {
-                      extraBadge = `<span class="badge bg-success ms-2">+${extra}</span>`;
+                      extraBadge = `<span class="badge bg-success ms-1">+${extra}</span>`;
                     } else if (extra < 0) {
-                      extraBadge = `<span class="badge bg-danger ms-2">${extra}</span>`;
+                      extraBadge = `<span class="badge bg-danger ms-1">${extra}</span>`;
                     }
+
+                    // 显示加点加成
+                    let plusBadge = '';
+                    if (plusValue > 0) {
+                      plusBadge = `<span class="badge bg-info ms-1">+${plusValue}</span>`;
+                    }
+
+                    // 添加加点按钮，非护甲和穿刺属性，只有当有可用加点时才显示
+                    const plusButton = (!nonPlusableAttributes.includes(attribute) && player.plusAbilityPoint > 0)
+                      ? `<button class="btn btn-sm btn-outline-primary plus-btn" data-attribute="${attribute}">+</button>`
+                      : '';
+
                     return `
                       <div class="list-group-item d-flex justify-content-between align-items-center">
                         <span class="fw-bold">${attributeNameMap[attribute] || attribute}</span>
-                        <div>
-                          <span class="text-muted">${value}</span>
+                        <div class="d-flex align-items-center position-relative">
+                          <span class="text-muted me-2">${value}</span>
                           ${extraBadge}
+                          ${plusBadge}
+                          ${plusButton}
                         </div>
                       </div>
                     `;
@@ -341,6 +364,80 @@ export function renderStatusPage(player: Player): void {
     renderMainMenu(player);
   });
 
+  // 为属性加点按钮添加事件监听
+  document.querySelectorAll(".plus-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault(); // 防止默认行为
+      e.stopPropagation(); // 阻止事件冒泡
+
+      const attributeName = (e.currentTarget as HTMLElement).getAttribute("data-attribute") as keyof Ability;
+      const button = e.currentTarget as HTMLElement;
+
+      if (player.plusAbilityPoint > 0 && !nonPlusableAttributes.includes(attributeName)) {
+        // 添加点击动画效果
+        button.classList.add('btn-pulse');
+        setTimeout(() => button.classList.remove('btn-pulse'), 300);
+
+        player.plusAbilityPoint--;
+        player.plusAbility[attributeName]++;
+
+        // 显示加点成功的视觉反馈 - 在渲染新页面前先展示动画
+        const parentDiv = button.closest('.position-relative');
+        if (parentDiv) {
+          const successIndicator = document.createElement('div');
+          successIndicator.className = 'attribute-plus-indicator';
+          successIndicator.textContent = `+1 ${attributeNameMap[attributeName]}`;
+          parentDiv.appendChild(successIndicator);
+
+          // 给浮动指示器添加内联样式以确保可见
+          successIndicator.style.position = 'absolute';
+          successIndicator.style.top = '-20px';
+          successIndicator.style.right = '0';
+          successIndicator.style.color = '#17a2b8';
+          successIndicator.style.fontWeight = 'bold';
+          successIndicator.style.zIndex = '1000';
+
+          // 手动添加动画
+          successIndicator.animate(
+            [
+              { opacity: 1, transform: 'translateY(0)' },
+              { opacity: 0, transform: 'translateY(-20px)' }
+            ],
+            {
+              duration: 1000,
+              easing: 'ease-out',
+              fill: 'forwards'
+            }
+          );
+
+          // 加点的效果显示一段时间后再刷新页面
+          setTimeout(() => {
+            // 如果加点会影响生命值上限，则恢复血量
+            if (attributeName === "con" || attributeName === "siz") {
+              const oldMaxHealth = player.getMaxHealth();
+              // 计算得到新的最大生命值
+              const newMaxHealth = player.getAbility().con * 10 + player.getAbility().siz * 5;
+              player.recoverHp(newMaxHealth - oldMaxHealth);
+            }
+
+            saveGame(player);
+            renderStatusPage(player);
+          }, 300); // 给动画一些时间展示
+        } else {
+          // 如果找不到父元素，立即刷新
+          if (attributeName === "con" || attributeName === "siz") {
+            const oldMaxHealth = player.getMaxHealth();
+            const newMaxHealth = player.getAbility().con * 10 + player.getAbility().siz * 5;
+            player.recoverHp(newMaxHealth - oldMaxHealth);
+          }
+
+          saveGame(player);
+          renderStatusPage(player);
+        }
+      }
+    });
+  });
+
   // 为背包中的道具绑定点击事件
   for (const item of player.pack) {
     const tooltipContent = generateItemTooltipContent(item);
@@ -474,4 +571,50 @@ export function renderStatusPage(player: Player): void {
   document.querySelectorAll('[data-bs-toggle="popover"]').forEach(popoverTrigger => {
     new bootstrap.Popover(popoverTrigger);
   });
+
+  // 移除可能存在的旧样式，避免重复添加
+  const existingStyle = document.getElementById('attribute-animation-style');
+  if (existingStyle) {
+    existingStyle.remove();
+  }
+
+  // 添加属性加点动画的CSS
+  const style = document.createElement('style');
+  style.id = 'attribute-animation-style';
+  style.textContent = `
+    .plus-btn {
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 10;
+    }
+    .plus-btn:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 5px rgba(0,123,255,0.5);
+    }
+    .btn-pulse {
+      animation: pulse 0.3s ease-out;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .position-relative {
+      position: relative !important;
+    }
+    .attribute-plus-indicator {
+      position: absolute;
+      top: -20px;
+      right: 0;
+      color: #17a2b8;
+      font-weight: bold;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    @keyframes float-up {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+  `;
+  document.head.appendChild(style);
 }
