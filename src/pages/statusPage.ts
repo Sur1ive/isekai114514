@@ -54,8 +54,50 @@ const equipmentPositionMap: Record<string, string> = {
 // 不能加点的属性列表
 const nonPlusableAttributes = ["armor", "piercing"];
 
+// 添加动画样式到页面
+function addAnimationStyles() {
+  // 检查是否已经添加了样式
+  if (document.getElementById('game-animation-styles')) {
+    return;
+  }
+
+  const styleEl = document.createElement('style');
+  styleEl.id = 'game-animation-styles';
+  styleEl.textContent = `
+    @keyframes attribute-plus-animation {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+
+    .attribute-plus-animation {
+      animation: attribute-plus-animation 0.5s ease-out;
+    }
+
+    @keyframes point-spent-animation {
+      0% { opacity: 0; transform: translateY(10px); }
+      50% { opacity: 1; transform: translateY(-5px); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+
+    .point-spent-indicator {
+      position: absolute;
+      color: #0dcaf0;
+      font-weight: bold;
+      font-size: 1.2em;
+      pointer-events: none;
+      z-index: 100;
+      animation: point-spent-animation 1s ease-out forwards;
+    }
+  `;
+  document.head.appendChild(styleEl);
+}
+
 // 渲染状态界面
 export function renderStatusPage(player: Player): void {
+  // 添加动画样式
+  addAnimationStyles();
+
   // 清除所有现有的tippy实例
   itemTippyInstances.forEach(instances => {
     instances.forEach(instance => instance.destroy());
@@ -113,7 +155,7 @@ export function renderStatusPage(player: Player): void {
                     return `
                       <div class="list-group-item d-flex justify-content-between align-items-center">
                         <span class="fw-bold">${attributeNameMap[attribute] || attribute}</span>
-                        <div class="d-flex align-items-center position-relative">
+                        <div class="d-flex align-items-center">
                           <span class="text-muted me-2">${value}</span>
                           ${extraBadge}
                           ${plusBadge}
@@ -367,73 +409,49 @@ export function renderStatusPage(player: Player): void {
   // 为属性加点按钮添加事件监听
   document.querySelectorAll(".plus-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
-      e.preventDefault(); // 防止默认行为
-      e.stopPropagation(); // 阻止事件冒泡
-
       const attributeName = (e.currentTarget as HTMLElement).getAttribute("data-attribute") as keyof Ability;
-      const button = e.currentTarget as HTMLElement;
+      const btnElement = e.currentTarget as HTMLElement;
 
       if (player.plusAbilityPoint > 0 && !nonPlusableAttributes.includes(attributeName)) {
-        // 添加点击动画效果
-        button.classList.add('btn-pulse');
-        setTimeout(() => button.classList.remove('btn-pulse'), 300);
+        // 显示动画效果
+        btnElement.classList.add('attribute-plus-animation');
+        setTimeout(() => {
+          btnElement.classList.remove('attribute-plus-animation');
+        }, 500);
+
+        // 创建浮动文字
+        const indicator = document.createElement('div');
+        indicator.className = 'point-spent-indicator';
+        indicator.textContent = `+1 ${attributeNameMap[attributeName]}`;
+
+        // 计算指示器位置
+        const rect = btnElement.getBoundingClientRect();
+        indicator.style.left = `${rect.left}px`;
+        indicator.style.top = `${rect.top}px`;
+
+        // 添加到body以确保z-index正常工作
+        document.body.appendChild(indicator);
+
+        // 动画结束后移除
+        setTimeout(() => {
+          if (indicator.parentNode) {
+            indicator.parentNode.removeChild(indicator);
+          }
+        }, 1000);
 
         player.plusAbilityPoint--;
         player.plusAbility[attributeName]++;
 
-        // 显示加点成功的视觉反馈 - 在渲染新页面前先展示动画
-        const parentDiv = button.closest('.position-relative');
-        if (parentDiv) {
-          const successIndicator = document.createElement('div');
-          successIndicator.className = 'attribute-plus-indicator';
-          successIndicator.textContent = `+1 ${attributeNameMap[attributeName]}`;
-          parentDiv.appendChild(successIndicator);
-
-          // 给浮动指示器添加内联样式以确保可见
-          successIndicator.style.position = 'absolute';
-          successIndicator.style.top = '-20px';
-          successIndicator.style.right = '0';
-          successIndicator.style.color = '#17a2b8';
-          successIndicator.style.fontWeight = 'bold';
-          successIndicator.style.zIndex = '1000';
-
-          // 手动添加动画
-          successIndicator.animate(
-            [
-              { opacity: 1, transform: 'translateY(0)' },
-              { opacity: 0, transform: 'translateY(-20px)' }
-            ],
-            {
-              duration: 1000,
-              easing: 'ease-out',
-              fill: 'forwards'
-            }
-          );
-
-          // 加点的效果显示一段时间后再刷新页面
-          setTimeout(() => {
-            // 如果加点会影响生命值上限，则恢复血量
-            if (attributeName === "con" || attributeName === "siz") {
-              const oldMaxHealth = player.getMaxHealth();
-              // 计算得到新的最大生命值
-              const newMaxHealth = player.getAbility().con * 10 + player.getAbility().siz * 5;
-              player.recoverHp(newMaxHealth - oldMaxHealth);
-            }
-
-            saveGame(player);
-            renderStatusPage(player);
-          }, 300); // 给动画一些时间展示
-        } else {
-          // 如果找不到父元素，立即刷新
-          if (attributeName === "con" || attributeName === "siz") {
-            const oldMaxHealth = player.getMaxHealth();
-            const newMaxHealth = player.getAbility().con * 10 + player.getAbility().siz * 5;
-            player.recoverHp(newMaxHealth - oldMaxHealth);
-          }
-
-          saveGame(player);
-          renderStatusPage(player);
+        // 如果加点会影响生命值上限，则恢复血量
+        if (attributeName === "con" || attributeName === "siz") {
+          const oldMaxHealth = player.getMaxHealth();
+          // 计算得到新的最大生命值
+          const newMaxHealth = player.getAbility().con * 10 + player.getAbility().siz * 5;
+          player.recoverHp(newMaxHealth - oldMaxHealth);
         }
+
+        saveGame(player);
+        renderStatusPage(player);
       }
     });
   });
@@ -571,50 +589,4 @@ export function renderStatusPage(player: Player): void {
   document.querySelectorAll('[data-bs-toggle="popover"]').forEach(popoverTrigger => {
     new bootstrap.Popover(popoverTrigger);
   });
-
-  // 移除可能存在的旧样式，避免重复添加
-  const existingStyle = document.getElementById('attribute-animation-style');
-  if (existingStyle) {
-    existingStyle.remove();
-  }
-
-  // 添加属性加点动画的CSS
-  const style = document.createElement('style');
-  style.id = 'attribute-animation-style';
-  style.textContent = `
-    .plus-btn {
-      transition: all 0.2s ease;
-      position: relative;
-      z-index: 10;
-    }
-    .plus-btn:hover {
-      transform: scale(1.2);
-      box-shadow: 0 0 5px rgba(0,123,255,0.5);
-    }
-    .btn-pulse {
-      animation: pulse 0.3s ease-out;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
-    }
-    .position-relative {
-      position: relative !important;
-    }
-    .attribute-plus-indicator {
-      position: absolute;
-      top: -20px;
-      right: 0;
-      color: #17a2b8;
-      font-weight: bold;
-      z-index: 1000;
-      pointer-events: none;
-    }
-    @keyframes float-up {
-      0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-20px); }
-    }
-  `;
-  document.head.appendChild(style);
 }
