@@ -1,11 +1,11 @@
-import { Node, NodeType, NormalMonsterNode, BossNode, TreasureNode, ToOtherRegionNode } from "./Node";
+import { Node, NodeType, NormalMonsterNode, BossNode, TreasureNode, ToOtherRegionNode, EliteMonsterNode } from "./Node";
 import { renderBattlePage } from "../pages/battlePage";
 import { Player } from "../creatures/Player";
 import { Monster } from "../creatures/Monster";
 import { renderMainMenu } from "../pages/mainMenu";
 import { renderMapPage } from "../pages/mapPage";
 import { randomMonsterType } from "../creatures/utils";
-import { randomInt } from "../utils";
+import { randomInt, randomFloat } from "../utils";
 import { BattleResult } from "../battle/types";
 import { randomItemType, generateItem } from "../items/itemUtils";
 import * as bootstrap from "bootstrap";
@@ -32,7 +32,7 @@ function normalBattleHandler(player: Player, _monster: Monster, result: BattleRe
 }
 
 function goToNormalMonsterNode(node: NormalMonsterNode, player: Player) {
-  const monsterData = randomMonsterType((node as NormalMonsterNode).monsterList);
+  const monsterData = randomMonsterType(node.monsterList);
   if (!monsterData) {
     player.goToNode(node.id);
     renderMapPage(player);
@@ -41,6 +41,30 @@ function goToNormalMonsterNode(node: NormalMonsterNode, player: Player) {
   const monsterLevel = randomInt(monsterData.minLevel, monsterData.maxLevel);
   const monster = new Monster(monsterData.monster, monsterLevel, 1);
   renderBattlePage(player, monster, null, null, normalBattleHandler);
+}
+
+function goToEliteMonsterNode(node: EliteMonsterNode, player: Player) {
+  if (Math.random() < node.treasureProbability) {
+    const treasureNode: TreasureNode = {
+      ...node,
+      type: NodeType.Treasure,
+      firstTimeTreasureList: node.treasureList,
+      repeatableTreasureList: node.treasureList,
+    };
+    goToTreasureNode(treasureNode, player);
+    return;
+  } else {
+    const monsterData = randomMonsterType(node.monsterList);
+    if (!monsterData) {
+      player.goToNode(node.id);
+      renderMapPage(player);
+      return;
+    }
+    const monsterIndividualStrength = randomFloat(monsterData.minIndividualStrength, monsterData.maxIndividualStrength);
+    const monsterLevel = randomInt(monsterData.minLevel, monsterData.maxLevel);
+    const monster = new Monster(monsterData.monster, monsterLevel, monsterIndividualStrength);
+    renderBattlePage(player, monster, null, null, normalBattleHandler);
+  }
 }
 
 function bossBattleHandler(player: Player, monster: Monster, result: BattleResult) {
@@ -68,7 +92,7 @@ function bossBattleHandler(player: Player, monster: Monster, result: BattleResul
 }
 
 function goToBossNode(node: BossNode, player: Player) {
-  const bossStageList = (node as BossNode).bossStageList;
+  const bossStageList = node.bossStageList;
   if (!bossStageList) {
     player.goToNode(node.id);
     renderMapPage(player);
@@ -88,9 +112,9 @@ function goToBossNode(node: BossNode, player: Player) {
 }
 
 function goToTreasureNode(node: TreasureNode, player: Player) {
-  let treasureList = (node as TreasureNode).firstTimeTreasureList;
+  let treasureList = node.firstTimeTreasureList;
   if (player.unlockedNodeIdList.includes(node.id)) {
-    treasureList = (node as TreasureNode).repeatableTreasureList;
+    treasureList = node.repeatableTreasureList;
   }
   if (!player.currentMapData.visitedNodeIdList.includes(node.id)) {
     const treasureData = randomItemType(treasureList);
@@ -133,6 +157,7 @@ function goToTreasureNode(node: TreasureNode, player: Player) {
 }
 
 function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
+  player.goToNode(node.id);
   const region = node.region;
   if (!player.unlockedRegionIdList.includes(region.id)) {
     player.unlockedRegionIdList.push(region.id);
@@ -173,6 +198,8 @@ export function goToNode(node: Node, player: Player) {
 
   if (node.type === NodeType.NormalMonster) {
     goToNormalMonsterNode(node as NormalMonsterNode, player);
+  } else if (node.type === NodeType.EliteMonster) {
+    goToEliteMonsterNode(node as EliteMonsterNode, player);
   } else if (node.type === NodeType.Boss) {
     goToBossNode(node as BossNode, player);
   } else if (node.type === NodeType.Treasure) {
