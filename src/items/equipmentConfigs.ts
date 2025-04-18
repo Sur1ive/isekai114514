@@ -244,7 +244,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     },
   },
   [EquipmentType.RockSword]: {
-    name: "剑型大石头",
+    name: "大石头",
     description: "一把很宽的石头大剑，看起来就像块大石头",
     rarity: Rarity.Masterpiece,
     position: EquipmentPosition.Hand,

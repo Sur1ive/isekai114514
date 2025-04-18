@@ -14,6 +14,8 @@ export function renderMapPage(player: Player): void {
 
   // 获取当前区域
   const currentRegion = getRegionById(player.currentMapData.currentRegionId);
+  player.isAtHome = false;
+
   if (!currentRegion) {
     console.error("当前区域不存在");
     renderMainMenu(player);

@@ -20,7 +20,8 @@ export function renderBattlePage(
   endHandler: (player: Player, enemy: Monster, result: BattleResult) => void,
 ): void {
   const appElement = getAppElement();
-
+  player.isAtHome = false;
+  
   // 上回合结算
   if (lastPlayerAction && lastEnemyAction) {
     player.addTempLog(
