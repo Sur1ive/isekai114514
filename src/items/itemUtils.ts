@@ -1,6 +1,6 @@
 import { Consumable } from "./Consumable";
 import { Equipment } from "./Equipment";
-import { ItemType, ItemCategory } from "./types";
+import { ItemType } from "./types";
 import { ConsumableType } from "./consumableConfigs";
 import { EquipmentType } from "./equipmentConfigs";
 import { Item } from "./Item";
@@ -57,15 +57,4 @@ export function generateItemTooltipContent(item: Item): string {
       <p class="fst-italic">"${item.description}"</p>
     </div>
   `;
-}
-
-export function getItemIcon(item: Item): string {
-  switch (item.category) {
-    case ItemCategory.Equipment:
-      return "🗡️";
-    case ItemCategory.Consumable:
-      return "🗝️";
-    default:
-      return "";
-  }
 }

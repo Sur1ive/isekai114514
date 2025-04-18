@@ -6,7 +6,7 @@ import { renderMainMenu } from "./mainMenu";
 import { Rarity } from "../types";
 import { Ability } from "../creatures/types";
 import { actionConfigs } from "../actions/actionConfigs";
-import { generateItemTooltipContent, getItemIcon } from "../items/itemUtils";
+import { generateItemTooltipContent } from "../items/itemUtils";
 import { getAppElement } from "./utils";
 import { generateActionPopoverContent } from "../actions/actionUtils";
 import { EquipmentPosition } from "../items/types";
@@ -265,7 +265,7 @@ export function renderStatusPage(player: Player): void {
                       <span class="fw-bold">${equipmentPositionMap[position] || position}</span>
                       ${
                         equipment
-                            ? `<span id="equipment-slot-${position}" class="badge bg-${Rarity[equipment.rarity]}">${equipment.name}</span>`
+                            ? `<span id="equipment-slot-${position}" class="badge bg-${Rarity[equipment.rarity]}">${equipment.getName()}</span>`
                             : '<span class="badge bg-secondary">空</span>'
                       }
                     </div>
@@ -315,7 +315,7 @@ export function renderStatusPage(player: Player): void {
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
                             return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
-                              ${getItemIcon(item)}${item.name}
+                              ${item.getItemIcon()}${item.name}
                             </button>`;
                           })
                           .join("")
@@ -334,7 +334,7 @@ export function renderStatusPage(player: Player): void {
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
                             return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
-                              ${getItemIcon(item)}${item.name}
+                              ${item.getItemIcon()}${item.name}
                             </button>`;
                           })
                           .join("")
@@ -353,7 +353,7 @@ export function renderStatusPage(player: Player): void {
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
                             return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
-                              ${getItemIcon(item)}${item.name}
+                              ${item.getItemIcon()}${item.name}
                             </button>`;
                           })
                           .join("")

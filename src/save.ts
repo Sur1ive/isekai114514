@@ -32,7 +32,7 @@ export function loadPlayer(): Player | null {
 
   // 从Creature类复原基础属性
   const creatureProps = [
-    "level", "health", "statuses", "equipments", "plusAbilityPoint", "plusAbility"
+    "level", "health", "statuses", "plusAbilityPoint", "plusAbility"
   ];
 
   creatureProps.forEach(prop => {
@@ -98,6 +98,15 @@ export function loadPlayer(): Player | null {
     });
   } catch (e) {
     console.error("load player capturedMonster error", e);
+  }
+
+  // 恢复装备栏
+  try {
+    player.equipments = plainPlayer.equipments.map((equipment: Equipment | null) => {
+      return equipment ? plainToInstance(Equipment, equipment) : null;
+    });
+  } catch (e) {
+    console.error("load player equipments error", e);
   }
 
   // 清除状态。不保存的时候清除是为了保留secondStatus

@@ -8,7 +8,6 @@ import { randomMonsterType } from "../creatures/utils";
 import { randomInt, randomFloat } from "../utils";
 import { BattleResult } from "../battle/types";
 import { randomItemType, generateItem } from "../items/itemUtils";
-import * as bootstrap from "bootstrap";
 import * as d3 from "d3";
 
 // 全局变量，用于存储当前地图的引用
@@ -122,34 +121,7 @@ function goToTreasureNode(node: TreasureNode, player: Player) {
       const treasureLevel = randomInt(treasureData.minLevel, treasureData.maxLevel);
       const treasure = generateItem(treasureData.item, treasureLevel);
       player.pack.push(treasure);
-
-      // 添加 Toast 提示
-      const toastContainer = document.createElement('div');
-      toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-      toastContainer.innerHTML = `
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <strong class="me-auto">获得宝物</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div class="toast-body">
-            获得了 ${treasure.name}！
-          </div>
-        </div>
-      `;
-      document.body.appendChild(toastContainer);
-
-      const toastElement = toastContainer.querySelector('.toast');
-      const toast = new bootstrap.Toast(toastElement as Element, {
-        autohide: true,
-        delay: 5000
-      });
-      toast.show();
-
-      // Toast 隐藏后移除容器
-      toastElement?.addEventListener('hidden.bs.toast', () => {
-        toastContainer.remove();
-      });
+      treasure.showItemToast();
     }
   }
   player.goToNode(node.id);

@@ -172,6 +172,9 @@ function renderBattleEndPage(
   let dropItem = null;
   if (result === BattleResult.Win) {
     dropItem = enemy.randomDropItem();
+    if (dropItem) {
+      dropItem.showItemToast();
+    }
     player.exp += Math.floor(enemy.giveExp);
     levelUp = player.checkLevelUp();
     player.exp = Math.floor(player.exp);

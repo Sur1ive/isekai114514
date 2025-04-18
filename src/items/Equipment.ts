@@ -115,8 +115,10 @@ export class Equipment extends Item {
     });
 
     this.extraActions.push(...this.prefix.extraActions);
+  }
 
-    this.name = `${this.prefix.name}${this.name}`;
+  getName(): string {
+    return `${this.prefix.name}${this.name}`;
   }
 
   levelup() {

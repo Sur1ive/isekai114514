@@ -29,6 +29,8 @@ export function openChest(chestLevel: number, rarity: Rarity) {
   let euipmentLevel = Math.floor(chestLevel + 10 * (Math.random() - 0.5));
   if (euipmentLevel < 0) {
     euipmentLevel = 0;
-  }
-  return generateRandomEquipment(rarity, euipmentLevel);
+    }
+  const equipment = generateRandomEquipment(rarity, euipmentLevel);
+  equipment.showItemToast();
+  return equipment;
 }
