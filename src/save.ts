@@ -4,6 +4,7 @@ import { setIntervals } from "./globalIntervals";
 import { Equipment } from "./items/Equipment";
 import { Consumable } from "./items/Consumable";
 import { ItemCategory } from "./items/types";
+import { EquipmentBar } from "./creatures/types";
 import { CreatureType } from "./creatures/creatureConfigs";
 import { Monster } from "./creatures/Monster";
 
@@ -102,9 +103,13 @@ export function loadPlayer(): Player | null {
 
   // 恢复装备栏
   try {
-    player.equipments = plainPlayer.equipments.map((equipment: Equipment | null) => {
-      return equipment ? plainToInstance(Equipment, equipment) : null;
-    });
+    const {body, hand, foot, accessory} = plainPlayer.equipments as EquipmentBar;
+    player.equipments = {
+      body: body ? plainToInstance(Equipment, body) : null,
+      hand: hand ? plainToInstance(Equipment, hand) : null,
+      foot: foot ? plainToInstance(Equipment, foot) : null,
+      accessory: accessory ? plainToInstance(Equipment, accessory) : null,
+    };
   } catch (e) {
     console.error("load player equipments error", e);
   }

@@ -315,7 +315,7 @@ export function renderStatusPage(player: Player): void {
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
                             return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
-                              ${item.getItemIcon()}${item.name}
+                              ${item.getItemIcon()}${item.getName()}
                             </button>`;
                           })
                           .join("")
@@ -334,7 +334,7 @@ export function renderStatusPage(player: Player): void {
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
                             return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
-                              ${item.getItemIcon()}${item.name}
+                              ${item.getItemIcon()}${item.getName()}
                             </button>`;
                           })
                           .join("")
@@ -353,7 +353,7 @@ export function renderStatusPage(player: Player): void {
                           .map((item) => {
                             const btnClass = `btn-${Rarity[item.rarity]}`;
                             return `<button id="use-btn${item.uuid}" class="btn ${btnClass}">
-                              ${item.getItemIcon()}${item.name}
+                              ${item.getItemIcon()}${item.getName()}
                             </button>`;
                           })
                           .join("")
@@ -493,7 +493,7 @@ export function renderStatusPage(player: Player): void {
               instance.hide();
               if (item instanceof Consumable) {
                 item.useItem(player);
-                player.addLog(`${player.name} 使用了 ${item.name}`);
+                player.addLog(`${player.name} 使用了 ${item.getName()}`);
                 saveGame(player);
                 renderStatusPage(player);
               } else if (item instanceof Equipment) {
