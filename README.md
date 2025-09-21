@@ -7,3 +7,4 @@
 目前进度：demo还没写完(咕咕咕)
 - play：https://sur1ive.github.io/isekai114514/
 
+<img src="src/assets/demo1.png" width="30%"> <img src="src/assets/demo2.png" width="30%"> <img src="src/assets/demo3.png" width="30%">
