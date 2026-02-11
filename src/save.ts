@@ -1,6 +1,5 @@
 import { Player } from "./creatures/Player";
 import { instanceToPlain, plainToInstance } from "class-transformer";
-import { setIntervals } from "./globalIntervals";
 import { Equipment } from "./items/Equipment";
 import { Consumable } from "./items/Consumable";
 import { ItemCategory } from "./items/types";
@@ -66,8 +65,6 @@ export function loadPlayer(): Player | null {
       }
     }
   });
-
-  setIntervals(player);
 
   // 由于背包是Item[]，所以需要把背包中装备转换回Equipment，消耗品转换回Consumable
   try {

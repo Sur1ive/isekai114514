@@ -1,45 +1,65 @@
-import { Node, NodeType, NormalMonsterNode, BossNode, TreasureNode, ToOtherRegionNode, EliteMonsterNode } from "./Node";
-import { renderBattlePage } from "../pages/battlePage";
+import {
+  Node,
+  NodeType,
+  NormalMonsterNode,
+  BossNode,
+  TreasureNode,
+  ToOtherRegionNode,
+  EliteMonsterNode,
+} from "./Node";
 import { Player } from "../creatures/Player";
 import { Monster } from "../creatures/Monster";
-import { renderMainMenu } from "../pages/mainMenu";
-import { renderMapPage } from "../pages/mapPage";
 import { randomMonsterType } from "../creatures/utils";
 import { randomInt, randomFloat } from "../utils";
-import { BattleResult } from "../battle/types";
 import { randomItemType, generateItem } from "../items/itemUtils";
 import * as d3 from "d3";
+import router from "@/router";
+import { useBattleStore, BattleContext } from "@/stores/battleStore";
+import { usePlayerStore } from "@/stores/playerStore";
 
 // 全局变量，用于存储当前地图的引用
 declare global {
   interface Window {
     currentMapSvg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
     currentZoomBehavior?: d3.ZoomBehavior<Element, unknown>;
-    currentNodeElements?: d3.Selection<d3.BaseType, Node, d3.BaseType, unknown>;
-    currentEdgeElements?: d3.Selection<d3.BaseType, unknown, d3.BaseType, unknown>;
+    currentNodeElements?: d3.Selection<
+      d3.BaseType,
+      Node,
+      d3.BaseType,
+      unknown
+    >;
+    currentEdgeElements?: d3.Selection<
+      d3.BaseType,
+      unknown,
+      d3.BaseType,
+      unknown
+    >;
     updateMapForNode?: (player: Player, newNodeId: string) => void;
   }
 }
 
-function normalBattleHandler(player: Player, _monster: Monster, result: BattleResult) {
-  if (result === BattleResult.Lose || result === BattleResult.Withdraw || player.currentMapData.goingToNodeId === null) {
-    renderMainMenu(player);
-    return;
+function navigateToMap() {
+  const currentRoute = router.currentRoute.value;
+  if (currentRoute.name === "map") {
+    // Force re-render by adding timestamp query
+    router.replace({ name: "map", query: { _t: Date.now().toString() } });
+  } else {
+    router.push({ name: "map" });
   }
-  player.goToNode(player.currentMapData.goingToNodeId);
-  renderMapPage(player);
 }
 
 function goToNormalMonsterNode(node: NormalMonsterNode, player: Player) {
   const monsterData = randomMonsterType(node.monsterList);
   if (!monsterData) {
     player.goToNode(node.id);
-    renderMapPage(player);
+    navigateToMap();
     return;
   }
   const monsterLevel = randomInt(monsterData.minLevel, monsterData.maxLevel);
   const monster = new Monster(monsterData.monster, monsterLevel, 1);
-  renderBattlePage(player, monster, null, null, normalBattleHandler);
+  const battleStore = useBattleStore();
+  battleStore.startBattle(monster, BattleContext.NormalMonster);
+  router.push({ name: "battle" });
 }
 
 function goToEliteMonsterNode(node: EliteMonsterNode, player: Player) {
@@ -56,58 +76,50 @@ function goToEliteMonsterNode(node: EliteMonsterNode, player: Player) {
     const monsterData = randomMonsterType(node.monsterList);
     if (!monsterData) {
       player.goToNode(node.id);
-      renderMapPage(player);
+      navigateToMap();
       return;
     }
-    const monsterIndividualStrength = randomFloat(monsterData.minIndividualStrength, monsterData.maxIndividualStrength);
+    const monsterIndividualStrength = randomFloat(
+      monsterData.minIndividualStrength,
+      monsterData.maxIndividualStrength,
+    );
     const monsterLevel = randomInt(monsterData.minLevel, monsterData.maxLevel);
-    const monster = new Monster(monsterData.monster, monsterLevel, monsterIndividualStrength);
-    renderBattlePage(player, monster, null, null, normalBattleHandler);
+    const monster = new Monster(
+      monsterData.monster,
+      monsterLevel,
+      monsterIndividualStrength,
+    );
+    const battleStore = useBattleStore();
+    battleStore.startBattle(monster, BattleContext.NormalMonster);
+    router.push({ name: "battle" });
   }
-}
-
-function bossBattleHandler(player: Player, monster: Monster, result: BattleResult) {
-  if (result === BattleResult.Lose || result === BattleResult.Withdraw) {
-    const bossHealthBefore = player.currentMapData.boss[0].health;
-    const bossHealthAfter = monster.health;
-    if (bossHealthBefore - bossHealthAfter > monster.getMaxHealth() * 0.2) {
-      player.currentMapData.boss[0].health = bossHealthAfter;
-    }
-    renderMainMenu(player);
-    return;
-  }
-  player.currentMapData.boss.shift();
-  if (player.currentMapData.boss.length === 0) {
-    if (player.currentMapData.goingToNodeId) {
-      player.goToNode(player.currentMapData.goingToNodeId);
-      renderMapPage(player);
-      return;
-    } else {
-      renderMainMenu(player);
-      return;
-    }
-  }
-  renderBattlePage(player, player.currentMapData.boss[0] as Monster, null, null, bossBattleHandler);
 }
 
 function goToBossNode(node: BossNode, player: Player) {
   const bossStageList = node.bossStageList;
   if (!bossStageList) {
     player.goToNode(node.id);
-    renderMapPage(player);
+    navigateToMap();
     return;
   }
   if (player.currentMapData.boss.length === 0) {
     bossStageList.forEach((bossStage) => {
       const bossLevel = randomInt(bossStage.minLevel, bossStage.maxLevel);
-      const individualStrength = randomInt(bossStage.minIndividualStrength, bossStage.maxIndividualStrength);
+      const individualStrength = randomInt(
+        bossStage.minIndividualStrength,
+        bossStage.maxIndividualStrength,
+      );
       const boss = new Monster(bossStage.monster, bossLevel, individualStrength);
       player.currentMapData.boss.push(boss);
     });
   }
   const boss = player.currentMapData.boss[0] as Monster;
   console.log(boss);
-  renderBattlePage(player, boss, null, null, bossBattleHandler);
+  const playerStore = usePlayerStore();
+  playerStore.save();
+  const battleStore = useBattleStore();
+  battleStore.startBattle(boss, BattleContext.Boss);
+  router.push({ name: "battle" });
 }
 
 function goToTreasureNode(node: TreasureNode, player: Player) {
@@ -118,14 +130,17 @@ function goToTreasureNode(node: TreasureNode, player: Player) {
   if (!player.currentMapData.visitedNodeIdList.includes(node.id)) {
     const treasureData = randomItemType(treasureList);
     if (treasureData) {
-      const treasureLevel = randomInt(treasureData.minLevel, treasureData.maxLevel);
+      const treasureLevel = randomInt(
+        treasureData.minLevel,
+        treasureData.maxLevel,
+      );
       const treasure = generateItem(treasureData.item, treasureLevel);
       player.pack.push(treasure);
       treasure.showItemToast();
     }
   }
   player.goToNode(node.id);
-  renderMapPage(player);
+  navigateToMap();
 }
 
 function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
@@ -137,7 +152,7 @@ function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
   if (region.isOpen) {
     player.goToRegion(region.id);
     player.goToNode(region.startNode.id);
-    renderMapPage(player);
+    navigateToMap();
     return;
   } else {
     alert("前面的区域以后再来探索吧？");
@@ -148,10 +163,11 @@ export function goToNode(node: Node, player: Player) {
   player.currentMapData.goingToNodeId = node.id;
 
   // 如果节点已访问且我们有可用的地图引用，执行平滑过渡
-  if (player.currentMapData.visitedNodeIdList.includes(node.id) &&
-      window.currentMapSvg &&
-      window.updateMapForNode) {
-
+  if (
+    player.currentMapData.visitedNodeIdList.includes(node.id) &&
+    window.currentMapSvg &&
+    window.updateMapForNode
+  ) {
     // 更新玩家位置
     player.goToNode(player.currentMapData.goingToNodeId);
 
@@ -164,7 +180,7 @@ export function goToNode(node: Node, player: Player) {
   // 原有逻辑，处理未访问过的节点
   if (player.currentMapData.visitedNodeIdList.includes(node.id)) {
     player.goToNode(player.currentMapData.goingToNodeId);
-    renderMapPage(player);
+    navigateToMap();
     return;
   }
 
@@ -180,7 +196,7 @@ export function goToNode(node: Node, player: Player) {
     goToOtherRegionNode(node as ToOtherRegionNode, player);
   } else {
     player.goToNode(player.currentMapData.goingToNodeId);
-    renderMapPage(player);
+    navigateToMap();
     return;
   }
 }

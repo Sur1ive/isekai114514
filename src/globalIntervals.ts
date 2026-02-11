@@ -6,7 +6,7 @@ let saveInterval = -1;
 let secondStatusInterval = -1;
 
 // player指向的对象发生改变（新建，加载或者remake）时，需要调用此函数
-export function setIntervals(player: Player) {
+export function setIntervals(player: Player, onTick?: () => void) {
   if (recoverInterval !== -1) {
     clearInterval(recoverInterval);
   }
@@ -20,7 +20,7 @@ export function setIntervals(player: Player) {
   recoverInterval = setInterval(() => {
     if (player.isAtHome) {
       player.autoRecoverHpDot();
-      player.updateHealthDisplay();
+      onTick?.();
     }
   }, 1000);
 
@@ -34,6 +34,7 @@ export function setIntervals(player: Player) {
   secondStatusInterval = setInterval(() => {
     if (player.isAtHome) {
       player.applySecondStatuses();
+      onTick?.();
     }
   }, 1000);
 }

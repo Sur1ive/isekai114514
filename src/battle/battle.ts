@@ -3,8 +3,8 @@ import type { Action, Hit } from "../actions/Action";
 import { getHitsDescription, getHitIcon } from "../actions/actionUtils";
 import type { Player } from "../creatures/Player";
 import { Monster } from "../creatures/Monster";
-import { renderMainMenu } from "../pages/mainMenu";
-import { renderBattlePage } from "../pages/battlePage";
+import router from "@/router";
+import { useBattleStore, BattleContext } from "@/stores/battleStore";
 
 export function calculateDamage(power: number, armor: number, piercing: number) {
   const realArmor = armor - piercing > 0 ? armor - piercing : 0;
@@ -72,7 +72,7 @@ export function observeEnemyAction(
 
 import { CreatureType } from "../creatures/creatureConfigs";
 
-export function testBattle(player: Player): void {
+export function testBattle(_player: Player): void {
   let enemyType =
     Object.values(CreatureType)[
       Math.floor(Math.random() * Object.values(CreatureType).length)
@@ -90,7 +90,7 @@ export function testBattle(player: Player): void {
     enemyLevel,
     enemyIndividualStrength,
   );
-  renderBattlePage(player, enemy, null, null, (player: Player, _enemy, _result) => {
-    renderMainMenu(player);
-  });
+  const battleStore = useBattleStore();
+  battleStore.startBattle(enemy, BattleContext.NormalMonster);
+  router.push({ name: "battle" });
 }
