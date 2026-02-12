@@ -16,8 +16,8 @@
           第 {{ currentIndex + 1 }} / {{ rolls.length }} 次拼点
         </div>
 
-        <!-- 有效拼点 -->
-        <template v-if="currentRoll && !currentRoll.isNothing">
+        <!-- 拼点竞技场（有效拼点 & 无事发生共用布局） -->
+        <template v-if="currentRoll">
           <div class="dice-arena">
             <!-- 玩家侧 -->
             <div
@@ -31,12 +31,14 @@
               <div
                 class="dice-box player-box"
                 :class="{
-                  rolling: phase === 'rolling',
-                  winner: phase === 'result' && currentRoll.result === PlayerWin,
-                  loser: phase === 'result' && currentRoll.result === EnemyWin,
+                  rolling: !currentRoll.isNothing && phase === 'rolling',
+                  winner: !currentRoll.isNothing && phase === 'result' && currentRoll.result === PlayerWin,
+                  loser: !currentRoll.isNothing && phase === 'result' && currentRoll.result === EnemyWin,
+                  'nothing-box': currentRoll.isNothing,
                 }"
               >
-                <span v-if="currentRoll.playerPower >= 0" class="dice-number">
+                <span v-if="currentRoll.isNothing" class="dice-na">—</span>
+                <span v-else-if="currentRoll.playerPower >= 0" class="dice-number">
                   {{ displayPlayerPower }}
                 </span>
                 <span v-else class="dice-na">—</span>
@@ -71,12 +73,14 @@
               <div
                 class="dice-box enemy-box"
                 :class="{
-                  rolling: phase === 'rolling',
-                  winner: phase === 'result' && currentRoll.result === EnemyWin,
-                  loser: phase === 'result' && currentRoll.result === PlayerWin,
+                  rolling: !currentRoll.isNothing && phase === 'rolling',
+                  winner: !currentRoll.isNothing && phase === 'result' && currentRoll.result === EnemyWin,
+                  loser: !currentRoll.isNothing && phase === 'result' && currentRoll.result === PlayerWin,
+                  'nothing-box': currentRoll.isNothing,
                 }"
               >
-                <span v-if="currentRoll.enemyPower >= 0" class="dice-number">
+                <span v-if="currentRoll.isNothing" class="dice-na">—</span>
+                <span v-else-if="currentRoll.enemyPower >= 0" class="dice-number">
                   {{ displayEnemyPower }}
                 </span>
                 <span v-else class="dice-na">—</span>
@@ -102,13 +106,18 @@
             <div v-if="phase === 'result'" class="dice-result-section">
               <div class="dice-result-divider" />
 
+              <!-- 无事发生提示 -->
+              <div v-if="currentRoll.isNothing" class="dice-nothing-result">
+                无事发生
+              </div>
+
               <!-- 叙事文字 -->
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <div class="dice-result-message" v-html="currentRoll.resultMessage" />
+              <div v-else class="dice-result-message" v-html="currentRoll.resultMessage" />
 
               <!-- 伤害数字 -->
               <div
-                v-if="currentRoll.damage > 0"
+                v-if="!currentRoll.isNothing && currentRoll.damage > 0"
                 class="dice-damage"
                 :class="{
                   'damage-to-player': currentRoll.damageTarget === 'player',
@@ -122,16 +131,11 @@
               </div>
 
               <!-- 无伤害结果 -->
-              <div v-else-if="currentRoll.damage === 0 && currentRoll.damageTarget === 'none'" class="dice-no-damage">
+              <div v-else-if="!currentRoll.isNothing && currentRoll.damage === 0 && currentRoll.damageTarget === 'none'" class="dice-no-damage">
                 🛡️ 未造成伤害
               </div>
             </div>
           </Transition>
-        </template>
-
-        <!-- 无事发生 -->
-        <template v-else-if="currentRoll">
-          <div class="dice-nothing">⚡ 无事发生 ⚡</div>
         </template>
 
         <div class="dice-hint">{{ hintText }}</div>
@@ -225,15 +229,19 @@ function startHit() {
   }
 
   if (roll.isNothing) {
-    phase.value = "result";
-    displayPlayerHp.value = roll.playerHpAfter;
-    displayEnemyHp.value = roll.enemyHpAfter;
-    if (props.autoMode) {
-      nextTimer = window.setTimeout(() => {
-        goNext();
-      }, 700);
-    }
-    // 手动模式：停在 result，等待点击
+    // 先短暂展示双方行动图标，再显示"无事发生"结果
+    phase.value = "idle";
+    settleTimer = window.setTimeout(() => {
+      phase.value = "result";
+      displayPlayerHp.value = roll.playerHpAfter;
+      displayEnemyHp.value = roll.enemyHpAfter;
+      if (props.autoMode) {
+        nextTimer = window.setTimeout(() => {
+          goNext();
+        }, 800);
+      }
+      // 手动模式：停在 result，等待点击
+    }, 500);
     return;
   }
 
@@ -670,11 +678,18 @@ onBeforeUnmount(() => {
 }
 
 /* ====== 无事发生 ====== */
-.dice-nothing {
+.dice-box.nothing-box {
+  border-color: rgba(255, 255, 255, 0.08);
+  opacity: 0.5;
+}
+
+.dice-nothing-result {
   text-align: center;
-  font-size: 17px;
-  color: rgba(255, 255, 255, 0.4);
-  padding: 32px 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 4px 0;
+  font-weight: 600;
+  letter-spacing: 2px;
 }
 
 /* ====== 底部提示 ====== */
