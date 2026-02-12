@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createMemoryHistory } from "vue-router";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useBattleStore } from "@/stores/battleStore";
 
 const router = createRouter({
-  history: createWebHashHistory("/isekai114514/"),
+  history: createMemoryHistory("/isekai114514/"),
   routes: [
     {
       path: "/",
