@@ -9,6 +9,47 @@
     >
       逃跑
     </button>
+    <button
+      type="button"
+      class="btn btn-dark"
+      style="position: absolute; right: 20px; top: 80px; z-index: 999"
+      @click="showBattleLog = true"
+    >
+      📜 记录
+    </button>
+    <button
+      type="button"
+      class="btn btn-dark"
+      style="position: absolute; right: 20px; top: 125px; z-index: 999"
+      @click="showSettings = !showSettings"
+    >
+      ⚙️ 设置
+    </button>
+    <!-- 设置面板遮罩 -->
+    <div
+      v-if="showSettings"
+      style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999"
+      @click="showSettings = false"
+    />
+    <!-- 设置面板 -->
+    <div v-if="showSettings" class="battle-settings-panel" @click.stop>
+      <div class="settings-title">战斗设置</div>
+      <div class="form-check form-switch">
+        <input
+          id="autoModeSwitch"
+          v-model="diceAutoMode"
+          class="form-check-input"
+          type="checkbox"
+          @change="saveDiceMode"
+        >
+        <label class="form-check-label" for="autoModeSwitch">
+          {{ diceAutoMode ? '自动掷骰' : '手动掷骰' }}
+        </label>
+      </div>
+      <div class="settings-desc">
+        {{ diceAutoMode ? '掷骰动画自动播放，点击可加速' : '每次拼点需要手动点击触发' }}
+      </div>
+    </div>
 
     <div class="container mt-4">
       <h2 class="text-center mb-3">战斗</h2>
@@ -67,12 +108,6 @@
         </div>
       </div>
 
-      <!-- 战斗记录 -->
-      <div class="card">
-        <div class="card-header">记录</div>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="card-body" style="max-height: 200px; overflow-y: auto" v-html="player.getTempLogs()"></div>
-      </div>
     </div>
   </div>
 
@@ -111,6 +146,34 @@
       </div>
     </div>
   </div>
+
+  <!-- 掷骰拼点特效 -->
+  <DiceOverlay
+    v-if="showDice"
+    :rolls="diceRollsData"
+    :player-action-name="dicePlayerActionName"
+    :enemy-action-name="diceEnemyActionName"
+    :player-hp-start="dicePlayerHpStart"
+    :enemy-hp-start="diceEnemyHpStart"
+    :player-max-hp="dicePlayerMaxHp"
+    :enemy-max-hp="diceEnemyMaxHp"
+    :auto-mode="diceAutoMode"
+    @complete="onDiceComplete"
+  />
+
+  <!-- 战斗记录弹窗 -->
+  <Teleport to="body">
+    <div v-if="showBattleLog" class="battle-log-overlay" @click.self="showBattleLog = false">
+      <div class="battle-log-panel">
+        <div class="battle-log-header">
+          <h5 class="mb-0">战斗记录</h5>
+          <button type="button" class="btn-close btn-close-white" aria-label="关闭" @click="showBattleLog = false" />
+        </div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="battle-log-body" v-html="player.getTempLogs()" />
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -124,10 +187,12 @@ import { getHitsDescription } from "@/actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "@/creatures/status/Status";
 import { statusConfigs, StatusType } from "@/creatures/status/statusConfigs";
 import { BattleResult } from "@/battle/types";
+import type { DiceRollData } from "@/battle/types";
 import { Rarity } from "@/types";
 import type { Action } from "@/actions/Action";
 import type { Monster } from "@/creatures/Monster";
 import type { Item } from "@/items/Item";
+import DiceOverlay from "@/components/DiceOverlay.vue";
 
 const router = useRouter();
 const playerStore = usePlayerStore();
@@ -150,6 +215,28 @@ const battleResult = ref<BattleResult | null>(null);
 const leveledUp = ref(false);
 const droppedItem = ref<Item | null>(null);
 
+// 掷骰动画状态
+const diceRollsData = ref<DiceRollData[]>([]);
+const dicePlayerActionName = ref("");
+const diceEnemyActionName = ref("");
+const dicePlayerHpStart = ref(0);
+const diceEnemyHpStart = ref(0);
+const dicePlayerMaxHp = ref(0);
+const diceEnemyMaxHp = ref(0);
+const showDice = ref(false);
+const isAnimating = ref(false);
+
+// 战斗记录弹窗
+const showBattleLog = ref(false);
+
+// 设置面板
+const showSettings = ref(false);
+const diceAutoMode = ref(localStorage.getItem("battleDiceAutoMode") === "true");
+
+function saveDiceMode() {
+  localStorage.setItem("battleDiceAutoMode", String(diceAutoMode.value));
+}
+
 function triggerRender() {
   renderTick.value++;
 }
@@ -162,17 +249,55 @@ onMounted(() => {
   enemyObj = battleStore.enemy as Monster;
   triggerRender();
   player.isAtHome = false;
-  prepareTurn(null, null);
+  prepareNextTurn();
 });
 
-function prepareTurn(lastPlayerAction: Action | null, lastEnemyAction: Action | null) {
+/**
+ * 玩家选择动作后：执行战斗结算 → 播放掷骰动画 → 准备下一回合
+ */
+function chooseAction(chosen: Action) {
+  if (isAnimating.value) return; // 动画期间忽略点击
+
+  const playerAction = chosen;
+  const enemyAct = enemyAction.value!;
   const enemy = enemyObj!;
 
-  // 上回合结算
-  if (lastPlayerAction && lastEnemyAction) {
-    player.addTempLog("--------------------------回合-----------------------------");
-    handleAction(player, enemy, lastPlayerAction, lastEnemyAction);
+  // 记录结算前的 HP 快照
+  const pHpStart = Math.ceil(player.health);
+  const eHpStart = Math.ceil(enemy.health);
+
+  // 同步执行战斗结算（HP 已更新，但被掷骰遮罩覆盖，玩家看不到）
+  player.addTempLog("--------------------------回合-----------------------------");
+  const rolls = handleAction(player, enemy, playerAction, enemyAct);
+
+  if (rolls.length > 0) {
+    diceRollsData.value = rolls;
+    dicePlayerActionName.value = playerAction.name;
+    diceEnemyActionName.value = enemyAct.name;
+    dicePlayerHpStart.value = pHpStart;
+    diceEnemyHpStart.value = eHpStart;
+    dicePlayerMaxHp.value = player.getMaxHealth();
+    diceEnemyMaxHp.value = enemy.getMaxHealth();
+    showDice.value = true;
+    isAnimating.value = true;
+  } else {
+    prepareNextTurn();
   }
+}
+
+/** 掷骰动画完成后的回调 */
+function onDiceComplete() {
+  showDice.value = false;
+  isAnimating.value = false;
+  triggerRender();
+  prepareNextTurn();
+}
+
+/**
+ * 准备下一回合：生成新动作、处理回合开始状态、检查胜负
+ */
+function prepareNextTurn() {
+  const enemy = enemyObj!;
 
   // 本回合准备阶段
   let newEnemyAction = enemy.getRandomAction();
@@ -231,10 +356,7 @@ function prepareTurn(lastPlayerAction: Action | null, lastEnemyAction: Action | 
   action2.value = newAction2;
   enemyAction.value = newEnemyAction;
   enemyActionObservation.value = observation;
-}
-
-function chooseAction(chosen: Action) {
-  prepareTurn(chosen, enemyAction.value);
+  triggerRender();
 }
 
 function flee() {
@@ -301,7 +423,7 @@ function handleContinue() {
         battleStore.startBattle(nextBoss, BattleContext.Boss);
         battleEnded.value = false;
         battleResult.value = null;
-        prepareTurn(null, null);
+        prepareNextTurn();
         return;
       }
       if (player.currentMapData.goingToNodeId) {
@@ -327,3 +449,79 @@ function handleContinue() {
   }
 }
 </script>
+
+<style scoped>
+.battle-settings-panel {
+  position: absolute;
+  right: 20px;
+  top: 170px;
+  z-index: 1000;
+  background: rgba(33, 37, 41, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 14px 18px;
+  min-width: 180px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+.settings-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.settings-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 6px;
+}
+
+.battle-log-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.battle-log-panel {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.battle-log-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.battle-log-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  line-height: 1.7;
+  flex: 1;
+  min-height: 0;
+}
+</style>
