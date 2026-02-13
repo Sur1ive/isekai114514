@@ -6,6 +6,7 @@ import type { Ability } from "../creatures/types";
 import { ActionCoeff } from "./types";
 import { HitCategory } from "./types";
 import { Hit } from "./Action";
+import * as bootstrap from "bootstrap";
 
 export function capture(actor: Creature, target: Creature): void {
   // actor不是玩家，则不进行任何操作
@@ -33,9 +34,39 @@ export function capture(actor: Creature, target: Creature): void {
     target.health = 0.9;
     actor.capturedMonster.push(target as Monster);
     actor.addLog(`你成功捕获了${target.name}`);
+    showCaptureToast(target.name);
   } else {
     actor.addLog(`你尝试捕获${target.name}，但是失败了`);
   }
+}
+
+function showCaptureToast(monsterName: string): void {
+  const toastContainer = document.createElement("div");
+  toastContainer.className = "toast-container position-fixed bottom-0 end-0 p-3";
+  toastContainer.style.zIndex = "11000";
+  toastContainer.innerHTML = `
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-success text-white">
+        <strong class="me-auto">🕸️ 捕捉成功</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        成功捕获了 <strong>${monsterName}</strong>！
+      </div>
+    </div>
+  `;
+  document.body.appendChild(toastContainer);
+
+  const toastElement = toastContainer.querySelector(".toast");
+  const toast = new bootstrap.Toast(toastElement as Element, {
+    autohide: true,
+    delay: 5000,
+  });
+  toast.show();
+
+  toastElement?.addEventListener("hidden.bs.toast", () => {
+    toastContainer.remove();
+  });
 }
 
 export function getHitsDescription(actor: Creature, action: Action): string {

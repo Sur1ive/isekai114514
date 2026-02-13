@@ -136,9 +136,7 @@
             </p>
           </h4>
           <hr />
-          <h5>记录</h5>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="border rounded p-3" style="max-height: 250px; overflow-y: auto" v-html="player.getTempLogs()"></div>
+          <button class="btn btn-dark" @click="showBattleLog = true">📜 战斗记录</button>
         </div>
         <div class="card-footer">
           <button class="btn btn-primary" @click="handleContinue">继续</button>
@@ -169,8 +167,9 @@
           <h5 class="mb-0">战斗记录</h5>
           <button type="button" class="btn-close btn-close-white" aria-label="关闭" @click="showBattleLog = false" />
         </div>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="battle-log-body" v-html="player.getTempLogs()" />
+        <div class="battle-log-body">
+          <BattleLogContent :rounds="battleRoundsLog" />
+        </div>
       </div>
     </div>
   </Teleport>
@@ -187,12 +186,13 @@ import { getHitsDescription } from "@/actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "@/creatures/status/Status";
 import { statusConfigs, StatusType } from "@/creatures/status/statusConfigs";
 import { BattleResult } from "@/battle/types";
-import type { DiceRollData } from "@/battle/types";
+import type { DiceRollData, BattleRoundLog } from "@/battle/types";
 import { Rarity } from "@/types";
 import type { Action } from "@/actions/Action";
 import type { Monster } from "@/creatures/Monster";
 import type { Item } from "@/items/Item";
 import DiceOverlay from "@/components/DiceOverlay.vue";
+import BattleLogContent from "@/components/BattleLogContent.vue";
 
 const router = useRouter();
 const playerStore = usePlayerStore();
@@ -228,6 +228,7 @@ const isAnimating = ref(false);
 
 // 战斗记录弹窗
 const showBattleLog = ref(false);
+const battleRoundsLog = ref<BattleRoundLog[]>([]);
 
 // 设置面板
 const showSettings = ref(false);
@@ -269,6 +270,14 @@ function chooseAction(chosen: Action) {
   // 同步执行战斗结算（HP 已更新，但被掷骰遮罩覆盖，玩家看不到）
   player.addTempLog("--------------------------回合-----------------------------");
   const rolls = handleAction(player, enemy, playerAction, enemyAct);
+
+  // 记录结构化回合数据
+  battleRoundsLog.value.push({
+    roundNumber: battleRoundsLog.value.length + 1,
+    playerActionName: playerAction.name,
+    enemyActionName: enemyAct.name,
+    rolls: [...rolls],
+  });
 
   if (rolls.length > 0) {
     diceRollsData.value = rolls;

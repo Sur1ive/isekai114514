@@ -11,6 +11,14 @@ export enum PointComparisonResult {
   Draw = "Draw",
 }
 
+/** 一个回合的结构化战斗记录 */
+export interface BattleRoundLog {
+  roundNumber: number;
+  playerActionName: string;
+  enemyActionName: string;
+  rolls: DiceRollData[];
+}
+
 /** 每次 hit 拼点的数据，用于掷骰动画 */
 export interface DiceRollData {
   playerName: string;

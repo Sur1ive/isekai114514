@@ -20,6 +20,10 @@ function handleHit(
 ): PointComparisonResult {
   let result = PointComparisonResult.Draw;
 
+  // 保存原始图标，因为 Capture 会被改为 Attack
+  const originalPlayerHitIcon = getHitIcon(playerHit);
+  const originalEnemyHitIcon = getHitIcon(enemyHit);
+
   if (playerHit.category === HitCategory.Capture) {
     playerHit.category = HitCategory.Attack;
   }
@@ -28,34 +32,34 @@ function handleHit(
     playerHit.category === HitCategory.Attack &&
     enemyHit.category === HitCategory.Attack
   ) {
-    result = attackAgainstAttack(player, enemy, playerHit, enemyHit, diceRolls);
+    result = attackAgainstAttack(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
     (playerHit.category === HitCategory.Attack &&
       enemyHit.category === HitCategory.None) ||
     (playerHit.category === HitCategory.None &&
       enemyHit.category === HitCategory.Attack)
   ) {
-    result = attackAgainstNone(player, enemy, playerHit, enemyHit, diceRolls);
+    result = attackAgainstNone(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
     (playerHit.category === HitCategory.Attack &&
       enemyHit.category === HitCategory.Defend) ||
     (playerHit.category === HitCategory.Defend &&
       enemyHit.category === HitCategory.Attack)
   ) {
-    result = attackAgainstDefend(player, enemy, playerHit, enemyHit, diceRolls);
+    result = attackAgainstDefend(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
     (playerHit.category === HitCategory.Dodge &&
       enemyHit.category === HitCategory.Attack) ||
     (playerHit.category === HitCategory.Attack &&
       enemyHit.category === HitCategory.Dodge)
   ) {
-    result = attackAgainstDodge(player, enemy, playerHit, enemyHit, diceRolls);
+    result = attackAgainstDodge(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else {
     diceRolls.push({
       playerName: player.name,
       enemyName: enemy.name,
-      playerHitIcon: getHitIcon(playerHit),
-      enemyHitIcon: getHitIcon(enemyHit),
+      playerHitIcon: originalPlayerHitIcon,
+      enemyHitIcon: originalEnemyHitIcon,
       playerPower: -1,
       enemyPower: -1,
       result: PointComparisonResult.Draw,
@@ -69,10 +73,10 @@ function handleHit(
     player.addTempLog(
       "无事发生(" +
         player.name +
-        getHitIcon(playerHit) +
+        originalPlayerHitIcon +
         " " +
         enemy.name +
-        getHitIcon(enemyHit) +
+        originalEnemyHitIcon +
         ")",
     );
   }
@@ -157,6 +161,8 @@ function attackAgainstAttack (
   playerHit: Hit,
   enemyHit: Hit,
   diceRolls: DiceRollData[],
+  playerHitIcon: string,
+  enemyHitIcon: string,
 ): PointComparisonResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
@@ -193,8 +199,8 @@ function attackAgainstAttack (
   diceRolls.push({
     playerName: player.name,
     enemyName: enemy.name,
-    playerHitIcon: getHitIcon(playerHit),
-    enemyHitIcon: getHitIcon(enemyHit),
+    playerHitIcon,
+    enemyHitIcon,
     playerPower: Math.round(playerPower),
     enemyPower: Math.round(enemyPower),
     result,
@@ -215,6 +221,8 @@ function attackAgainstNone(
   playerHit: Hit,
   enemyHit: Hit,
   diceRolls: DiceRollData[],
+  playerHitIcon: string,
+  enemyHitIcon: string,
 ): PointComparisonResult {
   let actor;
   let target;
@@ -250,8 +258,8 @@ function attackAgainstNone(
   diceRolls.push({
     playerName: player.name,
     enemyName: enemy.name,
-    playerHitIcon: getHitIcon(playerHit),
-    enemyHitIcon: getHitIcon(enemyHit),
+    playerHitIcon,
+    enemyHitIcon,
     playerPower: actor instanceof Player ? Math.round(power) : -1,
     enemyPower: actor instanceof Player ? -1 : Math.round(power),
     result,
@@ -272,6 +280,8 @@ function attackAgainstDefend(
   playerHit: Hit,
   enemyHit: Hit,
   diceRolls: DiceRollData[],
+  playerHitIcon: string,
+  enemyHitIcon: string,
 ): PointComparisonResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
@@ -321,8 +331,8 @@ function attackAgainstDefend(
   diceRolls.push({
     playerName: player.name,
     enemyName: enemy.name,
-    playerHitIcon: getHitIcon(playerHit),
-    enemyHitIcon: getHitIcon(enemyHit),
+    playerHitIcon,
+    enemyHitIcon,
     playerPower: Math.round(playerPower),
     enemyPower: Math.round(enemyPower),
     result,
@@ -343,6 +353,8 @@ function attackAgainstDodge(
   playerHit: Hit,
   enemyHit: Hit,
   diceRolls: DiceRollData[],
+  playerHitIcon: string,
+  enemyHitIcon: string,
 ): PointComparisonResult {
   const playerPower = calculatePower(playerHit.coeff, player.getAbility(), player.getActionCoeff(playerHit.category));
   const enemyPower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
@@ -388,8 +400,8 @@ function attackAgainstDodge(
   diceRolls.push({
     playerName: player.name,
     enemyName: enemy.name,
-    playerHitIcon: getHitIcon(playerHit),
-    enemyHitIcon: getHitIcon(enemyHit),
+    playerHitIcon,
+    enemyHitIcon,
     playerPower: Math.round(playerPower),
     enemyPower: Math.round(enemyPower),
     result,
