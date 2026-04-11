@@ -63,6 +63,10 @@
           </h4>
         </div>
         <div class="card-body">
+          <!-- 怪物立绘 -->
+          <div v-if="currentEnemy.image" class="enemy-portrait">
+            <img :src="currentEnemy.image" :alt="currentEnemy.name" class="enemy-portrait-img" />
+          </div>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <p class="card-text fst-italic" v-html="'&quot;' + currentEnemy.description + '&quot;'"></p>
           <!-- eslint-disable-next-line vue/no-v-html -->
@@ -460,6 +464,19 @@ function handleContinue() {
 </script>
 
 <style scoped>
+.enemy-portrait {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.enemy-portrait-img {
+  max-height: 200px;
+  max-width: 100%;
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
 .battle-settings-panel {
   position: absolute;
   right: 20px;
