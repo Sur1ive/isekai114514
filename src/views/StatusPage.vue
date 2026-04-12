@@ -185,10 +185,10 @@
                   :class="[
                     'btn btn-' + Rarity[item.rarity],
                     'forge-item',
-                    { 'forge-selected': forgeSelected.has(item.uuid), 'forge-disabled': !(item instanceof Equipment) }
+                    { 'forge-selected': forgeSelected.has(item.uuid), 'forge-disabled': !(item instanceof Equipment) || item.rarity === Rarity.Unique }
                   ]"
-                  :disabled="!(item instanceof Equipment)"
-                  @click="item instanceof Equipment && toggleForgeSelect(item)"
+                  :disabled="!(item instanceof Equipment) || item.rarity === Rarity.Unique"
+                  @click="item instanceof Equipment && item.rarity !== Rarity.Unique && toggleForgeSelect(item)"
                 >
                   <span class="forge-check" v-if="forgeSelected.has(item.uuid)">✓</span>
                   <!-- eslint-disable-next-line vue/no-v-html -->

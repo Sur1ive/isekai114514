@@ -127,6 +127,12 @@ export class Equipment extends Item {
     this.ability.piercing! += this.piercingGrowthCoeff;
   }
 
+  syncLevel(targetLevel: number) {
+    while (this.level < targetLevel) {
+      this.levelup();
+    }
+  }
+
   // testRarityDistribution(trials: number = 100000): void {
   //   // 统计各个稀有度出现的次数（只统计 Common ~ Mythical，因为 Unique 不会出现）
   //   const counts: { [key in Rarity]?: number } = {};

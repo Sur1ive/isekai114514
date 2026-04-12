@@ -213,9 +213,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Defend, weight: 0.3 },
     ],
     dropItems: [
-      { type: ConsumableType.SilverChest, weight: 0.95 },
-      { type: ConsumableType.GoldChest, weight: 0.05 },
-      { type: ConsumableType.DiamondChest, weight: 0.002 },
+      { type: ConsumableType.DragonScaleChest, weight: 1 },
     ],
   },
 

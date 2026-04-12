@@ -20,6 +20,7 @@ export enum ConsumableType {
   GiftboxAndLetter = "GiftboxAndLetter",
   SlimeChest = "SlimeChest",
   EmptySlimeChest = "EmptySlimeChest",
+  DragonScaleChest = "DragonScaleChest",
 }
 
 export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
@@ -128,6 +129,33 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
       }
       target.pack.push(new Equipment(EquipmentType.Sword));
       target.pack.push(new Equipment(EquipmentType.Rope));
+    },
+  },
+  [ConsumableType.DragonScaleChest]: {
+    name: "龙鳞宝箱",
+    rarity: Rarity.Unique,
+    description: "覆盖着坚硬龙鳞的宝箱，表面还残留着龙息的余温。据说只有击败龙的勇者才能获得它",
+    effect: (target: Creature, level: number) => {
+      const roll = Math.random();
+      if (roll < 0.05) {
+        const item = new Equipment(EquipmentType.DragonJadePlateArmor, target.level);
+        item.showItemToast();
+        target.pack.push(item);
+      } else if (roll < 0.10) {
+        const item = new Equipment(EquipmentType.DragonJadeBoots, target.level);
+        item.showItemToast();
+        target.pack.push(item);
+      } else if (roll < 0.12) {
+        const item = new Equipment(EquipmentType.DragonJadePendant, target.level);
+        item.showItemToast();
+        target.pack.push(item);
+      } else if (Math.random() < 0.005) {
+        target.pack.push(openChest(level, Rarity.Mythical));
+      } else if (Math.random() < 0.05) {
+        target.pack.push(openChest(level, Rarity.Epic));
+      } else {
+        target.pack.push(openChest(level, Rarity.Masterpiece));
+      }
     },
   },
 };

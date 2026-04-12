@@ -32,9 +32,13 @@ export function generateRandomEquipment(rarity: Rarity, level: number): Equipmen
  * 显示基本信息、属性、额外行动和行动系数
  */
 export function generateEquipmentTooltipContent(equipment: Equipment): string {
-  // 基本信息部分：名称、稀有度、描述、装备位置
+  const isUnique = equipment.rarity === Rarity.Unique;
+  const uniqueTag = isUnique
+    ? `<div style="margin-bottom:4px;"><span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(220,53,69,0.15);color:#ff6b7a;border:1px solid rgba(220,53,69,0.3);">✦ 独特 · 随角色升级</span></div>`
+    : "";
   const baseInfo = `
     <div class="tooltip-base tooltip-header">
+      ${uniqueTag}
       <h5 class="text-${Rarity[equipment.rarity]}" style="font-weight: bold;">lv${equipment.level} ${equipment.name}</h5>
       <p class="fst-italic">"${equipment.description}"</p>
       <p><strong>位置:</strong> ${equipment.position}</p>

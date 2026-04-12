@@ -8,6 +8,7 @@ import type { Action } from "../actions/Action";
 import type { EquipmentBar } from "./types";
 import { Equipment } from "../items/Equipment";
 import type { EquipmentPosition } from "../items/types";
+import { Rarity } from "../types";
 import { statusConfigs, StatusType } from "./status/statusConfigs";
 import { StatusCategory, StatusEffectMap } from "./status/Status";
 import { HitCategory } from "../actions/types";
@@ -106,6 +107,20 @@ export class Creature {
     const oldMaxHealth = this.maxHealth;
     this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
     this.recoverHp(this.maxHealth - oldMaxHealth);
+    this.levelUpUniqueEquipment();
+  }
+
+  levelUpUniqueEquipment() {
+    for (const equipment of Object.values(this.equipments)) {
+      if (equipment && equipment.rarity === Rarity.Unique) {
+        equipment.levelup();
+      }
+    }
+    for (const item of this.pack) {
+      if (item instanceof Equipment && item.rarity === Rarity.Unique) {
+        item.levelup();
+      }
+    }
   }
 
   // 按照权重随机返回一个动作

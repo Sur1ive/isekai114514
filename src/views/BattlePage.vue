@@ -367,6 +367,7 @@ import type { Action } from "@/actions/Action";
 import type { Monster } from "@/creatures/Monster";
 import { creatureConfigs } from "@/creatures/creatureConfigs";
 import type { Item } from "@/items/Item";
+import { Equipment } from "@/items/Equipment";
 import { Consumable } from "@/items/Consumable";
 import { ConsumableType } from "@/items/consumableConfigs";
 import { showToast } from "@/utils/toast";
@@ -591,6 +592,9 @@ function endBattle(result: BattleResult) {
   if (result === BattleResult.Win) {
     const drop = enemy.randomDropItem();
     if (drop) {
+      if (drop instanceof Equipment && drop.rarity === Rarity.Unique) {
+        drop.syncLevel(player.level);
+      }
       drop.showItemToast();
       droppedItem.value = drop;
     }

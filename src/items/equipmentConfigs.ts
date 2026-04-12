@@ -20,6 +20,9 @@ export enum EquipmentType {
   ToonoDefeaterBadge = "ToonoDefeaterBadge",
   DafeiBadge = "DafeiBadge",
   Shoes = "Shoes",
+  DragonJadePlateArmor = "DragonJadePlateArmor",
+  DragonJadeBoots = "DragonJadeBoots",
+  DragonJadePendant = "DragonJadePendant",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -319,7 +322,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     position: EquipmentPosition.Body,
     extraActions: [],
     ability: {
-      armor: 15,
+      app: 1919810,
     },
     armorGrowthCoeff: 3,
     piercingGrowthCoeff: 0,
@@ -365,6 +368,54 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     ability: {},
     armorGrowthCoeff: 0,
     piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+  [EquipmentType.DragonJadePlateArmor]: {
+    name: "龙玉板甲",
+    description: "由龙玉锻造的板甲，隐隐散发着龙的威压。穿上它的人，据说能在梦中听到龙的低吟",
+    canNotObtainFromChest: true,
+    rarity: Rarity.Unique,
+    position: EquipmentPosition.Body,
+    extraActions: [
+      { actionType: ActionType.DragonBreath, weight: 0.1 },
+    ],
+    ability: {
+      armor: 10,
+    },
+    armorGrowthCoeff: 4,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+  [EquipmentType.DragonJadeBoots]: {
+    name: "龙玉靴",
+    description: "轻盈而坚固的龙玉靴，每一步都仿佛踏在龙鳞之上，赋予穿戴者龙一般的敏捷",
+    canNotObtainFromChest: true,
+    rarity: Rarity.Unique,
+    position: EquipmentPosition.Foot,
+    extraActions: [
+      { actionType: ActionType.DragonBreath, weight: 0.1 },
+    ],
+    ability: {
+      dex: 2,
+    },
+    armorGrowthCoeff: 1,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+  [EquipmentType.DragonJadePendant]: {
+    name: "龙玉挂坠",
+    description: "一颗温润的龙玉被精心打磨成挂坠，其中封印着一缕龙息的余韵。佩戴者偶尔会不自觉地吐出一口热气",
+    canNotObtainFromChest: true,
+    rarity: Rarity.Unique,
+    position: EquipmentPosition.Accessory,
+    extraActions: [
+      { actionType: ActionType.DragonBreath, weight: 0.1 },
+    ],
+    ability: {
+      int: 1,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 1,
     actionCoeff: {},
   },
 };

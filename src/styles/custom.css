@@ -73,56 +73,51 @@
 }
 /* ---------------------------------------------------------- */
 
-/* .btn-Unique {
-  border-width: 3px;
-  border-color: #dc3545;
-  border-style: solid;
-  background-color: white;
-  color: #dc3545;
-  font-weight: bold;
+/* Unique 装备特效 */
+.btn-Unique {
+  position: relative;
+  overflow: hidden;
+  animation: unique-glow 2s ease-in-out infinite;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-.btn-Epic {
-  border-width: 3px;
-  border-color: #6f42c1;
-  border-style: solid;
-  background-color: white;
-  color: #6f42c1;
-  font-weight: bold;
+.btn-Unique::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -200%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  animation: unique-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.btn-Masterpiece {
-  border-width: 3px;
-  border-color: #204987;
-  border-style: solid;
-  background-color: white;
-  color: #204987;
-  font-weight: bold;
+@keyframes unique-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(220, 53, 69, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(220, 53, 69, 0.7), 0 0 24px rgba(220, 53, 69, 0.2); }
 }
 
-.btn-Rare {
-  border-width: 3px;
-  border-color: #43956f;
-  border-style: solid;
-  background-color: white;
-  color: #43956f;
-  font-weight: bold;
+@keyframes unique-shimmer {
+  0% { left: -60%; }
+  50%, 100% { left: 120%; }
 }
 
-.btn-Common {
-  border-width: 3px;
-  border-color: #6c757d;
-  border-style: solid;
-  background-color: white;
-  color: #6c757d;
-  font-weight: bold;
+.badge.bg-Unique {
+  animation: unique-badge-pulse 2s ease-in-out infinite;
+  position: relative;
 }
 
-.btn-Mythical {
-  border-width: 3px;
-  border-color: orange;
-  border-style: solid;
-  background-color: white;
-  color: orange;
-  font-weight: bold;
-} */
+@keyframes unique-badge-pulse {
+  0%, 100% { box-shadow: 0 0 3px rgba(220, 53, 69, 0.3); }
+  50% { box-shadow: 0 0 10px rgba(220, 53, 69, 0.7), 0 0 20px rgba(220, 53, 69, 0.15); }
+}
+
+.text-Unique {
+  text-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+}
