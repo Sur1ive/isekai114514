@@ -98,9 +98,10 @@ export class Creature {
 
   levelup() {
     this.level++;
-    if (this.level % 10 === 0) {
-      this.plusAbilityPoint++;
-    }
+    // 数值平衡：暂时禁用加点
+    // if (this.level % 10 === 0) {
+    //   this.plusAbilityPoint++;
+    // }
     this.calculateAbility();
     const oldMaxHealth = this.maxHealth;
     this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
