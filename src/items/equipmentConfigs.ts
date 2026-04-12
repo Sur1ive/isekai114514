@@ -18,6 +18,7 @@ export enum EquipmentType {
   KatanaOfTheHeart = "KatanaOfTheHeart",
   WomenDress = "WomenDress",
   ToonoDefeaterBadge = "ToonoDefeaterBadge",
+  Shoes = "Shoes",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -292,7 +293,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   },
   [EquipmentType.AyulsaOfNoHonor]: {
     name: "Ayulsa死于徒手",
-    description: "Ayulsa手上没有武器",
+    description: "大肥牛逼！！！",
     rarity: Rarity.Unique,
     position: EquipmentPosition.Hand,
     extraActions: [
@@ -337,6 +338,19 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     ],
     ability: {},
     armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+  [EquipmentType.Shoes]: {
+    name: "鞋子",
+    description: "就是个鞋子",
+    rarity: Rarity.Common,
+    position: EquipmentPosition.Foot,
+    extraActions: [],
+    ability: {
+      dex: 1,
+    },
+    armorGrowthCoeff: 1,
     piercingGrowthCoeff: 0,
     actionCoeff: {},
   },

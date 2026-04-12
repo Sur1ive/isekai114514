@@ -6,6 +6,8 @@ import { StatusType } from "./status/statusConfigs";
 import dragon1 from "@/assets/dragon1.gif";
 import dragon2 from "@/assets/dragon2.gif";
 import dragon3 from "@/assets/dragon3.jpg";
+import goblinLeader1 from "@/assets/goblinLeader1.png";
+import goblinLeader2 from "@/assets/goblinLeader2.jpg";
 
 export enum CreatureType {
   Player = "Player",
@@ -347,6 +349,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.FrightenedGoblinLeader]: {
     typeName: "受到惊吓的哥布林首领",
+    image: goblinLeader1,
     description: "这只哥布林比普通人类还要大上一圈，且穿着皮甲拿着刀，身上挂着很多装饰品。很显然，它就是这里的首领。它看起来被后方出现的你吓了一大跳<p>Tips: 你并不需要一次性击败Boss，对其造成20%最大生命值以上的伤害即可永久削减其生命值。你可以通过多次战斗来最终击败它。</p>",
     abilityCoeff: {
       str: { base: 2, growth: 0.1 },
@@ -369,6 +372,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.AngryGoblinLeader]: {
     typeName: "暴怒的哥布林首领",
+    image: goblinLeader2,
     description: "哥布林们的首领愤怒了，它难听地吼叫着，挥舞着武器向你冲来<p>Tips: 你并不需要一次性击败Boss，对其造成20%最大生命值以上的伤害即可永久削减其生命值。你可以通过多次战斗来最终击败它。</p>",
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },
