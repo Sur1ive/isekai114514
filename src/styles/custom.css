@@ -306,6 +306,355 @@
   flex-shrink: 0;
 }
 
+/* ---------------------------宠物系统------------------------------ */
+.pet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pet-row {
+  border: 1px solid #dee2e6;
+  border-left: 3px solid #6c757d;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #f8f9fa;
+  transition: box-shadow 0.15s;
+}
+
+.pet-row:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.pet-active { border-left-color: #198754; background: #f0fdf4; }
+.pet-fainted { opacity: 0.6; }
+.pet-variant-veteran { border-left-color: #ff9800; }
+.pet-variant-mutant { border-left-color: #9c27b0; }
+
+.pet-row-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pet-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pet-row-top {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+
+.pet-name { font-weight: 600; font-size: 13px; color: #212529; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pet-level { font-size: 11px; color: #6c757d; flex-shrink: 0; }
+
+.pet-fainted-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(220,53,69,0.15);
+  color: #dc3545;
+  flex-shrink: 0;
+}
+
+.pet-active-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(25,135,84,0.15);
+  color: #198754;
+  flex-shrink: 0;
+}
+
+.pet-row-bars {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.pet-hp-bar {
+  flex: 3;
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.pet-hp-fill {
+  height: 100%;
+  background: #dc3545;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.pet-exp-bar {
+  flex: 2;
+  height: 4px;
+  background: #e9ecef;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pet-exp-fill {
+  height: 100%;
+  background: #0d6efd;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.pet-menu-btn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  color: #6c757d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.pet-menu-btn:hover {
+  background: #f0f0f0;
+  border-color: #adb5bd;
+}
+
+.pet-menu-popup {
+  text-align: left;
+  min-width: 220px;
+}
+
+.pet-menu-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.pet-variant-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 0 4px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+.pet-variant-tag.veteran { background: rgba(255,152,0,0.15); color: #e65100; }
+.pet-variant-tag.mutant { background: rgba(156,39,176,0.15); color: #7b1fa2; }
+
+/* 战斗界面宠物侧栏 */
+.battle-pet-side {
+  flex: 0 0 auto;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 6px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.battle-pet-side-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.battle-pet-hp-bg {
+  width: 100%;
+  height: 8px;
+  background: #dee2e6;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.battle-pet-hp-fill {
+  height: 100%;
+  background: #198754;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.battle-pet-hp-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: #212529;
+  text-shadow: 0 0 2px #fff;
+  letter-spacing: -0.3px;
+}
+
+.battle-pet-faint-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #dc3545;
+}
+
+/* 主界面宠物卡片 */
+.main-pet-card {
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.main-pet-card-icon {
+  font-size: 22px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.main-pet-card-name {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  word-break: break-all;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.main-pet-card-lv {
+  font-size: 10px;
+  color: #6c757d;
+  margin-bottom: 6px;
+}
+
+.main-pet-card-hp-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.main-pet-card-fainted {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ff4757;
+  margin-top: 4px;
+}
+
+/* (pet-exp-bar and pet-hp-bar sizes are defined inside .pet-row-bars above) */
+
+/* 宠物详情弹窗 */
+.pet-tip-card {
+  text-align: left;
+  min-width: 220px;
+  font-size: 13px;
+}
+
+.pet-tip-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pet-tip-name { font-weight: 700; font-size: 14px; }
+.pet-tip-lv { font-size: 11px; color: #6c757d; }
+
+.pet-tip-exp-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pet-tip-exp-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.pet-tip-exp-track {
+  flex: 1;
+  height: 5px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.pet-tip-exp-fill {
+  height: 100%;
+  background: #0d6efd;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.pet-tip-exp-text {
+  font-size: 10px;
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.pet-tip-dmg-unused {
+  display: none; /* unused, kept to avoid cascade breakage */
+}
+
+.pet-tip-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #495057;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding-bottom: 2px;
+}
+
+.pet-tip-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.pet-tip-stat {
+  font-size: 11px;
+  color: #495057;
+  background: rgba(0,0,0,0.04);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.pet-tip-stat b { color: #212529; }
+
+.pet-tip-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pet-tip-action {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #495057;
+  padding: 1px 4px;
+}
+
+.pet-tip-weight {
+  color: #6c757d;
+  font-size: 11px;
+}
+
 /* ---------------------------------------------------------- */
 /* ---------------------------标题部分--------------------------- */
 .flat-header {

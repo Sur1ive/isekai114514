@@ -1,5 +1,6 @@
 import { Player } from "../creatures/Player";
 import type { Monster } from "../creatures/Monster";
+import type { Creature } from "../creatures/Creature";
 import type { Action, Hit } from "../actions/Action";
 import { HitCategory } from "../actions/types";
 import { NoHit } from "../actions/actionConfigs";
@@ -20,9 +21,10 @@ function handleHit(
 ): PointComparisonResult {
   let result = PointComparisonResult.Draw;
 
-  // 保存原始图标，因为 Capture 会被改为 Attack
+  // 保存原始图标和category，因为 Capture 会被临时改为 Attack
   const originalPlayerHitIcon = getHitIcon(playerHit);
   const originalEnemyHitIcon = getHitIcon(enemyHit);
+  const originalPlayerCategory = playerHit.category;
 
   if (playerHit.category === HitCategory.Capture) {
     playerHit.category = HitCategory.Attack;
@@ -85,6 +87,8 @@ function handleHit(
   } else if (result === PointComparisonResult.EnemyWin) {
     enemyHit.extraEffect?.(enemy, player);
   }
+  // 恢复被临时修改的 category，避免污染原始 Action 定义
+  playerHit.category = originalPlayerCategory;
   return result;
 }
 
@@ -414,4 +418,158 @@ function attackAgainstDodge(
   });
 
   return result;
+}
+
+// ==================== 宠物战斗 ====================
+
+function petResolvePair(
+  pet: Creature,
+  enemy: Creature,
+  petHit: Hit,
+  enemyHit: Hit,
+  damageMultiplier: number,
+  diceRolls: DiceRollData[],
+): PointComparisonResult {
+  const pIcon = getHitIcon(petHit);
+  const eIcon = getHitIcon(enemyHit);
+
+  let pCat = petHit.category;
+  if (pCat === HitCategory.Capture) pCat = HitCategory.Attack;
+
+  const bothAttack = pCat === HitCategory.Attack && enemyHit.category === HitCategory.Attack;
+  const atkVsNone =
+    (pCat === HitCategory.Attack && enemyHit.category === HitCategory.None) ||
+    (pCat === HitCategory.None && enemyHit.category === HitCategory.Attack);
+  const atkVsDef =
+    (pCat === HitCategory.Attack && enemyHit.category === HitCategory.Defend) ||
+    (pCat === HitCategory.Defend && enemyHit.category === HitCategory.Attack);
+  const atkVsDodge =
+    (pCat === HitCategory.Attack && enemyHit.category === HitCategory.Dodge) ||
+    (pCat === HitCategory.Dodge && enemyHit.category === HitCategory.Attack);
+
+  if (!bothAttack && !atkVsNone && !atkVsDef && !atkVsDodge) {
+    diceRolls.push({
+      playerName: pet.name, enemyName: enemy.name,
+      playerHitIcon: pIcon, enemyHitIcon: eIcon,
+      playerPower: -1, enemyPower: -1,
+      result: PointComparisonResult.Draw, isNothing: true,
+      resultMessage: "无事发生", damage: 0, damageTarget: "none",
+      playerHpAfter: 0, enemyHpAfter: 0,
+    });
+    return PointComparisonResult.Draw;
+  }
+
+  const pPower = calculatePower(petHit.coeff, pet.getAbility(), pet.getActionCoeff(pCat));
+  const ePower = calculatePower(enemyHit.coeff, enemy.getAbility(), enemy.getActionCoeff(enemyHit.category));
+
+  let result = PointComparisonResult.Draw;
+  let msg = "";
+  let dmg = 0;
+  let dmgTarget: "player" | "enemy" | "none" = "none";
+
+  if (bothAttack) {
+    if (pPower >= ePower) {
+      result = PointComparisonResult.PlayerWin;
+      dmg = calculateDamage(pPower, enemy.getAbility().armor, pet.getAbility().piercing) * damageMultiplier;
+      enemy.loseHp(dmg);
+      msg = `${pet.name}攻击了${enemy.name}`;
+      dmgTarget = "enemy";
+    } else {
+      result = PointComparisonResult.EnemyWin;
+      dmg = calculateDamage(ePower, pet.getAbility().armor, enemy.getAbility().piercing);
+      pet.loseHp(dmg);
+      msg = `${enemy.name}攻击了${pet.name}`;
+      dmgTarget = "player";
+    }
+  } else if (atkVsNone) {
+    const petIsAttacker = pCat === HitCategory.Attack;
+    const atkr = petIsAttacker ? pet : enemy;
+    const tgt = petIsAttacker ? enemy : pet;
+    const power = petIsAttacker ? pPower : ePower;
+    let rawDmg = calculateDamage(power, tgt.getAbility().armor, atkr.getAbility().piercing);
+    if (petIsAttacker) rawDmg *= damageMultiplier;
+    tgt.loseHp(rawDmg);
+    result = petIsAttacker ? PointComparisonResult.PlayerWin : PointComparisonResult.EnemyWin;
+    msg = `${atkr.name}攻击了${tgt.name}`;
+    dmg = rawDmg;
+    dmgTarget = petIsAttacker ? "enemy" : "player";
+  } else if (atkVsDef) {
+    const petIsAttacker = pCat === HitCategory.Attack;
+    const atkPow = petIsAttacker ? pPower : ePower;
+    const defPow = petIsAttacker ? ePower : pPower;
+    const atkr = petIsAttacker ? pet : enemy;
+    const defr = petIsAttacker ? enemy : pet;
+    const eff = atkPow - defPow > 0 ? atkPow - defPow : 0;
+    if (eff > 0) {
+      let rawDmg = calculateDamage(eff, defr.getAbility().armor, atkr.getAbility().piercing);
+      if (petIsAttacker) rawDmg *= damageMultiplier;
+      defr.loseHp(rawDmg);
+      result = petIsAttacker ? PointComparisonResult.PlayerWin : PointComparisonResult.EnemyWin;
+      msg = `${atkr.name}击穿了${defr.name}的防御`;
+      dmg = rawDmg;
+      dmgTarget = petIsAttacker ? "enemy" : "player";
+    } else {
+      result = petIsAttacker ? PointComparisonResult.EnemyWin : PointComparisonResult.PlayerWin;
+      msg = `${defr.name}挡住了${atkr.name}的攻击`;
+    }
+  } else if (atkVsDodge) {
+    const petIsAttacker = pCat === HitCategory.Attack;
+    const atkPow = petIsAttacker ? pPower : ePower;
+    const dodgePow = petIsAttacker ? ePower : pPower;
+    const atkr = petIsAttacker ? pet : enemy;
+    const dodger = petIsAttacker ? enemy : pet;
+    if (atkPow > dodgePow) {
+      let rawDmg = calculateDamage(atkPow, dodger.getAbility().armor, atkr.getAbility().piercing);
+      if (petIsAttacker) rawDmg *= damageMultiplier;
+      dodger.loseHp(rawDmg);
+      result = petIsAttacker ? PointComparisonResult.PlayerWin : PointComparisonResult.EnemyWin;
+      msg = `${atkr.name}命中了${dodger.name}`;
+      dmg = rawDmg;
+      dmgTarget = petIsAttacker ? "enemy" : "player";
+    } else {
+      result = petIsAttacker ? PointComparisonResult.EnemyWin : PointComparisonResult.PlayerWin;
+      msg = `${dodger.name}闪避了${atkr.name}的攻击`;
+    }
+  }
+
+  diceRolls.push({
+    playerName: pet.name, enemyName: enemy.name,
+    playerHitIcon: pIcon, enemyHitIcon: eIcon,
+    playerPower: Math.round(pPower), enemyPower: Math.round(ePower),
+    result, isNothing: false, resultMessage: msg,
+    damage: Math.round(dmg), damageTarget: dmgTarget,
+    playerHpAfter: 0, enemyHpAfter: 0,
+  });
+  return result;
+}
+
+export function handlePetAction(
+  pet: Creature,
+  enemy: Creature,
+  petAction: Action,
+  enemyAction: Action,
+  damageMultiplier: number,
+): DiceRollData[] {
+  const diceRolls: DiceRollData[] = [];
+  let i = 0;
+  while (petAction.hits[i] || enemyAction.hits[i]) {
+    const petHit = petAction.hits[i] || NoHit;
+    const enemyHit = enemyAction.hits[i] || NoHit;
+    const result = petResolvePair(pet, enemy, petHit, enemyHit, damageMultiplier, diceRolls);
+
+    if (diceRolls.length > 0) {
+      const last = diceRolls[diceRolls.length - 1];
+      last.playerHpAfter = Math.ceil(pet.health);
+      last.enemyHpAfter = Math.ceil(enemy.health);
+    }
+
+    if (petHit.continuous && result !== PointComparisonResult.PlayerWin) {
+      petAction.hits.splice(i + 1);
+    }
+    if (enemyHit.continuous && result !== PointComparisonResult.EnemyWin) {
+      enemyAction.hits.splice(i + 1);
+    }
+    i++;
+  }
+  return diceRolls;
 }

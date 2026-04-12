@@ -20,6 +20,13 @@ export function setIntervals(player: Player, onTick?: () => void) {
   recoverInterval = setInterval(() => {
     if (player.isAtHome) {
       player.autoRecoverHpDot();
+      // 宠物回血：每10分钟(600秒)恢复1%最大HP，每秒tick一次
+      for (const pet of player.capturedMonster) {
+        pet.recoverHp(pet.getMaxHealth() * 0.01 / 600);
+        if (pet.isFainted && pet.health >= pet.getMaxHealth() * 0.3) {
+          pet.isFainted = false;
+        }
+      }
       onTick?.();
     }
   }, 1000);

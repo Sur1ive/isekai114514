@@ -17,6 +17,9 @@ export interface BattleRoundLog {
   playerActionName: string;
   enemyActionName: string;
   rolls: DiceRollData[];
+  petName?: string;
+  petActionName?: string;
+  petRolls?: DiceRollData[];
 }
 
 /** 每次 hit 拼点的数据，用于掷骰动画 */

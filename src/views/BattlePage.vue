@@ -64,21 +64,27 @@
 
       <!-- 敌人信息 -->
       <div class="card mb-3">
-        <div class="card-header bg-danger text-white">
+        <div class="card-header bg-danger text-white" style="cursor: pointer" @click="enemyCardCollapsed = !enemyCardCollapsed">
           <h4 class="mb-0">
             {{ currentEnemy.name }}
             <span style="font-size: 12px; margin-left: 10px" class="badge bg-secondary">lv.{{ currentEnemy.level }}</span>
           </h4>
         </div>
         <div class="card-body">
-          <!-- 怪物立绘 -->
-          <div v-if="currentEnemy.image" class="enemy-portrait">
-            <img :src="currentEnemy.image" :alt="currentEnemy.name" class="enemy-portrait-img" />
+          <template v-if="!enemyCardCollapsed">
+            <!-- 怪物立绘 -->
+            <div v-if="currentEnemy.image" class="enemy-portrait">
+              <img :src="currentEnemy.image" :alt="currentEnemy.name" class="enemy-portrait-img" />
+            </div>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <p class="card-text fst-italic" v-html="'&quot;' + currentEnemy.description + '&quot;'"></p>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <p class="card-text" v-html="enemyActionObservation"></p>
+          </template>
+          <div v-else class="enemy-collapsed-info">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="enemyActionObservation"></span>
           </div>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <p class="card-text fst-italic" v-html="'&quot;' + currentEnemy.description + '&quot;'"></p>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <p class="card-text" v-html="enemyActionObservation"></p>
           <div class="battle-hp-bar">
             <div class="battle-hp-bar-bg">
               <div
@@ -106,27 +112,37 @@
       <!-- 分割线 -->
       <hr />
 
-      <!-- 玩家信息 -->
-      <div class="card mb-4">
-        <div class="card-header bg-success text-white">
-          <h4 class="mb-0">{{ player.name }} <span style="opacity: 0.5; font-size: 0.7em">{{ creatureConfigs[player.type].typeName }}</span> <span style="font-size: 12px; margin-left: 10px" class="badge bg-secondary">lv.{{ player.level }}</span></h4>
-        </div>
-        <div class="card-body">
-          <div class="battle-hp-bar">
-            <div class="battle-hp-bar-bg">
-              <div
-                class="battle-hp-bar-prev"
-                :style="{ width: (prevPlayerHp / player.getMaxHealth() * 100) + '%' }"
-              ></div>
-              <div
-                class="battle-hp-bar-fill battle-hp-bar-player"
-                :style="{ width: (player.health / player.getMaxHealth() * 100) + '%' }"
-              ></div>
-              <div class="battle-hp-bar-text">
-                {{ Math.ceil(player.health) }} / {{ Math.ceil(player.getMaxHealth()) }}
+      <!-- 玩家信息 + 宠物 -->
+      <div class="d-flex gap-3 mb-4 align-items-stretch">
+        <div class="card flex-grow-1" style="min-width: 0">
+          <div class="card-header bg-success text-white">
+            <h4 class="mb-0">{{ player.name }} <span style="opacity: 0.5; font-size: 0.7em">{{ creatureConfigs[player.type].typeName }}</span> <span style="font-size: 12px; margin-left: 10px" class="badge bg-secondary">lv.{{ player.level }}</span></h4>
+          </div>
+          <div class="card-body">
+            <div class="battle-hp-bar">
+              <div class="battle-hp-bar-bg">
+                <div
+                  class="battle-hp-bar-prev"
+                  :style="{ width: (prevPlayerHp / player.getMaxHealth() * 100) + '%' }"
+                ></div>
+                <div
+                  class="battle-hp-bar-fill battle-hp-bar-player"
+                  :style="{ width: (player.health / player.getMaxHealth() * 100) + '%' }"
+                ></div>
+                <div class="battle-hp-bar-text">
+                  {{ Math.ceil(player.health) }} / {{ Math.ceil(player.getMaxHealth()) }}
+                </div>
               </div>
             </div>
           </div>
+        </div>
+        <div v-if="getActivePet() && !battleEnded" class="battle-pet-side">
+          <span class="battle-pet-side-name">🐾 {{ getActivePet()!.name }}</span>
+          <div class="battle-pet-hp-bg">
+            <div class="battle-pet-hp-fill" :style="{ width: (getActivePet()!.health / getActivePet()!.getMaxHealth() * 100) + '%' }" />
+            <span class="battle-pet-hp-text">{{ Math.ceil(getActivePet()!.health) }}/{{ Math.ceil(getActivePet()!.getMaxHealth()) }}</span>
+          </div>
+          <span v-if="getActivePet()!.isFainted" class="battle-pet-faint-label">昏迷</span>
         </div>
       </div>
 
@@ -219,6 +235,7 @@
     :player-max-hp="dicePlayerMaxHp"
     :enemy-max-hp="diceEnemyMaxHp"
     :auto-mode="diceAutoMode"
+    :pet-hits="dicePetHits"
     @complete="onDiceComplete"
   />
 
@@ -355,7 +372,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useBattleStore, BattleContext } from "@/stores/battleStore";
-import { handleAction } from "@/battle/actionInteractions";
+import { handleAction, handlePetAction } from "@/battle/actionInteractions";
 import { observeEnemyAction } from "@/battle/battle";
 import { getHitsDescription } from "@/actions/actionUtils";
 import { StatusCategory, StatusEffectMap } from "@/creatures/status/Status";
@@ -417,12 +434,25 @@ const diceEnemyMaxHp = ref(0);
 const showDice = ref(false);
 const isAnimating = ref(false);
 
+export interface PetHitSummary {
+  petName: string;
+  actionName: string;
+  hitIcon: string;
+  dealtDamage: number;
+  receivedDamage: number;
+  fainted: boolean;
+}
+const dicePetHits = ref<PetHitSummary[]>([]);
+
 // 战斗记录弹窗
 const showBattleLog = ref(false);
 const battleRoundsLog = ref<BattleRoundLog[]>([]);
 
 // 教程弹窗
 const showTutorial = ref(false);
+
+// 怪物卡片折叠
+const enemyCardCollapsed = ref(false);
 
 // 设置面板
 const showSettings = ref(false);
@@ -450,6 +480,11 @@ onMounted(() => {
   prepareNextTurn();
 });
 
+function getActivePet(): Monster | null {
+  if (player.activePetIndex < 0 || player.activePetIndex >= player.capturedMonster.length) return null;
+  return player.capturedMonster[player.activePetIndex] as Monster;
+}
+
 /**
  * 玩家选择动作后：执行战斗结算 → 播放掷骰动画 → 准备下一回合
  */
@@ -472,12 +507,55 @@ function chooseAction(chosen: Action) {
   player.addTempLog("--------------------------回合-----------------------------");
   const rolls = handleAction(player, enemy, playerAction, enemyAct);
 
+  // 宠物参战（静默结算，生成逐hit摘要）
+  dicePetHits.value = [];
+  let roundPetName: string | undefined;
+  let roundPetActionName: string | undefined;
+  let roundPetRolls: DiceRollData[] | undefined;
+  const activePet = getActivePet();
+  if (activePet && !activePet.isFainted && enemy.health > 0) {
+    const petAction = activePet.getRandomAction();
+    const petRolls = handlePetAction(activePet, enemy, petAction, enemyAct, activePet.getPetDamageMultiplier());
+    roundPetName = activePet.name;
+    roundPetActionName = petAction.name;
+    roundPetRolls = [...petRolls];
+    player.addTempLog(`🐾 ${activePet.name} 使用了 ${petAction.name}`);
+    const hits: PetHitSummary[] = [];
+    for (const r of petRolls) {
+      const dealt = r.damageTarget === "enemy" ? r.damage : 0;
+      const recv = r.damageTarget === "player" ? r.damage : 0;
+      hits.push({
+        petName: activePet.name,
+        actionName: petAction.name,
+        hitIcon: r.playerHitIcon,
+        dealtDamage: dealt,
+        receivedDamage: recv,
+        fainted: false,
+      });
+      const parts: string[] = [`  ${r.playerHitIcon}`];
+      if (dealt > 0) parts.push(`对${enemy.name}造成 <span style="color:green">${dealt}</span> 伤害`);
+      if (recv > 0) parts.push(`受到 <span style="color:red">${recv}</span> 伤害`);
+      if (r.isNothing) parts.push("无事发生");
+      if (dealt === 0 && recv === 0 && !r.isNothing) parts.push(r.resultMessage);
+      player.addTempLog(parts.join(" "));
+    }
+    if (activePet.health <= 0) {
+      activePet.isFainted = true;
+      if (hits.length > 0) hits[hits.length - 1].fainted = true;
+      player.addTempLog(`<span style="color:red">${activePet.name} 倒下了！需要休息恢复。</span>`);
+    }
+    dicePetHits.value = hits;
+  }
+
   // 记录结构化回合数据
   battleRoundsLog.value.push({
     roundNumber: battleRoundsLog.value.length + 1,
     playerActionName: playerAction.name,
     enemyActionName: enemyAct.name,
     rolls: [...rolls],
+    petName: roundPetName,
+    petActionName: roundPetActionName,
+    petRolls: roundPetRolls,
   });
 
   if (rolls.length > 0) {
@@ -612,9 +690,25 @@ function endBattle(result: BattleResult) {
         headerClass: "bg-primary text-white",
       });
     }
+    // 宠物获得经验
+    const activePet = getActivePet();
+    if (activePet) {
+      const petExpGain = Math.floor(actualExp * 0.5);
+      if (petExpGain > 0) {
+        const petLeveled = activePet.addExp(petExpGain);
+        if (petLeveled) {
+          player.addLog(`🐾 ${activePet.name} 升级到了 Lv.${activePet.level}！`);
+        }
+      }
+    }
     player.addLog(enemy.name + "掉落了<span style='color: gold;'>" + (drop?.name ?? "无") + "</span>");
     if (drop) {
       player.pack.push(drop);
+    }
+    // 捕捉成功：新宠物恢复到50%血量
+    const lastPet = player.capturedMonster[player.capturedMonster.length - 1];
+    if (lastPet && lastPet === enemy) {
+      lastPet.health = Math.ceil(lastPet.getMaxHealth() * 0.5);
     }
   } else if (result === BattleResult.Lose) {
     player.health = 1;
@@ -819,6 +913,12 @@ function handleContinue() {
   border-radius: 8px;
   object-fit: contain;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.enemy-collapsed-info {
+  font-size: 13px;
+  color: #495057;
+  margin-bottom: 8px;
 }
 
 /* ====== 帮助按钮 ====== */

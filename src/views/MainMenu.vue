@@ -1,32 +1,40 @@
 <template>
   <div v-if="player">
-    <!-- 顶部区域：显示血条和玩家信息 -->
-    <div class="card mb-4 shadow-sm">
-      <div class="card-body">
-        <!-- 血条区域 -->
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div id="health-display" class="mb-3" v-html="healthDisplay"></div>
-        <!-- 玩家信息区域 -->
-        <div class="text-center">
-          <h2 class="card-title mb-1">
-            <span
-              class="badge ms-2"
-              :class="player.type === CreatureType.Player114514 ? 'bg-danger' : 'bg-primary'"
-              style="font-size: 0.75rem; padding: 0.35em 0.5em"
-            >
-              {{ player.type === CreatureType.Player114514 ? "野兽" : "人类" }}
-            </span>
-            {{ player.name }}
-            <small class="text-muted"> lv {{ player.level }}</small>
-          </h2>
-          <!-- 经验条 -->
+    <!-- 顶部区域：角色卡片 + 宠物卡片并排 -->
+    <div class="d-flex gap-3 mb-4 align-items-stretch">
+      <!-- 角色卡片 -->
+      <div class="card shadow-sm" style="flex: 1; min-width: 0">
+        <div class="card-body">
           <!-- eslint-disable-next-line vue/no-v-html -->
-          <div id="exp-display" class="mt-2" style="max-width: 200px; margin: 0 auto" v-html="player.getExpDisplay()"></div>
+          <div id="health-display" class="mb-3" v-html="healthDisplay"></div>
+          <div class="text-center">
+            <h2 class="card-title mb-1">
+              <span
+                class="badge ms-2"
+                :class="player.type === CreatureType.Player114514 ? 'bg-danger' : 'bg-primary'"
+                style="font-size: 0.75rem; padding: 0.35em 0.5em"
+              >
+                {{ player.type === CreatureType.Player114514 ? "野兽" : "人类" }}
+              </span>
+              {{ player.name }}
+              <small class="text-muted"> lv {{ player.level }}</small>
+            </h2>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div id="exp-display" class="mt-2" style="max-width: 200px; margin: 0 auto" v-html="player.getExpDisplay()"></div>
+          </div>
+          <div class="text-center mt-3">
+            <img :src="playerImage" alt="玩家形象" class="img-fluid" style="max-height: 200px" />
+          </div>
         </div>
-
-        <!-- 玩家形象区域 -->
-        <div class="text-center mt-3">
-          <img :src="playerImage" alt="玩家形象" class="img-fluid" style="max-height: 200px" />
+      </div>
+      <!-- 宠物卡片 -->
+      <div v-if="activePetDisplay" class="card shadow-sm main-pet-card">
+        <div class="card-body d-flex flex-column align-items-center justify-content-center p-2">
+          <div class="main-pet-card-icon">🐾</div>
+          <div class="main-pet-card-name">{{ activePetDisplay.name }}</div>
+          <div class="main-pet-card-lv">Lv.{{ activePetDisplay.level }}</div>
+          <div class="main-pet-card-hp-text">{{ activePetDisplay.hp }}/{{ activePetDisplay.max }}</div>
+          <div v-if="activePetDisplay.fainted" class="main-pet-card-fainted">昏迷</div>
         </div>
       </div>
     </div>
@@ -93,6 +101,20 @@ const player = computed(() => playerStore.player);
 
 // 血条需要实时更新，使用独立的 ref + 定时器
 const healthDisplay = ref("");
+
+const activePetDisplay = computed(() => {
+  const p = player.value;
+  if (!p || p.activePetIndex < 0 || p.activePetIndex >= p.capturedMonster.length) return null;
+  const pet = p.capturedMonster[p.activePetIndex];
+  return {
+    name: pet.name,
+    level: pet.level,
+    hp: Math.ceil(pet.health),
+    max: Math.ceil(pet.getMaxHealth()),
+    percent: Math.min(100, (pet.health / pet.getMaxHealth()) * 100),
+    fainted: pet.isFainted,
+  };
+});
 let healthInterval: number | undefined;
 
 const currentRegionName = computed(() => {

@@ -218,19 +218,42 @@
               <h4 class="card-title">{{ player.name }} 的宠物</h4>
             </div>
             <div class="card-body">
-              <div class="list-group">
-                <template v-if="player.capturedMonster.length > 0">
+              <template v-if="player.capturedMonster.length > 0">
+                <div class="pet-list">
                   <div
-                    v-for="monster in player.capturedMonster"
-                    :key="monster.name"
-                    class="list-group-item d-flex justify-content-between align-items-center"
+                    v-for="(monster, idx) in player.capturedMonster"
+                    :key="idx"
+                    class="pet-row"
+                    :class="{
+                      'pet-active': player.activePetIndex === idx,
+                      'pet-fainted': monster.isFainted,
+                      'pet-variant-veteran': monster.variant === 'veteran',
+                      'pet-variant-mutant': monster.variant === 'mutant',
+                    }"
                   >
-                    <span class="fw-bold">{{ monster.name }}</span>
-                    <span class="text-muted">Lv. {{ monster.level }}</span>
+                    <div class="pet-row-main">
+                      <div class="pet-row-info">
+                        <div class="pet-row-top">
+                          <span class="pet-name">{{ monster.name }}</span>
+                          <span class="pet-level">Lv.{{ monster.level }}</span>
+                          <span v-if="monster.isFainted" class="pet-fainted-tag">昏迷</span>
+                          <span v-if="player.activePetIndex === idx" class="pet-active-tag">出战</span>
+                        </div>
+                        <div class="pet-row-bars">
+                          <div class="pet-hp-bar">
+                            <div class="pet-hp-fill" :style="{ width: (monster.health / monster.getMaxHealth() * 100) + '%' }" />
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        class="pet-menu-btn"
+                        :data-pet-idx="idx"
+                      >⋯</button>
+                    </div>
                   </div>
-                </template>
-                <p v-else class="text-muted">暂无宠物</p>
-              </div>
+                </div>
+              </template>
+              <p v-else class="text-muted">暂无宠物</p>
             </div>
           </div>
         </div>
@@ -559,6 +582,56 @@ function initTippyInstances() {
   });
 }
 
+function generatePetMenuContent(monster: import("@/creatures/Monster").Monster, idx: number): string {
+  const isActive = player.value!.activePetIndex === idx;
+  const isFainted = monster.isFainted;
+  const toggleLabel = isActive ? "休息" : "出战";
+  const toggleClass = isActive ? "btn-outline-secondary" : "btn-outline-primary";
+  const toggleDisabled = !isActive && isFainted ? "disabled" : "";
+
+  return `<div class="pet-menu-popup">
+    <div class="pet-menu-actions">
+      <button class="btn btn-sm ${toggleClass} pet-toggle-btn" data-pet-toggle="${idx}" ${toggleDisabled}>${toggleLabel}</button>
+      <button class="btn btn-sm btn-outline-danger pet-release-btn" data-pet-release="${idx}">放生</button>
+    </div>
+    <hr style="margin:6px 0;opacity:0.15">
+    ${generatePetTooltipContent(monster)}
+  </div>`;
+}
+
+function initPetDetailTippys() {
+  if (!player.value) return;
+  document.querySelectorAll(".pet-menu-btn").forEach((el) => {
+    const idx = parseInt((el as HTMLElement).dataset.petIdx || "-1", 10);
+    if (idx < 0 || idx >= player.value!.capturedMonster.length) return;
+    const monster = player.value!.capturedMonster[idx] as import("@/creatures/Monster").Monster;
+    const instance = tippy(el as HTMLElement, {
+      content: generatePetMenuContent(monster, idx),
+      allowHTML: true,
+      theme: "game",
+      placement: "bottom-end",
+      trigger: "click",
+      interactive: true,
+      appendTo: document.body,
+      maxWidth: 320,
+      onShown(inst) {
+        const toggleBtn = inst.popper.querySelector(".pet-toggle-btn");
+        toggleBtn?.addEventListener("click", () => {
+          const isActive = player.value!.activePetIndex === idx;
+          setActivePet(isActive ? -1 : idx);
+          inst.hide();
+        });
+        const releaseBtn = inst.popper.querySelector(".pet-release-btn");
+        releaseBtn?.addEventListener("click", () => {
+          inst.hide();
+          releasePet(idx);
+        });
+      },
+    });
+    tippyInstances.push(instance);
+  });
+}
+
 function initPopovers() {
   document.querySelectorAll('[data-bs-toggle="popover"]').forEach((el) => {
     new bootstrap.Popover(el);
@@ -571,6 +644,7 @@ function refreshPage() {
   nextTick(() => {
     initTippyInstances();
     initPopovers();
+    initPetDetailTippys();
   });
 }
 
@@ -602,11 +676,74 @@ function removeEquipment(position: string) {
   }
 }
 
+function generatePetTooltipContent(monster: import("@/creatures/Monster").Monster): string {
+  const ab = monster.getAbility();
+  const stats = [
+    `<span class="pet-tip-stat">力量 <b>${Math.round(ab.str)}</b></span>`,
+    `<span class="pet-tip-stat">敏捷 <b>${Math.round(ab.dex)}</b></span>`,
+    `<span class="pet-tip-stat">体质 <b>${Math.round(ab.con)}</b></span>`,
+    `<span class="pet-tip-stat">智力 <b>${Math.round(ab.int)}</b></span>`,
+    `<span class="pet-tip-stat">体型 <b>${Math.round(ab.siz)}</b></span>`,
+    `<span class="pet-tip-stat">魅力 <b>${Math.round(ab.app)}</b></span>`,
+    `<span class="pet-tip-stat">护甲 <b>${Math.round(ab.armor)}</b></span>`,
+    `<span class="pet-tip-stat">穿透 <b>${Math.round(ab.piercing)}</b></span>`,
+  ].join("");
+
+  const actions = monster.getActions();
+  const actionsHtml = actions.map((wa) => {
+    const cfg = actionConfigs[wa.actionType];
+    return `<div class="pet-tip-action">${cfg.name} <span class="pet-tip-weight">${wa.weight.toFixed(2)}</span></div>`;
+  }).join("");
+
+  const expPct = Math.min(100, (monster.exp / monster.getNextLevelExp()) * 100);
+  const expText = `${Math.floor(monster.exp)}/${monster.getNextLevelExp()}`;
+
+  return `<div class="pet-tip-card">
+    <div class="pet-tip-header">
+      <span class="pet-tip-name">${monster.name}</span>
+      <span class="pet-tip-lv">Lv.${monster.level}</span>
+    </div>
+    <div class="pet-tip-exp-bar-wrap">
+      <span class="pet-tip-exp-label">EXP</span>
+      <div class="pet-tip-exp-track">
+        <div class="pet-tip-exp-fill" style="width:${expPct}%"></div>
+      </div>
+      <span class="pet-tip-exp-text">${expText}</span>
+    </div>
+    <div class="pet-tip-section-title">属性</div>
+    <div class="pet-tip-stats">${stats}</div>
+    <div class="pet-tip-section-title">行动列表</div>
+    <div class="pet-tip-actions">${actionsHtml}</div>
+  </div>`;
+}
+
+function setActivePet(idx: number) {
+  if (!player.value) return;
+  player.value.activePetIndex = idx;
+  playerStore.save();
+  refreshPage();
+}
+
+function releasePet(idx: number) {
+  if (!player.value) return;
+  const pet = player.value.capturedMonster[idx];
+  if (!confirm(`确定要放生 ${pet.name} 吗？放生后无法找回。`)) return;
+  player.value.capturedMonster.splice(idx, 1);
+  if (player.value.activePetIndex === idx) {
+    player.value.activePetIndex = -1;
+  } else if (player.value.activePetIndex > idx) {
+    player.value.activePetIndex--;
+  }
+  playerStore.save();
+  refreshPage();
+}
+
 // 监听 tab 切换，重新初始化 tippy
 watch([actionTab, packTab], () => {
   nextTick(() => {
     initTippyInstances();
     initPopovers();
+    initPetDetailTippys();
   });
 });
 
@@ -614,6 +751,7 @@ onMounted(async () => {
   await nextTick();
   initTippyInstances();
   initPopovers();
+  initPetDetailTippys();
 });
 
 onBeforeUnmount(() => {

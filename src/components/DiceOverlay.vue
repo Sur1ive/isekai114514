@@ -138,6 +138,31 @@
           </Transition>
         </template>
 
+        <!-- 宠物摘要 -->
+        <div
+          v-if="currentPetHits.length > 0 && phase === 'result'"
+          class="dice-pet-summary"
+        >
+          <div class="dice-pet-label">🐾 宠物 {{ currentPetHits[0].petName }}</div>
+          <div
+            v-for="(ph, pi) in currentPetHits"
+            :key="pi"
+            class="dice-pet-summary-row"
+          >
+            <span class="dice-pet-hit-icon">{{ ph.hitIcon }}</span>
+            <template v-if="ph.dealtDamage > 0">
+              <span class="dice-pet-dealt">造成 {{ ph.dealtDamage }}</span>
+            </template>
+            <template v-if="ph.receivedDamage > 0">
+              <span class="dice-pet-recv">受到 {{ ph.receivedDamage }}</span>
+            </template>
+            <template v-if="ph.dealtDamage === 0 && ph.receivedDamage === 0">
+              <span class="dice-pet-neutral">无事发生</span>
+            </template>
+            <span v-if="ph.fainted" class="dice-pet-fainted">昏迷!</span>
+          </div>
+        </div>
+
         <div class="dice-hint">{{ hintText }}</div>
       </div>
     </div>
@@ -148,9 +173,12 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { PointComparisonResult } from "@/battle/types";
 import type { DiceRollData } from "@/battle/types";
+import type { PetHitSummary } from "@/views/BattlePage.vue";
 
 const PlayerWin = PointComparisonResult.PlayerWin;
 const EnemyWin = PointComparisonResult.EnemyWin;
+
+defineOptions({ inheritAttrs: false });
 
 const props = defineProps<{
   rolls: DiceRollData[];
@@ -161,6 +189,7 @@ const props = defineProps<{
   playerMaxHp: number;
   enemyMaxHp: number;
   autoMode: boolean;
+  petHits?: PetHitSummary[];
 }>();
 
 const emit = defineEmits<{
@@ -171,6 +200,17 @@ const currentIndex = ref(0);
 const phase = ref<"idle" | "rolling" | "settled" | "result">("idle");
 const displayPlayerPower = ref(0);
 const displayEnemyPower = ref(0);
+
+const currentPetHits = computed((): PetHitSummary[] => {
+  if (!props.petHits || props.petHits.length === 0) return [];
+  const idx = currentIndex.value;
+  const isLast = idx === props.rolls.length - 1;
+  if (isLast) {
+    return props.petHits.slice(idx);
+  }
+  const hit = props.petHits[idx];
+  return hit ? [hit] : [];
+});
 
 // 血条相关
 const displayPlayerHp = ref(0);
@@ -691,6 +731,40 @@ onBeforeUnmount(() => {
   font-weight: 600;
   letter-spacing: 2px;
 }
+
+/* ====== 宠物摘要 ====== */
+.dice-pet-summary {
+  margin-top: 8px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(255, 200, 50, 0.5);
+  animation: result-slide-enter-from 0.3s ease-out;
+}
+
+.dice-pet-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 200, 50, 0.8);
+  margin-bottom: 3px;
+}
+
+.dice-pet-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 1px 0;
+}
+
+.dice-pet-hit-icon { color: rgba(255, 255, 255, 0.5); }
+.dice-pet-dealt { color: #2ed573; font-weight: 600; }
+.dice-pet-recv { color: #ff4757; font-weight: 600; }
+.dice-pet-neutral { color: rgba(255, 255, 255, 0.35); }
+.dice-pet-fainted { color: #ff4757; font-weight: 700; font-size: 11px; }
 
 /* ====== 底部提示 ====== */
 .dice-hint {

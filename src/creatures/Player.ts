@@ -7,6 +7,7 @@ export class Player extends Creature {
   log: string[] = [];
   tempLog: string[] = [];
   capturedMonster: Monster[] = [];
+  activePetIndex: number = -1;
   isAtHome: boolean = true;
   exp: number = 0;
   isPlayer: boolean = true;

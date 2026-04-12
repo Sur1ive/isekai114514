@@ -51,7 +51,7 @@ export function loadPlayer(): Player | null {
 
   // 从Player类复原特有属性
   const playerProps = [
-    "log", "capturedMonster", "exp",
+    "log", "capturedMonster", "activePetIndex", "exp",
     "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList"
   ];
 
@@ -119,6 +119,14 @@ export function loadPlayer(): Player | null {
   if (saveTime) {
     const timeDiff = (Date.now() - JSON.parse(saveTime)) / 1000;
     player.autoRecoverHpDot(timeDiff);
+    // 宠物离线回血：每10分钟(600秒)恢复1%最大生命
+    for (const pet of player.capturedMonster) {
+      const petRecover = pet.getMaxHealth() * 0.01 * (timeDiff / 600);
+      pet.recoverHp(petRecover);
+      if (pet.isFainted && pet.health >= pet.getMaxHealth() * 0.3) {
+        pet.isFainted = false;
+      }
+    }
   }
 
   return player;

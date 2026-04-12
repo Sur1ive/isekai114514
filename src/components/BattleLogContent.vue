@@ -71,6 +71,63 @@
           无事发生
         </div>
       </div>
+
+      <!-- 宠物拼点记录 -->
+      <template v-if="round.petRolls && round.petRolls.length > 0">
+        <div class="blog-pet-header">
+          <span class="blog-pet-label">🐾 {{ round.petName }}</span>
+          <span class="blog-pet-action">{{ round.petActionName }}</span>
+        </div>
+        <div v-for="(pr, pi) in round.petRolls" :key="'pet-' + pi" class="blog-hit blog-hit-pet">
+          <div class="blog-hit-overview">
+            <div class="blog-hit-left">
+              <span class="blog-icon">{{ pr.playerHitIcon }}</span>
+              <span
+                v-if="!pr.isNothing && pr.playerPower >= 0"
+                class="blog-power"
+                :class="{
+                  'power-win': pr.result === PlayerWin,
+                  'power-lose': pr.result === EnemyWin,
+                }"
+              >{{ pr.playerPower }}</span>
+            </div>
+            <div class="blog-hit-center">
+              <template v-if="pr.isNothing">—</template>
+              <template v-else>vs</template>
+            </div>
+            <div class="blog-hit-right">
+              <span
+                v-if="!pr.isNothing && pr.enemyPower >= 0"
+                class="blog-power"
+                :class="{
+                  'power-win': pr.result === EnemyWin,
+                  'power-lose': pr.result === PlayerWin,
+                }"
+              >{{ pr.enemyPower }}</span>
+              <span class="blog-icon">{{ pr.enemyHitIcon }}</span>
+            </div>
+          </div>
+          <div v-if="!pr.isNothing" class="blog-hit-detail">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div class="blog-message" v-html="pr.resultMessage" />
+            <div
+              v-if="pr.damage > 0"
+              class="blog-damage"
+              :class="pr.damageTarget === 'player' ? 'dmg-player' : 'dmg-enemy'"
+            >
+              {{ pr.damageTarget === 'player' ? '💔' : '💥' }}
+              {{ pr.damageTarget === 'player' ? pr.playerName : pr.enemyName }}
+              -{{ pr.damage }} HP
+            </div>
+            <div v-else-if="pr.damage === 0 && pr.damageTarget === 'none'" class="blog-no-damage">
+              🛡️ 未造成伤害
+            </div>
+          </div>
+          <div v-else class="blog-hit-detail blog-nothing-detail">
+            无事发生
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -260,5 +317,31 @@ defineProps<{
   text-align: center;
   border-top: none;
   padding-top: 4px;
+}
+
+/* ====== 宠物记录 ====== */
+.blog-pet-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+.blog-pet-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 200, 50, 0.8);
+}
+
+.blog-pet-action {
+  font-size: 12px;
+  color: rgba(255, 200, 50, 0.5);
+}
+
+.blog-hit-pet {
+  border-left: 3px solid rgba(255, 200, 50, 0.3);
+  background: rgba(255, 200, 50, 0.03);
 }
 </style>

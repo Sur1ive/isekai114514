@@ -8,7 +8,7 @@ import {
   EliteMonsterNode,
 } from "./Node";
 import { Player } from "../creatures/Player";
-import { Monster } from "../creatures/Monster";
+import { Monster, applyVariant } from "../creatures/Monster";
 import { randomMonsterType } from "../creatures/utils";
 import { randomInt, randomFloat } from "../utils";
 import { randomItemType, generateItem } from "../items/itemUtils";
@@ -57,6 +57,7 @@ function goToNormalMonsterNode(node: NormalMonsterNode, player: Player) {
   }
   const monsterLevel = randomInt(monsterData.minLevel, monsterData.maxLevel);
   const monster = new Monster(monsterData.monster, monsterLevel, 1);
+  applyVariant(monster);
   const battleStore = useBattleStore();
   battleStore.startBattle(monster, BattleContext.NormalMonster);
   router.push({ name: "battle" });
@@ -89,6 +90,7 @@ function goToEliteMonsterNode(node: EliteMonsterNode, player: Player) {
       monsterLevel,
       monsterIndividualStrength,
     );
+    applyVariant(monster);
     const battleStore = useBattleStore();
     battleStore.startBattle(monster, BattleContext.NormalMonster);
     router.push({ name: "battle" });
@@ -110,6 +112,7 @@ function goToBossNode(node: BossNode, player: Player) {
         bossStage.maxIndividualStrength,
       );
       const boss = new Monster(bossStage.monster, bossLevel, individualStrength);
+      applyVariant(boss);
       player.currentMapData.boss.push(boss);
     });
   }
