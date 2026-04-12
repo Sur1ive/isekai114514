@@ -27,27 +27,6 @@
       </div>
     </div>
 
-    <!-- 地图控制面板 -->
-    <div
-      class="map-controls"
-      style="
-        position: absolute;
-        top: 70px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.7);
-        border-radius: 5px;
-        padding: 10px;
-        z-index: 10;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      "
-    >
-      <button class="btn btn-sm btn-dark" style="width: 40px; height: 40px" @click="zoomIn">+</button>
-      <button class="btn btn-sm btn-dark" style="width: 40px; height: 40px" @click="zoomOut">-</button>
-      <button class="btn btn-sm btn-dark" style="width: 40px; height: 40px" @click="centerMap">⌖</button>
-    </div>
-
     <!-- 地图图例 -->
     <div
       class="map-legend"
@@ -61,21 +40,36 @@
         padding: 10px;
         z-index: 10;
         font-size: 0.9rem;
+        cursor: pointer;
+        user-select: none;
       "
+      @click="legendCollapsed = !legendCollapsed"
     >
-      <div style="margin-bottom: 5px; font-weight: bold">地图图例:</div>
-      <div style="display: flex; align-items: center; margin-bottom: 5px">
-        <div style="width: 12px; height: 12px; border-radius: 50%; background: #007bff; margin-right: 10px"></div>
-        <span>当前位置</span>
+      <div style="font-weight: bold; display: flex; justify-content: space-between; align-items: center">
+        <span>图例</span>
+        <span style="font-size: 0.7rem; opacity: 0.6; margin-left: 8px">{{ legendCollapsed ? '▸' : '▼' }}</span>
       </div>
-      <div style="display: flex; align-items: center; margin-bottom: 5px">
-        <div style="width: 12px; height: 12px; border-radius: 50%; background: #28a745; margin-right: 10px"></div>
-        <span>可前往地点</span>
-      </div>
-      <div style="display: flex; align-items: center">
-        <div style="width: 12px; height: 12px; border-radius: 50%; background: #6c757d; margin-right: 10px"></div>
-        <span>已知地点</span>
-      </div>
+      <template v-if="!legendCollapsed">
+        <div style="display: flex; align-items: center; margin-top: 5px; margin-bottom: 5px">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #007bff; margin-right: 10px"></div>
+          <span>当前位置</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 5px">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #28a745; margin-right: 10px"></div>
+          <span>可前往地点</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 5px">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: #6c757d; margin-right: 10px"></div>
+          <span>已知地点</span>
+        </div>
+        <div style="display: flex; align-items: center">
+          <div style="position: relative; width: 12px; height: 12px; margin-right: 10px">
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #6c757d"></div>
+            <div style="position: absolute; top: -4px; right: -4px; width: 8px; height: 8px; border-radius: 50%; background: #ffc107; border: 1px solid #fff"></div>
+          </div>
+          <span>有未探索路径</span>
+        </div>
+      </template>
     </div>
 
     <!-- 地图区域（相对定位容器，boss血条浮于其上） -->
@@ -112,6 +106,23 @@
               <template v-else>???</template>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- 地图控制面板 -->
+      <div class="map-controls-container">
+        <div class="map-controls-panel" @click="controlsCollapsed ? controlsCollapsed = false : undefined">
+          <div v-if="controlsCollapsed" class="map-controls-collapsed" @click="controlsCollapsed = false">
+            <span>缩放▼</span>
+          </div>
+          <template v-else>
+            <div class="map-controls-buttons">
+              <button class="btn btn-sm btn-dark" style="width: 32px; height: 32px" @click.stop="zoomIn">+</button>
+              <button class="btn btn-sm btn-dark" style="width: 32px; height: 32px" @click.stop="zoomOut">-</button>
+              <button class="btn btn-sm btn-dark" style="width: 32px; height: 32px" @click.stop="centerMap">⌖</button>
+              <button class="btn btn-sm btn-dark" style="width: 32px; height: 24px; font-size: 0.65rem; opacity: 0.6" @click.stop="controlsCollapsed = true">▲</button>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -160,6 +171,8 @@ const playerStore = usePlayerStore();
 const svgRef = ref<SVGSVGElement | null>(null);
 
 // 响应式数据
+const legendCollapsed = ref(true);
+const controlsCollapsed = ref(false);
 const regionName = ref("未知区域");
 const playerHealth = ref(0);
 const playerMaxHealth = ref(0);
@@ -328,6 +341,11 @@ onMounted(() => {
     );
   }
 
+  function hasHiddenNeighbors(node: Node): boolean {
+    const allNeighbors = [...node.toNodeList, ...(node.fromNodeList ?? [])];
+    return allNeighbors.some((n) => !isNodeVisible(n));
+  }
+
   // D3 初始化
   svg = d3.select<SVGSVGElement, unknown>(svgRef.value!);
   window.currentMapSvg = svg as unknown as d3.Selection<SVGSVGElement, unknown, null, undefined>;
@@ -429,15 +447,30 @@ onMounted(() => {
   // 节点圆形
   nodeG
     .append("circle")
+    .attr("class", "node-circle")
     .attr("r", 12)
     .attr("fill", (d) => getNodeColor(d, player.currentMapData.currentNodeId!))
     .attr("stroke", "#f8f9fa")
     .attr("stroke-width", 2)
     .attr("filter", "drop-shadow(0px 2px 3px rgba(0,0,0,0.5))");
 
+  // 未探索邻居指示器
+  nodeG
+    .append("circle")
+    .attr("class", "node-indicator")
+    .attr("r", 5)
+    .attr("cx", 14)
+    .attr("cy", -10)
+    .attr("fill", "#ffc107")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1)
+    .style("pointer-events", "none")
+    .style("display", (d) => (isNodeVisible(d) && hasHiddenNeighbors(d)) ? "block" : "none");
+
   // 发光效果
   nodeG
     .append("circle")
+    .attr("class", "node-glow")
     .attr("r", 20)
     .attr("fill", "none")
     .attr("stroke", (d) => {
@@ -554,7 +587,7 @@ onMounted(() => {
 
       // 更新节点颜色
       if (window.currentNodeElements) {
-        window.currentNodeElements.selectAll("circle:first-child").attr("fill", function () {
+        window.currentNodeElements.selectAll(".node-circle").attr("fill", function () {
           try {
             const element = this as Element;
             const parent = element.parentNode as Element;
@@ -567,7 +600,19 @@ onMounted(() => {
           }
         });
 
-        window.currentNodeElements.selectAll("circle:nth-child(2)").attr("stroke", function () {
+        window.currentNodeElements.selectAll(".node-indicator").style("display", function () {
+          try {
+            const element = this as Element;
+            const parent = element.parentNode as Element;
+            const nodeData = d3.select(parent).datum() as Node;
+            if (!nodeData) return "none";
+            return (isNodeVisible(nodeData) && hasHiddenNeighbors(nodeData)) ? "block" : "none";
+          } catch {
+            return "none";
+          }
+        });
+
+        window.currentNodeElements.selectAll(".node-glow").attr("stroke", function () {
           try {
             const element = this as Element;
             const parent = element.parentNode as Element;
@@ -796,5 +841,33 @@ onBeforeUnmount(() => {
   font-weight: 700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   z-index: 3;
+}
+
+.map-controls-container {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 15;
+}
+
+.map-controls-panel {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.map-controls-collapsed {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  padding: 0 4px;
+  user-select: none;
+}
+
+.map-controls-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
 }
 </style>
