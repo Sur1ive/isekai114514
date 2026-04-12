@@ -89,6 +89,12 @@
                 class="battle-hp-bar-fill battle-hp-bar-enemy"
                 :style="{ width: (currentEnemy.health / currentEnemy.getMaxHealth() * 100) + '%' }"
               ></div>
+              <!-- Boss 永久削减阈值线：当前血量 - 20%最大生命值 -->
+              <div
+                v-if="battleStore.context === BattleContext.Boss && (bossHpSnapshot - currentEnemy.getMaxHealth() * 0.2) > 0"
+                class="battle-hp-tick battle-hp-tick-threshold"
+                :style="{ left: ((bossHpSnapshot - currentEnemy.getMaxHealth() * 0.2) / currentEnemy.getMaxHealth() * 100) + '%' }"
+              ></div>
               <div class="battle-hp-bar-text">
                 {{ Math.ceil(currentEnemy.health) }} / {{ Math.ceil(currentEnemy.getMaxHealth()) }}
               </div>
@@ -175,6 +181,23 @@
               </span>
             </p>
           </h4>
+          <div v-if="bossPermanentDamage > 0" class="boss-damage-card mt-3 mb-3">
+            <div class="boss-damage-name">{{ bossResultName }}</div>
+            <div class="boss-damage-hp">
+              <span class="boss-damage-current">{{ bossResultHpAfter }}</span>
+              <span class="boss-damage-sep"> / </span>
+              <span class="boss-damage-max">{{ bossResultMaxHp }}</span>
+            </div>
+            <div class="boss-damage-number">
+              💥-{{ bossPermanentDamage }}
+            </div>
+          </div>
+          <img
+            v-if="battleResult === BattleResult.Lose"
+            :src="neverGonnaGiveUp"
+            alt=""
+            style="max-width: 100%; border-radius: 8px; margin-bottom: 12px"
+          />
           <hr />
           <button class="btn btn-dark" @click="showBattleLog = true">📜 战斗记录</button>
         </div>
@@ -348,6 +371,7 @@ import { Consumable } from "@/items/Consumable";
 import { ConsumableType } from "@/items/consumableConfigs";
 import { showToast } from "@/utils/toast";
 import DiceOverlay from "@/components/DiceOverlay.vue";
+import neverGonnaGiveUp from "@/assets/never-gonna-give-up.gif";
 import BattleLogContent from "@/components/BattleLogContent.vue";
 
 const router = useRouter();
@@ -372,6 +396,10 @@ const battleResult = ref<BattleResult | null>(null);
 const leveledUp = ref(false);
 const droppedItem = ref<Item | null>(null);
 const earnedExp = ref(0);
+const bossPermanentDamage = ref(0);
+const bossResultName = ref("");
+const bossResultHpAfter = ref(0);
+const bossResultMaxHp = ref(0);
 
 // 血条：上回合 HP 快照（用于显示掉血过渡色）
 const prevPlayerHp = ref(0);
@@ -548,6 +576,17 @@ function endBattle(result: BattleResult) {
   const enemy = enemyObj!;
   leveledUp.value = false;
   droppedItem.value = null;
+  bossPermanentDamage.value = 0;
+
+  if (battleStore.context === BattleContext.Boss && (result === BattleResult.Lose || result === BattleResult.Withdraw)) {
+    const damageDealt = bossHpSnapshot - enemy.health;
+    if (damageDealt > enemy.getMaxHealth() * 0.2) {
+      bossPermanentDamage.value = Math.ceil(damageDealt);
+      bossResultName.value = enemy.name;
+      bossResultHpAfter.value = Math.ceil(enemy.health);
+      bossResultMaxHp.value = Math.ceil(enemy.getMaxHealth());
+    }
+  }
 
   if (result === BattleResult.Win) {
     const drop = enemy.randomDropItem();
@@ -684,6 +723,69 @@ function handleContinue() {
 
 .battle-hp-bar-enemy {
   background: #dc3545;
+}
+
+.battle-hp-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  z-index: 1;
+}
+
+.battle-hp-tick-threshold {
+  width: 2px;
+  background: #ffc107;
+  box-shadow: 0 0 4px rgba(255, 193, 7, 0.6);
+}
+
+.boss-damage-card {
+  background: linear-gradient(135deg, #1a472a, #2d6a4f);
+  border: 2px solid #52b788;
+  border-radius: 10px;
+  padding: 16px 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.boss-damage-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffd60a;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.boss-damage-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.boss-damage-hp {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.boss-damage-current {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.boss-damage-sep {
+  opacity: 0.5;
+}
+
+.boss-damage-max {
+  opacity: 0.7;
+}
+
+.boss-damage-number {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffd60a;
+  text-shadow: 0 2px 8px rgba(255, 214, 10, 0.4);
+  line-height: 1;
 }
 
 .battle-hp-bar-text {

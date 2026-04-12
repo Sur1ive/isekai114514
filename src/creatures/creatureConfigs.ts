@@ -293,7 +293,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.PsyInvisibleSword, weight: 1 },
       { actionType: ActionType.PsyDodge, weight: 1 },
     ],
-    dropItems: [{ type: ConsumableType.DiamondChest, weight: 1 }],
+    dropItems: [{ type: EquipmentType.DafeiBadge, weight: 1 }],
   },
 
   [CreatureType.Horse]: {

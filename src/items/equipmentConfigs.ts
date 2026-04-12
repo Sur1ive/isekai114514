@@ -18,6 +18,7 @@ export enum EquipmentType {
   KatanaOfTheHeart = "KatanaOfTheHeart",
   WomenDress = "WomenDress",
   ToonoDefeaterBadge = "ToonoDefeaterBadge",
+  DafeiBadge = "DafeiBadge",
   Shoes = "Shoes",
 }
 
@@ -351,6 +352,18 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       dex: 1,
     },
     armorGrowthCoeff: 1,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+  [EquipmentType.DafeiBadge]: {
+    name: "大肥鸡掰者徽章",
+    description: "啊wee改阿格王朔",
+    canNotObtainFromChest: true,
+    rarity: Rarity.Unique,
+    position: EquipmentPosition.Accessory,
+    extraActions: [],
+    ability: {},
+    armorGrowthCoeff: 0,
     piercingGrowthCoeff: 0,
     actionCoeff: {},
   },
