@@ -126,7 +126,7 @@ export const centerMarshForestHillTiredNode: EliteMonsterNode = {
       weight: 0.04,
     },
   ],
-  treasureProbability: 0.1,
+  treasureProbability: 0,
   treasureList: [],
 };
 

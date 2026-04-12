@@ -5,6 +5,16 @@ import { loadPlayer, saveGame } from "@/save";
 import { setIntervals } from "@/globalIntervals";
 import { CreatureType } from "@/creatures/creatureConfigs";
 
+function exposeDebug(getPlayer: () => Player | null, triggerFn: () => void, saveFn: () => void) {
+  const w = window as any;
+  Object.defineProperty(w, "大鹅牛逼", {
+    get: getPlayer,
+    configurable: true,
+  });
+  w._save = saveFn;
+  w._triggerUpdate = triggerFn;
+}
+
 export const usePlayerStore = defineStore("player", () => {
   const player = shallowRef<Player | null>(null);
 
@@ -14,6 +24,7 @@ export const usePlayerStore = defineStore("player", () => {
       player.value = loaded;
       setIntervals(loaded, () => triggerRef(player));
     }
+    exposeDebug(() => player.value, () => triggerRef(player), () => save());
     return loaded;
   }
 
@@ -21,6 +32,7 @@ export const usePlayerStore = defineStore("player", () => {
     const newPlayer = new Player(name, type);
     player.value = newPlayer;
     setIntervals(newPlayer, () => triggerRef(player));
+    exposeDebug(() => player.value, () => triggerRef(player), () => save());
     return newPlayer;
   }
 
