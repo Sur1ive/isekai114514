@@ -25,6 +25,14 @@
     >
       ⚙️ 设置
     </button>
+    <button
+      type="button"
+      class="battle-help-btn"
+      style="position: absolute; right: 24px; top: 174px; z-index: 999"
+      @click="showTutorial = true"
+    >
+      ?
+    </button>
     <!-- 设置面板遮罩 -->
     <div
       v-if="showSettings"
@@ -177,6 +185,118 @@
       </div>
     </div>
   </Teleport>
+
+  <!-- 战斗教程弹窗 -->
+  <Teleport to="body">
+    <div v-if="showTutorial" class="battle-log-overlay" @click.self="showTutorial = false">
+      <div class="battle-log-panel tutorial-panel">
+        <div class="battle-log-header">
+          <h5 class="mb-0">战斗机制说明</h5>
+          <button type="button" class="btn-close btn-close-white" aria-label="关闭" @click="showTutorial = false" />
+        </div>
+        <div class="battle-log-body tutorial-body">
+          <section class="tut-section">
+            <h6 class="tut-title">行动列表</h6>
+            <p>每回合从<strong>行动列表</strong>中按权重随机抽取两个行动以供选择。行动列表由<strong>种族</strong>决定基础内容，<strong>装备</strong>可以额外追加新的行动。</p>
+          </section>
+
+          <section class="tut-section">
+            <h6 class="tut-title">基本流程</h6>
+            <p>每个行动由若干个<strong>动作</strong>组成。选择行动后，双方的动作按顺序一一对应进行<strong>拼点</strong>，点数由属性和系数决定。</p>
+          </section>
+
+          <section class="tut-section">
+            <h6 class="tut-title">动作类型</h6>
+            <div class="tut-types">
+              <div class="tut-type-row">
+                <span class="tut-icon">🗡️</span>
+                <div>
+                  <strong>攻击</strong>
+                  <span class="tut-desc">拼点胜利可以造成伤害</span>
+                </div>
+              </div>
+              <div class="tut-type-row">
+                <span class="tut-icon">🛡️</span>
+                <div>
+                  <strong>防御</strong>
+                  <span class="tut-desc">无论拼点是否胜利，按照点数抵消攻击</span>
+                </div>
+              </div>
+              <div class="tut-type-row">
+                <span class="tut-icon">💫</span>
+                <div>
+                  <strong>闪避</strong>
+                  <span class="tut-desc">若闪避点数 ≥ 攻击点数，可以躲避并使对方<strong>失衡</strong>；否则受到全额伤害</span>
+                </div>
+              </div>
+              <div class="tut-type-row">
+                <span class="tut-icon">🕸️</span>
+                <div>
+                  <strong>捕捉</strong>
+                  <span class="tut-desc">视为攻击进行拼点，胜利后有概率捕获对方（概率与属性和对方属性即剩余 HP 相关）</span>
+                </div>
+              </div>
+              <div class="tut-type-row">
+                <span class="tut-icon">❔</span>
+                <div>
+                  <strong>无动作</strong>
+                  <span class="tut-desc">无动作，对方若为攻击则无条件命中</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="tut-section">
+            <h6 class="tut-title">交互关系</h6>
+            <table class="tut-table">
+              <thead>
+                <tr>
+                  <th />
+                  <th>🗡️ 攻击</th>
+                  <th>🛡️ 防御</th>
+                  <th>💫 闪避</th>
+                  <th>❔ 无</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="tut-row-header">🗡️ 攻击</td>
+                  <td>点高者胜<br/>造成伤害</td>
+                  <td>攻击-防御<br/>差值为伤害</td>
+                  <td>攻击＞闪避<br/>则命中</td>
+                  <td>无条件<br/>命中</td>
+                </tr>
+                <tr>
+                  <td class="tut-row-header">🛡️ 防御</td>
+                  <td>攻击-防御<br/>差值为伤害</td>
+                  <td colspan="3" class="tut-nothing">无事发生</td>
+                </tr>
+                <tr>
+                  <td class="tut-row-header">💫 闪避</td>
+                  <td>攻击＞闪避<br/>则命中</td>
+                  <td colspan="3" class="tut-nothing">无事发生</td>
+                </tr>
+                <tr>
+                  <td class="tut-row-header">❔ 无</td>
+                  <td>无条件<br/>命中</td>
+                  <td colspan="3" class="tut-nothing">无事发生</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="tut-section">
+            <h6 class="tut-title">其他机制</h6>
+            <ul class="tut-list">
+              <li><strong>连续动作 🔗</strong>：前一个动作命中后才会触发的动作，若前一个动作未命中则不会触发</li>
+              <li><strong>失衡</strong>：闪避成功时攻击方会失衡，失去同一个行动内的后续动作</li>
+              <li><strong>观察</strong>：根据智力属性之差，可能可以看穿敌方招式</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -233,6 +353,9 @@ const isAnimating = ref(false);
 // 战斗记录弹窗
 const showBattleLog = ref(false);
 const battleRoundsLog = ref<BattleRoundLog[]>([]);
+
+// 教程弹窗
+const showTutorial = ref(false);
 
 // 设置面板
 const showSettings = ref(false);
@@ -475,6 +598,128 @@ function handleContinue() {
   border-radius: 8px;
   object-fit: contain;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ====== 帮助按钮 ====== */
+.battle-help-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(33, 37, 41, 0.85);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.battle-help-btn:hover {
+  background: rgba(33, 37, 41, 1);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+
+/* ====== 教程面板 ====== */
+.tutorial-panel {
+  max-width: 640px;
+}
+
+.tutorial-body {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.tut-section {
+  margin-bottom: 18px;
+}
+
+.tut-section:last-child {
+  margin-bottom: 0;
+}
+
+.tut-title {
+  color: #ffd700;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.tut-types {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tut-type-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.tut-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.tut-desc {
+  display: block;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+/* 交互关系表 */
+.tut-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.tut-table th,
+.tut-table td {
+  padding: 6px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: middle;
+}
+
+.tut-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.tut-row-header {
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.tut-nothing {
+  color: rgba(255, 255, 255, 0.25);
+  font-style: italic;
+}
+
+.tut-list {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.tut-list li {
+  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .battle-settings-panel {
