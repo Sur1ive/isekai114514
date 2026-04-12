@@ -30,13 +30,11 @@
   padding: 0.5rem;
 }
 
-/* 标题和描述部分居中 */
 .tooltip-inner .tooltip-header {
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
-/* 其他额外部分居左 */
 .tooltip-inner .tooltip-extra {
   text-align: left;
   margin-bottom: 0.25rem;
@@ -46,6 +44,266 @@
 
 .tooltip-inner p {
   margin-bottom: 0.5rem;
+}
+
+/* ---------------------------装备卡片------------------------------ */
+.eq-card {
+  text-align: left;
+  min-width: 220px;
+  max-width: 280px;
+}
+
+.eq-header {
+  text-align: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.eq-tags {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.eq-tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.eq-tag-Common { background: rgba(108,117,125,0.2); color: #adb5bd; }
+.eq-tag-Rare { background: rgba(56,142,60,0.2); color: #81c784; }
+.eq-tag-Masterpiece { background: rgba(2,136,209,0.2); color: #4fc3f7; }
+.eq-tag-Epic { background: rgba(255,152,0,0.2); color: #ffb74d; }
+.eq-tag-Mythical { background: rgba(214,51,132,0.15); color: #f48fb1; }
+.eq-tag-Unique { background: rgba(220,53,69,0.15); color: #ff6b7a; }
+.eq-tag-unique-grow { background: rgba(220,53,69,0.1); color: #ff6b7a; border: 1px solid rgba(220,53,69,0.25); }
+
+.eq-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.eq-pos {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+}
+
+.eq-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  line-height: 1.4;
+}
+
+.eq-section {
+  margin-bottom: 8px;
+}
+
+.eq-section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+
+.eq-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+}
+
+.eq-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 1px 0;
+}
+
+.eq-stat-label {
+  color: rgba(255,255,255,0.7);
+}
+
+.eq-stat-pos {
+  color: #81c784;
+  font-weight: 600;
+}
+
+.eq-stat-neg {
+  color: #ef5350;
+  font-weight: 600;
+}
+
+.eq-action-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.eq-action-item {
+  font-size: 11px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eq-action-name {
+  color: rgba(255,255,255,0.85);
+}
+
+.eq-action-weight {
+  color: rgba(255,255,255,0.4);
+  font-size: 10px;
+}
+
+.eq-coeff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eq-coeff-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 1px 0;
+}
+
+.eq-coeff-cat {
+  color: rgba(255,255,255,0.7);
+}
+
+.eq-pfx-mark {
+  font-size: 9px;
+  color: #a78bfa;
+  margin-left: 3px;
+  vertical-align: middle;
+}
+
+.eq-action-prefix {
+  border-left: 2px solid #a78bfa;
+  background: rgba(167,139,250,0.08);
+}
+
+/* ---------------------------行动卡片(Popover)------------------------------ */
+.act-card {
+  text-align: left;
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.act-desc {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  line-height: 1.4;
+}
+
+.act-hit {
+  background: rgba(0,0,0,0.03);
+  border-radius: 6px;
+  padding: 8px 10px;
+  border-left: 3px solid #6c757d;
+  margin-bottom: 6px;
+}
+
+.act-hit:last-child { margin-bottom: 0; }
+
+.act-hit-Attack { border-left-color: #dc3545; }
+.act-hit-Defend { border-left-color: #0d6efd; }
+.act-hit-Dodge { border-left-color: #ffc107; }
+.act-hit-Capture { border-left-color: #198754; }
+.act-hit-Special { border-left-color: #d63384; }
+.act-hit-None { border-left-color: #adb5bd; }
+
+.act-hit-hdr {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.act-hit-icon { font-size: 15px; }
+
+.act-hit-cat {
+  font-weight: 700;
+  font-size: 13px;
+  color: #212529;
+}
+
+.act-chain {
+  font-size: 10px;
+  background: rgba(255,152,0,0.15);
+  color: #e65100;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.act-idx {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: #6c757d;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.act-coeff-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.act-coeff {
+  font-size: 11px;
+  color: #495057;
+  background: rgba(0,0,0,0.05);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.act-coeff-val {
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+.act-range-val {
+  font-weight: 700;
+  color: #212529;
+  font-size: 13px;
+  margin-left: 2px;
+}
+
+.act-coeff-label {
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 /* ---------------------------------------------------------- */
@@ -120,4 +378,100 @@
 
 .text-Unique {
   text-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+}
+
+/* Mythical 装备特效 - 星辉闪烁 */
+.btn-Mythical {
+  position: relative;
+  overflow: hidden;
+  animation: mythical-outer-glow 2.5s ease-in-out infinite;
+}
+
+.btn-Mythical::before,
+.btn-Mythical::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.btn-Mythical::before {
+  background:
+    radial-gradient(2.5px 2.5px at 10% 20%, #fde68a, transparent),
+    radial-gradient(2px 2px at 30% 75%, #c4b5fd, transparent),
+    radial-gradient(3px 3px at 55% 12%, #fbcfe8, transparent),
+    radial-gradient(2px 2px at 75% 50%, #93c5fd, transparent),
+    radial-gradient(2.5px 2.5px at 92% 82%, #fde68a, transparent),
+    radial-gradient(2px 2px at 18% 92%, #86efac, transparent),
+    radial-gradient(3px 3px at 48% 42%, #fff, transparent),
+    radial-gradient(2px 2px at 65% 88%, #c4b5fd, transparent),
+    radial-gradient(2.5px 2.5px at 5% 55%, #fbcfe8, transparent);
+  animation: mythical-twinkle-a 1.4s ease-in-out infinite;
+}
+
+.btn-Mythical::after {
+  background:
+    radial-gradient(2px 2px at 6% 65%, #c4b5fd, transparent),
+    radial-gradient(3px 3px at 25% 10%, #fbcfe8, transparent),
+    radial-gradient(2px 2px at 42% 88%, #93c5fd, transparent),
+    radial-gradient(2.5px 2.5px at 70% 35%, #fde68a, transparent),
+    radial-gradient(2px 2px at 88% 8%, #86efac, transparent),
+    radial-gradient(3px 3px at 72% 72%, #fff, transparent),
+    radial-gradient(2px 2px at 95% 48%, #fbcfe8, transparent),
+    radial-gradient(2.5px 2.5px at 38% 58%, #86efac, transparent),
+    radial-gradient(2px 2px at 82% 92%, #fde68a, transparent);
+  animation: mythical-twinkle-b 1.4s ease-in-out infinite;
+}
+
+@keyframes mythical-twinkle-a {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 1; }
+}
+
+@keyframes mythical-twinkle-b {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.1; }
+}
+
+@keyframes mythical-outer-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 6px rgba(253, 230, 138, 0.4),
+      0 0 12px rgba(214, 51, 132, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 14px rgba(253, 230, 138, 0.7),
+      0 0 28px rgba(214, 51, 132, 0.35),
+      0 0 40px rgba(196, 181, 253, 0.15);
+  }
+}
+
+.badge.bg-Mythical {
+  position: relative;
+  overflow: hidden;
+  animation: mythical-badge-glow 2s ease-in-out infinite;
+}
+
+.badge.bg-Mythical::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background:
+    radial-gradient(2px 2px at 15% 35%, #fde68a, transparent),
+    radial-gradient(2px 2px at 50% 75%, #c4b5fd, transparent),
+    radial-gradient(2.5px 2.5px at 85% 25%, #fff, transparent);
+  animation: mythical-twinkle-a 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes mythical-badge-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(253, 230, 138, 0.4); }
+  50% { box-shadow: 0 0 10px rgba(253, 230, 138, 0.7), 0 0 18px rgba(196, 181, 253, 0.25); }
+}
+
+.text-Mythical {
+  text-shadow: 0 0 8px rgba(253, 230, 138, 0.6), 0 0 16px rgba(214, 51, 132, 0.2);
 }

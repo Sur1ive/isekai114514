@@ -121,6 +121,12 @@ export class Equipment extends Item {
     return `${this.prefix.name}${this.name}`;
   }
 
+  getNameHtml(): string {
+    if (!this.prefix.name) return this.name;
+    const prefixRarityClass = Rarity[this.prefix.rarity];
+    return `<span class="text-${prefixRarityClass}">${this.prefix.name}</span>${this.name}`;
+  }
+
   levelup() {
     this.level++;
     this.ability.armor! += this.armorGrowthCoeff;

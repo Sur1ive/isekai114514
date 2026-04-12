@@ -32,6 +32,10 @@ export abstract class Item {
     return this.name;
   }
 
+  getNameHtml(): string {
+    return this.name;
+  }
+
   showItemToast() {
     const itemType = this.category === ItemCategory.Equipment ? "装备" : "道具";
     showToast(

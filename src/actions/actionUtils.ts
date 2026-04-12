@@ -123,16 +123,40 @@ export function getHitIcon(hit: Hit): string {
   }
 }
 
-/**
- * 根据不同的动作类型生成 popover 内容
- */
+const attrNameMap: Record<string, string> = {
+  str: "力量", dex: "敏捷", con: "体质", int: "智力",
+  siz: "体型", app: "魅力",
+};
+
+export function getActionIcons(action: Action): string {
+  return action.hits.map(h => getHitIcon(h)).join("");
+}
+
 export function generateActionPopoverContent(player: Player, action: Action): string {
-  return `
-    <p class="fst-italic">"${action.description}"</p>
-    <p>系数 (点数范围)</p>
-    <p>${action.hits.map(hit => `${getHitIcon(hit)}${hit.continuous ? "🔗" : ""}${Object.entries(hit.coeff)
-          .filter(([_stat, value]) => value)
-          .map(([stat, value]) => `${stat}: ${value}`)
-          .join(", ")} (${calculateMinPower(hit.coeff, player.getAbility(), player.getActionCoeff(hit.category))}~${calculateMaxPower(hit.coeff, player.getAbility(), player.getActionCoeff(hit.category))})`).join("<br>")}</p>
-  `;
+  const hitsHtml = action.hits.map((hit, i) => {
+    const icon = getHitIcon(hit);
+    const chainTag = hit.continuous ? `<span class="act-chain">🔗</span>` : "";
+    const idxTag = action.hits.length > 1 ? `<span class="act-idx">#${i + 1}</span>` : "";
+
+    const min = calculateMinPower(hit.coeff, player.getAbility(), player.getActionCoeff(hit.category));
+    const max = calculateMaxPower(hit.coeff, player.getAbility(), player.getActionCoeff(hit.category));
+    const rangeStr = `<span class="act-range-val">${min}</span>~<span class="act-range-val">${max}</span>`;
+
+    const coeffEntries = Object.entries(hit.coeff).filter(([, v]) => v);
+    const coeffHtml = coeffEntries.length > 0
+      ? `<div class="act-coeff-grid"><span class="act-coeff-label">系数:</span>${coeffEntries.map(([k, v]) =>
+          `<span class="act-coeff">${attrNameMap[k] || k} <span class="act-coeff-val">${v}</span></span>`
+        ).join("")}</div>`
+      : "";
+
+    return `<div class="act-hit act-hit-${hit.category}">
+      <div class="act-hit-hdr">${idxTag}<span class="act-hit-icon">${icon}</span>${chainTag}${rangeStr}</div>
+      ${coeffHtml}
+    </div>`;
+  }).join("");
+
+  return `<div class="act-card">
+    <div class="act-desc">"${action.description}"</div>
+    ${hitsHtml}
+  </div>`;
 }

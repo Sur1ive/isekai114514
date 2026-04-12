@@ -27,71 +27,102 @@ export function generateRandomEquipment(rarity: Rarity, level: number): Equipmen
   return new Equipment(randomEquipmentKey as EquipmentType, level);
 }
 
-/**
- * 获取装备 tooltip 的 HTML 内容
- * 显示基本信息、属性、额外行动和行动系数
- */
+const attrNameMap: Record<string, string> = {
+  str: "力量", dex: "敏捷", con: "体质", int: "智力",
+  siz: "体型", app: "魅力", armor: "护甲", piercing: "穿刺",
+};
+
+const posIconMap: Record<string, string> = {
+  hand: "🗡️", body: "🛡️", foot: "👢", accessory: "💎",
+};
+
+const posLabelMap: Record<string, string> = {
+  hand: "武器", body: "防具", foot: "鞋子", accessory: "饰品",
+};
+
+const hitCatNameMap: Record<string, string> = {
+  Attack: "攻击", Defend: "防御", Dodge: "闪避",
+  Capture: "捕捉", Special: "特殊", None: "无",
+};
+
+const rarityNameMap: Record<number, string> = {
+  [Rarity.Common]: "普通", [Rarity.Rare]: "稀有", [Rarity.Masterpiece]: "杰作",
+  [Rarity.Epic]: "史诗", [Rarity.Mythical]: "神话", [Rarity.Unique]: "独特",
+};
+
+const pfxMark = (val: number | undefined) =>
+  val ? `<span class="eq-pfx-mark">${val > 0 ? "▲" : "▼"}</span>` : "";
+
 export function generateEquipmentTooltipContent(equipment: Equipment): string {
+  const rarityClass = Rarity[equipment.rarity];
+  const rarityLabel = rarityNameMap[equipment.rarity] ?? "";
+  const prefix = equipment.prefix;
+  const hasPrefix = !!prefix.name;
+  const prefixRarityClass = Rarity[prefix.rarity];
+
   const isUnique = equipment.rarity === Rarity.Unique;
-  const uniqueTag = isUnique
-    ? `<div style="margin-bottom:4px;"><span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(220,53,69,0.15);color:#ff6b7a;border:1px solid rgba(220,53,69,0.3);">✦ 独特 · 随角色升级</span></div>`
+  const prefixHtml = hasPrefix
+    ? `<span class="text-${prefixRarityClass}">${prefix.name}</span>`
     : "";
-  const baseInfo = `
-    <div class="tooltip-base tooltip-header">
-      ${uniqueTag}
-      <h5 class="text-${Rarity[equipment.rarity]}" style="font-weight: bold;">lv${equipment.level} ${equipment.name}</h5>
-      <p class="fst-italic">"${equipment.description}"</p>
-      <p><strong>位置:</strong> ${equipment.position}</p>
-      <br>
+
+  const uniqueTag = isUnique ? ` <span class="eq-tag eq-tag-unique-grow">随角色升级</span>` : "";
+
+  const statsEntries = Object.entries(equipment.ability).filter(([, v]) => v);
+  const statsHtml = statsEntries.length > 0
+    ? `<div class="eq-section">
+        <div class="eq-stats-grid">
+          ${statsEntries.map(([k, v]) => {
+            const sign = v > 0 ? "+" : "";
+            const cls = v > 0 ? "eq-stat-pos" : "eq-stat-neg";
+            const mark = pfxMark(prefix.ability?.[k as keyof typeof prefix.ability]);
+            return `<div class="eq-stat"><span class="eq-stat-label">${attrNameMap[k] || k}</span><span><span class="${cls}">${sign}${v}</span>${mark}</span></div>`;
+          }).join("")}
+        </div>
+      </div>`
+    : "";
+
+  const baseActionCount = equipment.extraActions.length - prefix.extraActions.length;
+  const allActions = equipment.extraActions;
+
+  const actionsHtml = allActions.length > 0
+    ? `<div class="eq-section">
+        <div class="eq-section-title">额外行动</div>
+        <div class="eq-action-list">
+          ${allActions.map((a, i) => {
+            const isPrefix = i >= baseActionCount;
+            const cls = isPrefix ? "eq-action-item eq-action-prefix" : "eq-action-item";
+            return `<span class="${cls}"><span class="eq-action-name">${actionConfigs[a.actionType].name}</span><span class="eq-action-weight">${a.weight.toFixed(2)}</span></span>`;
+          }).join("")}
+        </div>
+      </div>`
+    : "";
+
+  const coeffEntries = Object.entries(equipment.actionCoeff)
+    .filter(([, c]) => c.plus !== 0 || c.multiply !== 1);
+  const coeffHtml = coeffEntries.length > 0
+    ? `<div class="eq-section">
+        <div class="eq-section-title">行动系数</div>
+        <div class="eq-stats-grid">
+          ${coeffEntries.map(([cat, c]) => {
+            const pc = prefix.actionCoeff?.[cat as keyof typeof prefix.actionCoeff];
+            const parts: string[] = [];
+            if (c.plus !== 0) parts.push(`<span class="${c.plus > 0 ? "eq-stat-pos" : "eq-stat-neg"}">${c.plus > 0 ? "+" : ""}${c.plus}</span>`);
+            if (c.multiply !== 1) parts.push(`<span class="eq-stat-pos">×${c.multiply}</span>`);
+            const mark = pc ? pfxMark(pc.plus !== 0 ? pc.plus : (pc.multiply !== 1 ? 1 : undefined)) : "";
+            return `<div class="eq-stat"><span class="eq-stat-label">${hitCatNameMap[cat] || cat}</span><span>${parts.join(" ")}${mark}</span></div>`;
+          }).join("")}
+        </div>
+      </div>`
+    : "";
+
+  return `
+    <div class="eq-card eq-card-${rarityClass}">
+      <div class="eq-header">
+        <div class="eq-name text-${rarityClass}">lv${equipment.level} ${prefixHtml}${equipment.name}</div>
+        <div class="eq-pos">${posIconMap[equipment.position] || ""}<span class="eq-tag eq-tag-${rarityClass}">${rarityLabel}</span>${uniqueTag} ${posLabelMap[equipment.position] || equipment.position}</div>
+      </div>
+      <div class="eq-desc">"${equipment.description}"</div>
+      ${statsHtml}${actionsHtml}${coeffHtml}
     </div>
   `;
-
-  // 属性部分（例如力量、体质等）
-  let abilitiesHtml = "";
-  if (equipment.ability && Object.keys(equipment.ability).length > 0) {
-    abilitiesHtml = `
-    <div class="tooltip-abilities tooltip-extra">
-      <p><strong>属性: </strong>
-        ${Object.entries(equipment.ability)
-          .filter(([_stat, value]) => value)
-          .map(([stat, value]) => `${stat}: ${value}`)
-          .join(", ")}
-      </p>
-    </div>
-  `;
-  }
-
-  // 额外行动部分，根据 extraActions 数组生成
-  let extraActionsHtml = "";
-  if (equipment.extraActions && equipment.extraActions.length > 0) {
-    extraActionsHtml = `
-      <div class="tooltip-extra-actions tooltip-extra">
-        <p><strong>额外行动: </strong>
-          ${equipment.extraActions
-            .map(
-              (action) =>
-                `${actionConfigs[action.actionType].name} (权重: ${action.weight.toFixed(2)})`,
-            )
-            .join(", ")}
-      </div>
-    `;
-  }
-
-  // 行动系数部分，遍历 actionCoeff 对象（每个分类有 plus 与 multiply 值）
-  let actionCoeffHtml = "";
-  if (equipment.actionCoeff && Object.keys(equipment.actionCoeff).length > 0) {
-    actionCoeffHtml = `
-      <div class="tooltip-action-coeff tooltip-extra">
-        <p><strong>行动系数: </strong>
-          ${Object.entries(equipment.actionCoeff)
-            .map(
-              ([category, coeff]) =>
-                `${category}: ${coeff.plus < 0 ? "" : "+"}${coeff.plus} ${coeff.multiply === 1 ? "" : "x" + coeff.multiply}`,
-            )
-            .join(", ")}
-      </div>
-    `;
-  }
-
-  return baseInfo + abilitiesHtml + extraActionsHtml + actionCoeffHtml;
 }

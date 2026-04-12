@@ -134,7 +134,7 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
   [ConsumableType.DragonScaleChest]: {
     name: "龙鳞宝箱",
     rarity: Rarity.Unique,
-    description: "覆盖着坚硬龙鳞的宝箱，表面还残留着龙息的余温。据说只有击败龙的勇者才能获得它",
+    description: "覆盖着坚硬龙鳞的宝箱，表面还残留着龙息的余温。或许能开出龙玉套装",
     effect: (target: Creature, level: number) => {
       const roll = Math.random();
       if (roll < 0.05) {

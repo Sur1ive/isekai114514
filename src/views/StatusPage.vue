@@ -58,11 +58,12 @@
             </ul>
             <!-- 装备额外行动列表 -->
             <div v-if="actionTab === 'extra'">
-              <ul class="list-group">
-                <li
+              <div class="action-list">
+                <div
                   v-for="action in sortedExtraActions"
                   :key="action.actionType"
-                  class="list-group-item"
+                  class="action-item"
+                  :class="'action-item-' + Rarity[actionConfigs[action.actionType].rarity]"
                   tabindex="0"
                   data-bs-toggle="popover"
                   data-bs-trigger="focus"
@@ -70,20 +71,22 @@
                   :data-bs-title="actionConfigs[action.actionType].name"
                   :data-bs-content="generateActionPopoverContent(player!, actionConfigs[action.actionType])"
                 >
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span>{{ actionConfigs[action.actionType].name }}</span>
-                    <span :class="'badge bg-' + Rarity[actionConfigs[action.actionType].rarity]">{{ action.weight.toFixed(2) }}</span>
+                  <div class="action-item-main">
+                    <span class="action-icons">{{ getActionIcons(actionConfigs[action.actionType]) }}</span>
+                    <span class="action-name">{{ actionConfigs[action.actionType].name }}</span>
                   </div>
-                </li>
-              </ul>
+                  <span :class="'badge bg-' + Rarity[actionConfigs[action.actionType].rarity]">{{ action.weight.toFixed(2) }}</span>
+                </div>
+              </div>
             </div>
             <!-- 基础行动列表 -->
             <div v-else>
-              <ul class="list-group">
-                <li
+              <div class="action-list">
+                <div
                   v-for="action in sortedBaseActions"
                   :key="action.actionType"
-                  class="list-group-item"
+                  class="action-item"
+                  :class="'action-item-' + Rarity[actionConfigs[action.actionType].rarity]"
                   tabindex="0"
                   data-bs-toggle="popover"
                   data-bs-trigger="focus"
@@ -91,12 +94,13 @@
                   :data-bs-title="actionConfigs[action.actionType].name"
                   :data-bs-content="generateActionPopoverContent(player!, actionConfigs[action.actionType])"
                 >
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span>{{ actionConfigs[action.actionType].name }}</span>
-                    <span :class="'badge bg-' + Rarity[actionConfigs[action.actionType].rarity]">{{ action.weight.toFixed(2) }}</span>
+                  <div class="action-item-main">
+                    <span class="action-icons">{{ getActionIcons(actionConfigs[action.actionType]) }}</span>
+                    <span class="action-name">{{ actionConfigs[action.actionType].name }}</span>
                   </div>
-                </li>
-              </ul>
+                  <span :class="'badge bg-' + Rarity[actionConfigs[action.actionType].rarity]">{{ action.weight.toFixed(2) }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -118,9 +122,8 @@
                     :class="'badge bg-' + Rarity[equipment.rarity]"
                     style="cursor: pointer"
                     @click="removeEquipment(position)"
-                  >
-                    {{ equipment.getName() }}
-                  </span>
+                    :data-equip-pos="position"
+                  >{{ equipment.getName() }}</span>
                   <span v-else class="badge bg-secondary">空</span>
                 </div>
               </div>
@@ -249,7 +252,7 @@ import { Rarity } from "@/types";
 import type { Ability } from "@/creatures/types";
 import { actionConfigs } from "@/actions/actionConfigs";
 import { generateItemTooltipContent } from "@/items/itemUtils";
-import { generateActionPopoverContent } from "@/actions/actionUtils";
+import { generateActionPopoverContent, getActionIcons } from "@/actions/actionUtils";
 import { EquipmentPosition } from "@/items/types";
 import { Consumable } from "@/items/Consumable";
 import { ConsumableType } from "@/items/consumableConfigs";
@@ -482,7 +485,6 @@ function initTippyInstances() {
 
         useBtn?.addEventListener("click", (e) => {
           e.stopPropagation();
-          inst.hide();
           if (item instanceof Consumable) {
             item.useItem(player.value!);
             player.value!.addLog(`${player.value!.name} 使用了 ${item.getName()}`);
@@ -495,7 +497,6 @@ function initTippyInstances() {
 
         discardBtn?.addEventListener("click", (e) => {
           e.stopPropagation();
-          inst.hide();
           player.value!.discardItem(item);
           playerStore.save();
           refreshPage();
@@ -529,7 +530,6 @@ function initTippyInstances() {
           const btn = inst.popper.querySelector(".remove-equip-btn");
           btn?.addEventListener("click", (e) => {
             e.stopPropagation();
-            inst.hide();
             player.value!.removeEquipment(position as EquipmentPosition);
             playerStore.save();
             refreshPage();
@@ -700,4 +700,59 @@ onBeforeUnmount(() => {
   line-height: 18px;
   text-align: center;
 }
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #6c757d;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.action-item:hover {
+  background: #e9ecef;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.action-item:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+.action-item-Common { border-left-color: #6c757d; }
+.action-item-Rare { border-left-color: #388e3c; }
+.action-item-Masterpiece { border-left-color: #0288d1; }
+.action-item-Epic { border-left-color: #ff9800; }
+.action-item-Mythical { border-left-color: #d63384; }
+.action-item-Unique { border-left-color: #dc3545; }
+
+.action-item-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.action-icons {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.action-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #212529;
+}
+
 </style>
