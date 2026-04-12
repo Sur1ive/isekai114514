@@ -522,7 +522,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     hits: [
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 10, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 0, int: 8, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 喷出了汹涌的火焰`,
       },

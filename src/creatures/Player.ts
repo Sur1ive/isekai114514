@@ -30,17 +30,17 @@ export class Player extends Creature {
 
   /**
    * 根据当前等级计算下一次升级所需经验
-   * 1-10级：固定经验（100）
-   * 10-20级：线性增长，100 + (level - 10) * 40
-   * 20级以上：指数增长，500 * 1.2^(level - 20)
+   * 1-10级：固定经验（1000）
+   * 10-20级：线性增长，1000 + (level - 10) * 400
+   * 20级以上：指数增长，5000 * 1.2^(level - 20)
    */
   getNextLevelExp(): number {
     if (this.level <= 10) {
-      return 100;
+      return 1000;
     } else if (this.level <= 20) {
-      return 100 + (this.level - 10) * 40;
+      return 1000 + (this.level - 10) * 400;
     } else {
-      return 500 * Math.pow(1.2, this.level - 20);
+      return 5000 * Math.pow(1.2, this.level - 20);
     }
   }
 

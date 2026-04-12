@@ -126,7 +126,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 2, growth: 0.05 },
       app: { base: 0, growth: 0 },
       dex: { base: 1, growth: 0.05 },
-      armor: { base: 25, growth: 5.5 },
+      armor: { base: 30, growth: 5.5 },
       piercing: { base: 0, growth: 4.5 },
     },
     actions: [
@@ -247,7 +247,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
   [CreatureType.DiscardedGolem]: {
     typeName: "废弃的岩石魔像",
     description:
-      "一尊不知何时被废弃的岩石魔像，在风雨的侵蚀下，它的巨大的身躯上布满了裂痕和苔藓。它不该会动呀？",
+      "在风雨的侵蚀下，它的巨大的身躯上布满了裂痕和苔藓，即便如此它仍然无比坚硬",
     abilityCoeff: {
       str: { base: 15, growth: 0.3 },
       int: { base: 0, growth: 0 },

@@ -34,7 +34,7 @@ export const blackForestCenterNode: NormalMonsterNode = {
 export const northwestMarshForestStartNode: CampNode = {
   name: "黑森林入口",
   id: "northwestMarshForestStart",
-  description: "还没做地图",
+  description: "高等级图，还没做",
   type: NodeType.Camp,
   position: { x: 880, y: 1300 },
   toNodeList: [blackForestCenterNode],

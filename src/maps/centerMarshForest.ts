@@ -27,19 +27,19 @@ export const centerMarshForestToCanyonNode: EliteMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.DiscardedGolem,
-      maxLevel: 25,
-      minLevel: 20,
+      maxLevel: 6,
+      minLevel: 5,
       maxIndividualStrength: 1.2,
       minIndividualStrength: 0.8,
       weight: 1,
     },
     {
       monster: CreatureType.TreasureSlime,
-      maxLevel: 25,
-      minLevel: 20,
+      maxLevel: 6,
+      minLevel: 5,
       maxIndividualStrength: 1.5,
       minIndividualStrength: 0.5,
-      weight: 0.5,
+      weight: 0.01,
     },
   ],
   treasureProbability: 0,
@@ -56,28 +56,28 @@ export const centerMarshForestCaveNode: TreasureNode = {
   firstTimeTreasureList: [
     {
       item: ConsumableType.SilverChest,
-      minLevel: 15,
-      maxLevel: 25,
+      minLevel: 12,
+      maxLevel: 15,
       weight: 1,
     },
   ],
   repeatableTreasureList: [
     {
       item: ConsumableType.SilverChest,
-      minLevel: 15,
-      maxLevel: 25,
+      minLevel: 12,
+      maxLevel: 15,
       weight: 0.05,
     },
     {
       item: ConsumableType.BrokenChest,
-      minLevel: 15,
-      maxLevel: 25,
+      minLevel: 12,
+      maxLevel: 15,
       weight: 0.2,
     },
     {
       item: ConsumableType.WoodenChest,
-      minLevel: 15,
-      maxLevel: 25,
+      minLevel: 12,
+      maxLevel: 15,
       weight: 0.75,
     },
   ],
@@ -103,27 +103,27 @@ export const centerMarshForestHillTiredNode: EliteMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.DiscardedGolem,
-      maxLevel: 30,
-      minLevel: 25,
+      maxLevel: 15,
+      minLevel: 14,
       maxIndividualStrength: 1.2,
       minIndividualStrength: 0.8,
       weight: 1,
     },
     {
       monster: CreatureType.Horse,
-      maxLevel: 30,
-      minLevel: 25,
+      maxLevel: 15,
+      minLevel: 14,
       maxIndividualStrength: 1.2,
       minIndividualStrength: 0.8,
       weight: 1,
     },
     {
       monster: CreatureType.TreasureSlime,
-      maxLevel: 30,
-      minLevel: 25,
+      maxLevel: 15,
+      minLevel: 14,
       maxIndividualStrength: 1.5,
       minIndividualStrength: 0.5,
-      weight: 0.5,
+      weight: 0.04,
     },
   ],
   treasureProbability: 0.1,
@@ -140,8 +140,8 @@ export const centerMarshForestHillRoadNode: NormalMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.Wolf,
-      maxLevel: 27,
-      minLevel: 22,
+      maxLevel: 15,
+      minLevel: 14,
       weight: 1,
     },
   ],
@@ -157,8 +157,8 @@ export const centerMarshForestHillFootNode: NormalMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.Wolf,
-      maxLevel: 25,
-      minLevel: 20,
+      maxLevel: 15,
+      minLevel: 12,
       weight: 1,
     },
   ],
@@ -190,9 +190,9 @@ export const centerMarshForestFarRoadNode: NormalMonsterNode = {
   toNodeList: [centerMarshForestHillFootNode, centerMarshForestToCanyonNode],
   monsterList: [
     {
-      monster: CreatureType.Goblin,
-      maxLevel: 22,
-      minLevel: 17,
+      monster: CreatureType.Wolf,
+      maxLevel: 6,
+      minLevel: 5,
       weight: 1,
     },
   ],
@@ -226,9 +226,15 @@ export const centerMarshForestOppositeRoadNode: NormalMonsterNode = {
   toNodeList: [centerMarshForestToCanyonNode],
   monsterList: [
     {
-      monster: CreatureType.Slime,
-      maxLevel: 22,
-      minLevel: 17,
+      monster: CreatureType.Goblin,
+      maxLevel: 4,
+      minLevel: 3,
+      weight: 1,
+    },
+    {
+      monster: CreatureType.Wolf,
+      maxLevel: 4,
+      minLevel: 3,
       weight: 1,
     },
   ],
@@ -242,28 +248,28 @@ export const centerMarshForestRuinInsideNode: TreasureNode = {
   firstTimeTreasureList: [
     {
       item: ConsumableType.WoodenChest,
-      minLevel: 5,
-      maxLevel: 15,
+      minLevel: 3,
+      maxLevel: 4,
       weight: 1,
     },
   ],
   repeatableTreasureList: [
     {
       item: ConsumableType.BrokenChest,
-      minLevel: 5,
-      maxLevel: 15,
+      minLevel: 3,
+      maxLevel: 4,
       weight: 0.6,
     },
     {
       item: ConsumableType.WoodenChest,
-      minLevel: 5,
-      maxLevel: 15,
+      minLevel: 3,
+      maxLevel: 4,
       weight: 0.4,
     },
     {
       item: ConsumableType.SilverChest,
-      minLevel: 5,
-      maxLevel: 15,
+      minLevel: 3,
+      maxLevel: 4,
       weight: 0.01,
     },
   ],
@@ -279,8 +285,8 @@ export const centerMarshForestRuinNode: NormalMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.Wolf,
-      maxLevel: 15,
-      minLevel: 10,
+      maxLevel: 4,
+      minLevel: 3,
       weight: 1,
     },
   ],
@@ -306,9 +312,9 @@ export const centerMarshForestRoadNode: NormalMonsterNode = {
   toNodeList: [centerMarshForestFarRoadNode],
   monsterList: [
     {
-      monster: CreatureType.Slime,
-      maxLevel: 17,
-      minLevel: 12,
+      monster: CreatureType.Goblin,
+      maxLevel: 6,
+      minLevel: 5,
       weight: 1,
     },
   ],
@@ -324,8 +330,8 @@ export const centerMarshForestRiverBankNode: NormalMonsterNode = {
   monsterList: [
     {
       monster: CreatureType.Slime,
-      maxLevel: 12,
-      minLevel: 7,
+      maxLevel: 2,
+      minLevel: 2,
       weight: 1,
     },
   ],

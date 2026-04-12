@@ -79,7 +79,21 @@
           <p class="card-text fst-italic" v-html="'&quot;' + currentEnemy.description + '&quot;'"></p>
           <!-- eslint-disable-next-line vue/no-v-html -->
           <p class="card-text" v-html="enemyActionObservation"></p>
-          <p class="card-text">HP: <strong>{{ Math.ceil(currentEnemy.health) }}</strong></p>
+          <div class="battle-hp-bar">
+            <div class="battle-hp-bar-bg">
+              <div
+                class="battle-hp-bar-prev"
+                :style="{ width: (prevEnemyHp / currentEnemy.getMaxHealth() * 100) + '%' }"
+              ></div>
+              <div
+                class="battle-hp-bar-fill battle-hp-bar-enemy"
+                :style="{ width: (currentEnemy.health / currentEnemy.getMaxHealth() * 100) + '%' }"
+              ></div>
+              <div class="battle-hp-bar-text">
+                {{ Math.ceil(currentEnemy.health) }} / {{ Math.ceil(currentEnemy.getMaxHealth()) }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -89,10 +103,24 @@
       <!-- 玩家信息 -->
       <div class="card mb-4">
         <div class="card-header bg-success text-white">
-          <h4 class="mb-0">{{ player.name }}</h4>
+          <h4 class="mb-0">{{ player.name }} <span style="opacity: 0.5; font-size: 0.7em">{{ creatureConfigs[player.type].typeName }}</span> <span style="font-size: 12px; margin-left: 10px" class="badge bg-secondary">lv.{{ player.level }}</span></h4>
         </div>
         <div class="card-body">
-          <p class="card-text">HP: <strong>{{ Math.ceil(player.health) }}</strong></p>
+          <div class="battle-hp-bar">
+            <div class="battle-hp-bar-bg">
+              <div
+                class="battle-hp-bar-prev"
+                :style="{ width: (prevPlayerHp / player.getMaxHealth() * 100) + '%' }"
+              ></div>
+              <div
+                class="battle-hp-bar-fill battle-hp-bar-player"
+                :style="{ width: (player.health / player.getMaxHealth() * 100) + '%' }"
+              ></div>
+              <div class="battle-hp-bar-text">
+                {{ Math.ceil(player.health) }} / {{ Math.ceil(player.getMaxHealth()) }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -314,6 +342,7 @@ import type { DiceRollData, BattleRoundLog } from "@/battle/types";
 import { Rarity } from "@/types";
 import type { Action } from "@/actions/Action";
 import type { Monster } from "@/creatures/Monster";
+import { creatureConfigs } from "@/creatures/creatureConfigs";
 import type { Item } from "@/items/Item";
 import { Consumable } from "@/items/Consumable";
 import { ConsumableType } from "@/items/consumableConfigs";
@@ -328,6 +357,7 @@ const battleStore = useBattleStore();
 const player = playerStore.player!;
 // 使用非响应式变量存储 Monster 以避免 Vue ShallowRef 丢失 private 字段的类型问题
 let enemyObj: Monster | null = null;
+let bossHpSnapshot = 0;
 const renderTick = ref(0);
 const currentEnemy = computed(() => {
   renderTick.value;
@@ -342,6 +372,10 @@ const battleResult = ref<BattleResult | null>(null);
 const leveledUp = ref(false);
 const droppedItem = ref<Item | null>(null);
 const earnedExp = ref(0);
+
+// 血条：上回合 HP 快照（用于显示掉血过渡色）
+const prevPlayerHp = ref(0);
+const prevEnemyHp = ref(0);
 
 // 掷骰动画状态
 const diceRollsData = ref<DiceRollData[]>([]);
@@ -379,6 +413,9 @@ onMounted(() => {
     return;
   }
   enemyObj = battleStore.enemy as Monster;
+  bossHpSnapshot = enemyObj.health;
+  prevPlayerHp.value = player.health;
+  prevEnemyHp.value = enemyObj.health;
   triggerRender();
   player.isAtHome = false;
   prepareNextTurn();
@@ -393,6 +430,10 @@ function chooseAction(chosen: Action) {
   const playerAction = chosen;
   const enemyAct = enemyAction.value!;
   const enemy = enemyObj!;
+
+  // 更新上回合 HP 快照（本回合开始前的 HP）
+  prevPlayerHp.value = player.health;
+  prevEnemyHp.value = enemy.health;
 
   // 记录结算前的 HP 快照
   const pHpStart = Math.ceil(player.health);
@@ -555,11 +596,12 @@ function handleContinue() {
 
   if (ctx === BattleContext.Boss) {
     if (result === BattleResult.Lose || result === BattleResult.Withdraw) {
-      const bossMonster = player.currentMapData.boss[0] as Monster;
-      const bossHealthBefore = bossMonster.health;
-      const bossHealthAfter = enemy.health;
-      if (bossHealthBefore - bossHealthAfter > enemy.getMaxHealth() * 0.2) {
-        bossMonster.health = bossHealthAfter;
+      const damageDealt = bossHpSnapshot - enemy.health;
+      if (damageDealt > enemy.getMaxHealth() * 0.2) {
+        // 永久削减：保留战斗后的血量
+      } else {
+        // 伤害不足：恢复到战斗前的血量
+        enemy.health = bossHpSnapshot;
       }
       playerStore.save();
       router.push({ name: "main-menu" });
@@ -570,6 +612,8 @@ function handleContinue() {
         // 下一阶段 Boss
         const nextBoss = player.currentMapData.boss[0] as Monster;
         enemyObj = nextBoss;
+        bossHpSnapshot = nextBoss.health;
+        prevEnemyHp.value = nextBoss.health;
         triggerRender();
         battleStore.startBattle(nextBoss, BattleContext.Boss);
         battleEnded.value = false;
@@ -602,6 +646,62 @@ function handleContinue() {
 </script>
 
 <style scoped>
+/* ====== 战斗血条 ====== */
+.battle-hp-bar {
+  margin: 4px 0;
+}
+
+.battle-hp-bar-bg {
+  position: relative;
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.battle-hp-bar-prev {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #f5c6cb;
+  border-radius: 4px 0 0 4px;
+  transition: width 0.3s ease;
+}
+
+.battle-hp-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+  transition: width 0.3s ease;
+}
+
+.battle-hp-bar-player {
+  background: #28a745;
+}
+
+.battle-hp-bar-enemy {
+  background: #dc3545;
+}
+
+.battle-hp-bar-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
 .enemy-portrait {
   text-align: center;
   margin-bottom: 12px;

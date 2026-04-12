@@ -13,22 +13,22 @@ export const dragonValleyBossNode: BossNode = {
   bossStageList: [
     {
       monster: CreatureType.Dragon,
-      maxLevel: 30,
-      minLevel: 25,
+      maxLevel: 10,
+      minLevel: 10,
       maxIndividualStrength: 1.1,
       minIndividualStrength: 0.9,
     },
     {
       monster: CreatureType.AngryDragon,
-      maxLevel: 30,
-      minLevel: 25,
+      maxLevel: 10,
+      minLevel: 10,
       maxIndividualStrength: 1.1,
       minIndividualStrength: 0.9,
     },
     {
       monster: CreatureType.WeakDragon,
-      maxLevel: 30,
-      minLevel: 25,
+      maxLevel: 10,
+      minLevel: 10,
       maxIndividualStrength: 1.1,
       minIndividualStrength: 0.9,
     },

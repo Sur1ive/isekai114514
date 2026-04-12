@@ -78,7 +78,45 @@
       </div>
     </div>
 
-    <svg id="map-svg" ref="svgRef" style="flex: 1; background-color: #1a1a1a"></svg>
+    <!-- 地图区域（相对定位容器，boss血条浮于其上） -->
+    <div style="flex: 1; position: relative">
+      <!-- Boss 血条 -->
+      <div v-if="hasBossNode" class="boss-gauge-container">
+        <div class="boss-gauge">
+          <div class="boss-gauge-header">
+            <span class="boss-gauge-label">BOSS</span>
+            <span class="boss-gauge-name">{{ bossSpawned ? bossCurrentStageName : bossNodeName }}</span>
+            <span v-if="bossCleared" class="boss-gauge-clear">CLEAR</span>
+          </div>
+          <div class="boss-gauge-bar-bg">
+            <div
+              v-if="bossSpawned"
+              class="boss-gauge-bar-fill"
+              :style="{ width: bossHpPercent + '%', backgroundColor: bossHpColor }"
+            ></div>
+            <div v-else-if="bossCleared" class="boss-gauge-bar-fill" style="width: 0%"></div>
+            <div v-else class="boss-gauge-bar-fill boss-gauge-bar-unknown" style="width: 100%"></div>
+            <template v-if="bossSpawned && bossTotalStages > 1">
+              <div
+                v-for="i in bossTotalStages - 1"
+                :key="i"
+                class="boss-gauge-stage-divider"
+                :style="{ left: (i / bossTotalStages) * 100 + '%' }"
+              ></div>
+            </template>
+            <div class="boss-gauge-bar-text">
+              <template v-if="bossSpawned">
+                {{ Math.ceil(bossCurrentHp) }} / {{ Math.ceil(bossTotalMaxHp) }}
+              </template>
+              <template v-else-if="bossCleared">CLEAR</template>
+              <template v-else>???</template>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <svg id="map-svg" ref="svgRef" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #1a1a1a"></svg>
+    </div>
 
     <button
       type="button"
@@ -103,12 +141,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { usePlayerStore } from "@/stores/playerStore";
-import { Node } from "@/maps/Node";
+import { Node, NodeType } from "@/maps/Node";
+import type { BossNode } from "@/maps/Node";
 import { getRegionById } from "@/maps/Region";
 import { goToNode } from "@/maps/utils";
+import { Monster } from "@/creatures/Monster";
 import ruinImage from "@/assets/ruin.png";
 import * as d3 from "d3";
 import tippy from "tippy.js";
@@ -124,6 +164,59 @@ const regionName = ref("未知区域");
 const playerHealth = ref(0);
 const playerMaxHealth = ref(0);
 const currentLocationName = ref("营地");
+
+// Boss 血条
+const hasBossNode = ref(false);
+const bossNodeName = ref("");
+const bossSpawned = ref(false);
+const bossCleared = ref(false);
+const bossTotalStages = ref(0);
+const bossRemainingStages = ref(0);
+const bossCurrentHp = ref(0);
+const bossTotalMaxHp = ref(0);
+const bossCurrentStageName = ref("");
+const bossHpPercent = computed(() => {
+  if (bossTotalMaxHp.value <= 0) return 0;
+  return Math.max(0, Math.min(100, (bossCurrentHp.value / bossTotalMaxHp.value) * 100));
+});
+const bossHpColor = computed(() => {
+  const p = bossHpPercent.value;
+  if (p > 50) return "#e74c3c";
+  if (p > 25) return "#e67e22";
+  return "#c0392b";
+});
+
+function updateBossGauge() {
+  const player = playerStore.player;
+  if (!player) return;
+  const region = getRegionById(player.currentMapData.currentRegionId);
+  if (!region?.nodeList) return;
+
+  const bossNode = region.nodeList.find((n) => n.type === NodeType.Boss) as BossNode | undefined;
+  hasBossNode.value = !!bossNode;
+  if (!bossNode) return;
+
+  bossNodeName.value = bossNode.name;
+  bossTotalStages.value = bossNode.bossStageList.length;
+
+  const bossList = player.currentMapData.boss;
+  bossSpawned.value = bossList.length > 0;
+  bossCleared.value = !bossSpawned.value && player.currentMapData.visitedNodeIdList.includes(bossNode.id);
+
+  if (bossSpawned.value) {
+    bossRemainingStages.value = bossList.length;
+    const currentBoss = bossList[0] as Monster;
+    bossCurrentStageName.value = currentBoss.name;
+    bossCurrentHp.value = bossList.reduce((sum, b) => sum + (b as Monster).health, 0);
+    bossTotalMaxHp.value = bossList.reduce((sum, b) => sum + (b as Monster).getMaxHealth(), 0);
+    const defeatedStages = bossTotalStages.value - bossList.length;
+    for (let i = 0; i < defeatedStages; i++) {
+      bossTotalMaxHp.value += bossNode.bossStageList[i]
+        ? new Monster(bossNode.bossStageList[i].monster, bossNode.bossStageList[i].maxLevel, bossNode.bossStageList[i].maxIndividualStrength).getMaxHealth()
+        : 0;
+    }
+  }
+}
 
 // D3 引用
 let svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
@@ -421,6 +514,9 @@ onMounted(() => {
   `;
   document.head.appendChild(styleElement);
 
+  // Boss 血条初始化
+  updateBossGauge();
+
   // 视图状态恢复/自动居中
   setTimeout(() => {
     if (player.currentMapData.viewState) {
@@ -596,3 +692,109 @@ onBeforeUnmount(() => {
   }
 });
 </script>
+
+<style scoped>
+.boss-gauge-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 15;
+  pointer-events: none;
+  width: min(260px, 40vw);
+}
+
+.boss-gauge {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  padding: 5px 10px 7px;
+}
+
+.boss-gauge-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.boss-gauge-label {
+  background: #dc3545;
+  color: #fff;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 0 5px;
+  border-radius: 2px;
+}
+
+.boss-gauge-name {
+  color: #f8f9fa;
+  font-size: 11px;
+  font-weight: 600;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.boss-gauge-stage {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.boss-gauge-clear {
+  color: #4caf50;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.boss-gauge-bar-bg {
+  position: relative;
+  height: 12px;
+  background: #444;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.boss-gauge-bar-fill {
+  height: 100%;
+  transition: width 0.8s ease-out, background-color 0.5s ease;
+  border-radius: 3px 0 0 3px;
+}
+
+.boss-gauge-bar-unknown {
+  background-color: #6c757d !important;
+  animation: unknown-pulse 3s ease-in-out infinite;
+}
+
+@keyframes unknown-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+.boss-gauge-stage-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  z-index: 2;
+}
+
+.boss-gauge-bar-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  z-index: 3;
+}
+</style>

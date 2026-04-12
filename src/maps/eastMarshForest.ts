@@ -5,7 +5,7 @@ import eastMarshForestImage from "../assets/eastMarshForest.png";
 export const eastMarshForestStartNode: CampNode = {
   name: "风和日丽的森林",
   id: "eastMarshForestStart",
-  description: "还没做地图",
+  description: "低等级刷子图，还没做",
   type: NodeType.Camp,
   position: { x: 340, y: 900 },
   toNodeList: [],
