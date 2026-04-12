@@ -141,7 +141,7 @@
               lv: {{ player.level }}{{ leveledUp ? "🔺" : "" }} exp: {{ player.exp }}/{{ player.getNextLevelExp() }}
             </p>
             <p v-if="battleResult === BattleResult.Win">
-              获得经验: <span class="text-info">{{ Math.floor(currentEnemy.giveExp) }}</span>
+              获得经验: <span class="text-info">{{ earnedExp }}</span><span v-if="player.level > currentEnemy.level" class="text-muted" style="font-size: 12px"> (等级压制)</span>
               <span v-if="droppedItem">
                 获得物品: <span :class="'text-' + Rarity[droppedItem.rarity]">{{ droppedItem.name }}</span>
               </span>
@@ -315,6 +315,9 @@ import { Rarity } from "@/types";
 import type { Action } from "@/actions/Action";
 import type { Monster } from "@/creatures/Monster";
 import type { Item } from "@/items/Item";
+import { Consumable } from "@/items/Consumable";
+import { ConsumableType } from "@/items/consumableConfigs";
+import { showToast } from "@/utils/toast";
 import DiceOverlay from "@/components/DiceOverlay.vue";
 import BattleLogContent from "@/components/BattleLogContent.vue";
 
@@ -338,6 +341,7 @@ const battleEnded = ref(false);
 const battleResult = ref<BattleResult | null>(null);
 const leveledUp = ref(false);
 const droppedItem = ref<Item | null>(null);
+const earnedExp = ref(0);
 
 // 掷骰动画状态
 const diceRollsData = ref<DiceRollData[]>([]);
@@ -510,9 +514,20 @@ function endBattle(result: BattleResult) {
       drop.showItemToast();
       droppedItem.value = drop;
     }
-    player.exp += Math.floor(enemy.giveExp);
+    const levelDiff = player.level - enemy.level;
+    const expFactor = levelDiff > 0 ? Math.max(0.1, 1 - levelDiff * 0.1) : 1;
+    const actualExp = Math.floor(enemy.giveExp * expFactor);
+    earnedExp.value = actualExp;
+    player.exp += actualExp;
     leveledUp.value = player.checkLevelUp();
     player.exp = Math.floor(player.exp);
+    if (leveledUp.value) {
+      const potion = new Consumable(ConsumableType.LifePotion);
+      player.pack.push(potion);
+      showToast("🎉 升级奖励", `升级了！获得了 ${potion.getItemIcon()} <strong>${potion.getName()}</strong>！`, {
+        headerClass: "bg-primary text-white",
+      });
+    }
     player.addLog(enemy.name + "掉落了<span style='color: gold;'>" + (drop?.name ?? "无") + "</span>");
     if (drop) {
       player.pack.push(drop);

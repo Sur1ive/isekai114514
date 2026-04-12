@@ -132,12 +132,42 @@
       <!-- 背包区域 -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm">
-          <div class="card-header bg-secondary text-white">
+          <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
             <h4 class="card-title mb-0">{{ player.name }} 的背包</h4>
+            <button
+              class="btn btn-sm"
+              :class="forgeMode ? 'btn-danger' : 'btn-warning'"
+              @click="toggleForgeMode"
+            >
+              {{ forgeMode ? "✕ 取消合成" : "⚒️ 合成" }}
+            </button>
           </div>
           <div class="card-body">
+            <!-- 合成模式提示栏 -->
+            <div v-if="forgeMode" class="forge-info-bar mb-3">
+              <div class="forge-hint">
+                <span>选择 <strong>{{ FORGE_REQUIRED }}</strong> 件装备合成</span>
+                <span class="forge-count badge bg-primary ms-2">{{ forgeSelectedCount }} / {{ FORGE_REQUIRED }}</span>
+              </div>
+              <div v-if="forgePreview && forgeSelectedCount > 0" class="forge-preview mt-2">
+                <small class="text-muted">
+                  预估: Lv.{{ forgePreview.avgLevel }}
+                  <span :class="'text-' + Rarity[Math.round(forgePreview.avgRarity)]">
+                    {{ ["普通", "稀有", "杰作", "史诗", "神话"][Math.min(Math.round(forgePreview.avgRarity), 4)] }}
+                  </span>
+                  宝箱（也许）
+                </small>
+              </div>
+              <button
+                v-if="forgeSelectedCount === FORGE_REQUIRED"
+                class="btn btn-warning btn-sm mt-2 forge-confirm-btn"
+                @click="executeForge"
+              >
+                ⚒️ 确认合成！
+              </button>
+            </div>
             <!-- Tab 导航 -->
-            <ul class="nav nav-underline mb-3">
+            <ul v-if="!forgeMode" class="nav nav-underline mb-3">
               <li class="nav-item">
                 <button class="nav-link" :class="{ active: packTab === 'all' }" @click="packTab = 'all'">全部</button>
               </li>
@@ -150,13 +180,27 @@
             </ul>
             <div class="d-flex flex-wrap gap-2">
               <template v-for="item in filteredPack" :key="item.uuid">
-                <button :class="'btn btn-' + Rarity[item.rarity]" :ref="(el) => setItemRef(item.uuid, el as HTMLElement)">
+                <button
+                  v-if="forgeMode"
+                  :class="[
+                    'btn btn-' + Rarity[item.rarity],
+                    'forge-item',
+                    { 'forge-selected': forgeSelected.has(item.uuid), 'forge-disabled': !(item instanceof Equipment) }
+                  ]"
+                  :disabled="!(item instanceof Equipment)"
+                  @click="item instanceof Equipment && toggleForgeSelect(item)"
+                >
+                  <span class="forge-check" v-if="forgeSelected.has(item.uuid)">✓</span>
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span v-html="item.getItemIcon()"></span>{{ item.getName() }}
+                </button>
+                <button v-else :class="'btn btn-' + Rarity[item.rarity]" :ref="(el) => setItemRef(item.uuid, el as HTMLElement)">
                   <!-- eslint-disable-next-line vue/no-v-html -->
                   <span v-html="item.getItemIcon()"></span>{{ item.getName() }}
                 </button>
               </template>
               <p v-if="filteredPack.length === 0" class="text-muted">
-                {{ packTab === "all" ? "背包为空" : packTab === "equip" ? "没有装备" : "没有道具" }}
+                {{ forgeMode ? "没有装备可以合成" : packTab === "all" ? "背包为空" : packTab === "equip" ? "没有装备" : "没有道具" }}
               </p>
             </div>
           </div>
@@ -208,7 +252,9 @@ import { generateItemTooltipContent } from "@/items/itemUtils";
 import { generateActionPopoverContent } from "@/actions/actionUtils";
 import { EquipmentPosition } from "@/items/types";
 import { Consumable } from "@/items/Consumable";
+import { ConsumableType } from "@/items/consumableConfigs";
 import { Equipment } from "@/items/Equipment";
+import { showToast } from "@/utils/toast";
 import tippy, { Instance as TippyInstance } from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import * as bootstrap from "bootstrap";
@@ -219,6 +265,94 @@ const player = computed(() => playerStore.player);
 const actionTab = ref<"extra" | "base">("extra");
 const packTab = ref<"all" | "equip" | "consumable">("all");
 const renderKey = ref(0);
+
+const forgeMode = ref(false);
+const forgeSelected = ref<Set<string>>(new Set());
+const FORGE_REQUIRED = 4;
+
+const forgeSelectedCount = computed(() => forgeSelected.value.size);
+
+const forgePreview = computed(() => {
+  if (forgeSelected.value.size === 0 || !player.value) return null;
+  const items = player.value.pack.filter(
+    (item) => item instanceof Equipment && forgeSelected.value.has(item.uuid),
+  ) as Equipment[];
+  if (items.length === 0) return null;
+  const avgLevel = items.reduce((sum, e) => sum + e.level, 0) / items.length;
+  const avgRarity = items.reduce((sum, e) => sum + e.rarity, 0) / items.length;
+  return { avgLevel: Math.round(avgLevel), avgRarity };
+});
+
+const rarityToChest: Record<number, ConsumableType> = {
+  [Rarity.Common]: ConsumableType.BrokenChest,
+  [Rarity.Rare]: ConsumableType.WoodenChest,
+  [Rarity.Masterpiece]: ConsumableType.SilverChest,
+  [Rarity.Epic]: ConsumableType.GoldChest,
+  [Rarity.Mythical]: ConsumableType.DiamondChest,
+};
+
+function toggleForgeMode() {
+  forgeMode.value = !forgeMode.value;
+  forgeSelected.value = new Set();
+  if (forgeMode.value) {
+    packTab.value = "all";
+  }
+  refreshPage();
+}
+
+function toggleForgeSelect(item: Equipment) {
+  const newSet = new Set(forgeSelected.value);
+  if (newSet.has(item.uuid)) {
+    newSet.delete(item.uuid);
+  } else if (newSet.size < FORGE_REQUIRED) {
+    newSet.add(item.uuid);
+  }
+  forgeSelected.value = newSet;
+}
+
+function executeForge() {
+  if (!player.value || forgeSelected.value.size !== FORGE_REQUIRED) return;
+
+  const items = player.value.pack.filter(
+    (item) => item instanceof Equipment && forgeSelected.value.has(item.uuid),
+  ) as Equipment[];
+  if (items.length !== FORGE_REQUIRED) return;
+
+  const avgLevel = items.reduce((sum, e) => sum + e.level, 0) / items.length;
+  const avgRarity = items.reduce((sum, e) => sum + e.rarity, 0) / items.length;
+
+  const levelVariation = Math.floor((Math.random() - 0.5) * 10);
+  let chestLevel = Math.max(0, Math.round(avgLevel) + levelVariation);
+
+  let chestRarity = Math.round(avgRarity);
+  const rarityRoll = Math.random();
+  if (rarityRoll < 0.1) {
+    chestRarity = Math.max(Rarity.Common, chestRarity - 1);
+  } else if (rarityRoll > 0.9) {
+    chestRarity = Math.min(Rarity.Mythical, chestRarity + 1);
+  }
+  chestRarity = Math.max(Rarity.Common, Math.min(Rarity.Mythical, chestRarity));
+
+  const chestType = rarityToChest[chestRarity] ?? ConsumableType.BrokenChest;
+
+  player.value.pack = player.value.pack.filter(
+    (item) => !forgeSelected.value.has(item.uuid),
+  );
+
+  const chest = new Consumable(chestType, chestLevel);
+  player.value.pack.push(chest);
+
+  showToast(
+    "⚒️ 合成成功",
+    `将 ${FORGE_REQUIRED} 件装备合成为 ${chest.getItemIcon()} <strong class="text-${Rarity[chest.rarity]}">${chest.getName()}</strong>（Lv.${chestLevel}）！`,
+    { headerClass: "bg-warning text-dark" },
+  );
+
+  forgeMode.value = false;
+  forgeSelected.value = new Set();
+  playerStore.save();
+  refreshPage();
+}
 
 // tippy 实例管理
 const tippyInstances: TippyInstance[] = [];
@@ -505,5 +639,65 @@ onBeforeUnmount(() => {
 
 .attribute-plus-animation {
   animation: attribute-plus-animation 0.5s ease-out;
+}
+
+.forge-info-bar {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.forge-hint {
+  font-size: 14px;
+}
+
+.forge-count {
+  font-size: 13px;
+}
+
+.forge-preview {
+  font-size: 13px;
+}
+
+.forge-confirm-btn {
+  font-weight: bold;
+  animation: forge-pulse 1.5s infinite;
+}
+
+@keyframes forge-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(255, 193, 7, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(255, 193, 7, 0.8); }
+}
+
+.forge-item {
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.forge-item.forge-selected {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px #ffc107, 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.forge-item.forge-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.forge-check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ffc107;
+  color: #000;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
 }
 </style>
