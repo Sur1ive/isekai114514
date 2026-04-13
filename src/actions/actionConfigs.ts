@@ -49,6 +49,7 @@ export enum ActionType {
   Smash3 = "Smash3",
   Smash4 = "Smash4",
   SoftSmash = "SoftSmash",
+  CrossShimewaza = "CrossShimewaza",
 }
 
 export const NoHit: Hit = {
@@ -408,6 +409,30 @@ export const actionConfigs: Record<ActionType, Action> = {
         extraEffect: capture,
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}尝试通过绞住${target.name}，让${target.name}失去行动力`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.CrossShimewaza]: {
+    name: "十字绞",
+    description: "用交叉的双手绞住敌人的脖子，使其失去行动力",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Dodge,
+        coeff: { str: 0, int: 0, con: 0, siz: -1.5, app: 0, dex: 2.5 },
+        extraEffect: capture,
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}灵活躲开了${target.name}的攻击`;
+        },
+      },
+      {
+        category: HitCategory.Capture,
+        coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
+        extraEffect: capture,
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}尝试用十字绞绞住${target.name}，让${target.name}失去行动力`;
         },
       },
     ],

@@ -29,6 +29,7 @@ export enum EquipmentType {
   IronAllergy = "IronAllergy",
   GraniteColossus = "GraniteColossus",
   Inheritance = "Inheritance",
+  JudoGlove = "JudoGlove",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -559,6 +560,28 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       [HitCategory.Attack]: {
         plus: 0,
         multiply: 1.3,
+      },
+    },
+  },
+  [EquipmentType.JudoGlove]: {
+    name: "柔道要领",
+    description: "片十字绞、逆十字绞、并十字绞、手臂三角绞、十字固、裸绞",
+    rarity: Rarity.Masterpiece,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.CrossShimewaza, weight: 0.3 },
+      { actionType: ActionType.Attack, weight: 0.3 },
+      { actionType: ActionType.Counter, weight: 0.5 },
+    ],
+    ability: {
+      piercing: 30,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
+    actionCoeff: {
+      [HitCategory.Capture]: {
+        plus: 1,
+        multiply: 1,
       },
     },
   },
