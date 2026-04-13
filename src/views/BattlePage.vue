@@ -191,7 +191,7 @@
               lv: {{ player.level }}{{ leveledUp ? "🔺" : "" }} exp: {{ player.exp }}/{{ player.getNextLevelExp() }}
             </p>
             <p v-if="battleResult === BattleResult.Win">
-              获得经验: <span class="text-info">{{ earnedExp }}</span><span v-if="player.level > currentEnemy.level" class="text-muted" style="font-size: 12px"> (等级压制)</span>
+              获得经验: <span class="text-info">{{ earnedExp }}</span><span v-if="player.level - currentEnemy.level > 3" class="text-muted" style="font-size: 12px"> (等级压制)</span><span v-else-if="currentEnemy.level > player.level" class="text-warning" style="font-size: 12px"> (战胜强敌)</span>
               <span v-if="droppedItem">
                 获得物品: <span :class="'text-' + Rarity[droppedItem.rarity]">{{ droppedItem.name }}</span>
               </span>
@@ -677,7 +677,12 @@ function endBattle(result: BattleResult) {
       droppedItem.value = drop;
     }
     const levelDiff = player.level - enemy.level;
-    const expFactor = levelDiff > 0 ? Math.max(0.1, 1 - levelDiff * 0.1) : 1;
+    let expFactor = 1;
+    if (levelDiff < 0) {
+      expFactor = Math.min(1.5, 1 - levelDiff * 0.1);
+    } else if (levelDiff > 0) {
+      expFactor = Math.max(0.1, 1 - levelDiff * 0.1);
+    }
     const actualExp = Math.floor(enemy.giveExp * expFactor);
     earnedExp.value = actualExp;
     player.exp += actualExp;
