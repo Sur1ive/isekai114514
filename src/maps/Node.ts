@@ -13,6 +13,7 @@ export enum NodeType {
   Rest = "Rest",
   Event = "Event",
   ToOtherRegion = "ToOtherRegion",
+  Resource = "Resource",
 }
 
 export interface Node {
@@ -96,5 +97,20 @@ export interface BossNode extends Node {
     minLevel: number;
     maxIndividualStrength: number;
     minIndividualStrength: number;
+  }[];
+}
+
+export interface ResourceNode extends Node {
+  type: NodeType.Resource;
+  randomDropList: {
+    item: ItemType;
+    minLevel: number;
+    maxLevel: number;
+    weight: number;
+  }[];
+  guaranteedDropList: {
+    item: ItemType;
+    level: number;
+    quantity: number;
   }[];
 }

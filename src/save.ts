@@ -52,7 +52,8 @@ export function loadPlayer(): Player | null {
   // 从Player类复原特有属性
   const playerProps = [
     "log", "capturedMonster", "activePetIndex", "exp",
-    "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList"
+    "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList",
+    "resourceNodeLastCollectedTime"
   ];
 
   playerProps.forEach(prop => {

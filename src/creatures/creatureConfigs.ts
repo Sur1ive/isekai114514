@@ -27,6 +27,9 @@ export enum CreatureType {
   FrightenedGoblinLeader = "FrightenedGoblinLeader",
   AngryGoblinLeader = "AngryGoblinLeader",
   TreasureSlime = "TreasureSlime",
+  Deer = "Deer",
+  Mole = "Mole",
+  Grass = "Grass",
 }
 
 export const creatureConfigs: Record<CreatureType, CreatureData> = {
@@ -229,7 +232,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       app: { base: 2, growth: 0 },
       dex: { base: 6, growth: 0.15 },
       armor: { base: 0, growth: 5 },
-      piercing: { base: 0, growth: 5 },
+      piercing: { base: 5, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Bite, weight: 1 },
@@ -264,7 +267,6 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.Counter, weight: 0.5 },
     ],
     dropItems: [
-      { type: ConsumableType.BrokenChest, weight: 0.2 },
       { type: ConsumableType.WoodenChest, weight: 0.8 },
       { type: ConsumableType.SilverChest, weight: 0.04 },
       { type: ConsumableType.GoldChest, weight: 0.002 },
@@ -313,7 +315,6 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { actionType: ActionType.LightningFiveStrikes, weight: 1 },
     ],
     dropItems: [
-      { type: ConsumableType.BrokenChest, weight: 0.2 },
       { type: ConsumableType.WoodenChest, weight: 0.8 },
       { type: ConsumableType.SilverChest, weight: 0.04 },
       { type: ConsumableType.GoldChest, weight: 0.002 },
@@ -421,6 +422,91 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       { type: ConsumableType.SlimeChest, weight: 1 },
     ],
     initStatus: [{ type: StatusType.WillEscape, duration: 10 }],
+  },
+
+  [CreatureType.Deer]: {
+    typeName: "鹿",
+    description: "这倒是提醒我了",
+    abilityCoeff: {
+      str: { base: 4, growth: 0.1 },
+      int: { base: 2, growth: 0.05 },
+      con: { base: 5, growth: 0.15 },
+      siz: { base: 5, growth: 0.1 },
+      app: { base: 4, growth: 0 },
+      dex: { base: 5, growth: 0.1 },
+      armor: { base: 0, growth: 5 },
+      piercing: { base: 0, growth: 5 },
+    },
+    actions: [
+      { actionType: ActionType.Knock, weight: 1 },
+      { actionType: ActionType.RunAway, weight: 1.5 },
+      { actionType: ActionType.Attack, weight: 0.5 },
+    ],
+    dropItems: [
+      { type: ConsumableType.BrokenChest, weight: 0.9 },
+      { type: ConsumableType.WoodenChest, weight: 0.1 },
+      { type: ConsumableType.SilverChest, weight: 0.01 },
+    ],
+  },
+
+  [CreatureType.Grass]: {
+    typeName: "草",
+    description: "建国以后不许成精！",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.1 },
+      int: { base: 5, growth: 0.1 },
+      con: { base: 5, growth: 0.2 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 5, growth: 0.1 },
+      armor: { base: 0, growth: 0 },
+      piercing: { base: 0, growth: 0 },
+    },
+    actions: [
+      { actionType: ActionType.Attack, weight: 0.5 },
+      { actionType: ActionType.Capture, weight: 0.1 },
+      { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.03 },
+      { actionType: ActionType.Yarimasune, weight: 0.03 },
+      { actionType: ActionType.Repent, weight: 0.03 },
+      { actionType: ActionType.SleepyTea, weight: 0.03 },
+    ],
+    dropItems: [
+      { type: ConsumableType.BrokenChest, weight: 0.9 },
+      { type: ConsumableType.WoodenChest, weight: 0.1 },
+      { type: ConsumableType.SilverChest, weight: 0.01 },
+    ],
+  },
+
+  [CreatureType.Mole]: {
+    typeName: "摩尔",
+    description: "不是摩尔庄园里的那种摩尔",
+    abilityCoeff: {
+      str: { base: 5, growth: 0.1 },
+      int: { base: 5, growth: 0.1 },
+      con: { base: 5, growth: 0.2 },
+      siz: { base: 5, growth: 0 },
+      app: { base: 5, growth: 0 },
+      dex: { base: 5, growth: 0.1 },
+      armor: { base: 0, growth: 0 },
+      piercing: { base: 0, growth: 0 },
+    },
+    actions: [
+      { actionType: ActionType.Attack, weight: 0.5 },
+      { actionType: ActionType.Capture, weight: 0.1 },
+      { actionType: ActionType.Defend, weight: 0.2 },
+      { actionType: ActionType.Dodge, weight: 0.2 },
+      { actionType: ActionType.PowerfulDigAttack, weight: 0.03 },
+      { actionType: ActionType.Yarimasune, weight: 0.03 },
+      { actionType: ActionType.Repent, weight: 0.03 },
+      { actionType: ActionType.SleepyTea, weight: 0.03 },
+    ],
+    dropItems: [
+      { type: ConsumableType.WoodenChest, weight: 0.8 },
+      { type: ConsumableType.SilverChest, weight: 0.04 },
+      { type: ConsumableType.GoldChest, weight: 0.002 },
+    ],
   },
 };
 deepFreeze(creatureConfigs);

@@ -74,9 +74,10 @@
 
     <!-- 地图区域（相对定位容器，boss血条浮于其上） -->
     <div style="flex: 1; position: relative">
-      <!-- Boss 血条 -->
-      <div v-if="hasBossNode" class="boss-gauge-container">
-        <div class="boss-gauge">
+      <!-- 左上角信息叠层：Boss 血条 + 资源节点状态 -->
+      <div class="map-overlay-left">
+        <!-- Boss 血条 -->
+        <div v-if="hasBossNode" class="boss-gauge">
           <div class="boss-gauge-header">
             <span class="boss-gauge-label">BOSS</span>
             <span class="boss-gauge-name">{{ bossSpawned ? bossCurrentStageName : bossNodeName }}</span>
@@ -105,6 +106,24 @@
               <template v-else-if="bossCleared">CLEAR</template>
               <template v-else>???</template>
             </div>
+          </div>
+        </div>
+
+        <!-- 资源节点状态 -->
+        <div
+          v-for="rn in resourceNodes"
+          :key="rn.id"
+          class="resource-indicator"
+          :class="rn.available ? 'resource-available' : 'resource-empty'"
+        >
+          <div class="resource-icon-wrap">
+            <span class="resource-icon">{{ rn.available ? '🎁' : '📦' }}</span>
+            <span v-if="rn.available" class="resource-sparkle">✦</span>
+          </div>
+          <div class="resource-info">
+            <span class="resource-indicator-name">{{ rn.name }}</span>
+            <span v-if="rn.available" class="resource-badge">可获取</span>
+            <span v-else class="resource-cooldown">空 · {{ nextRefreshTime }}刷新</span>
           </div>
         </div>
       </div>
@@ -157,6 +176,7 @@ import { useRouter } from "vue-router";
 import { usePlayerStore } from "@/stores/playerStore";
 import { Node, NodeType } from "@/maps/Node";
 import type { BossNode } from "@/maps/Node";
+import { isResourceNodeAvailable } from "@/maps/utils";
 import { getRegionById } from "@/maps/Region";
 import { goToNode } from "@/maps/utils";
 import { Monster } from "@/creatures/Monster";
@@ -177,6 +197,31 @@ const regionName = ref("未知区域");
 const playerHealth = ref(0);
 const playerMaxHealth = ref(0);
 const currentLocationName = ref("营地");
+
+// 资源节点状态
+const resourceNodes = ref<{ id: string; name: string; available: boolean }[]>([]);
+let resourceTimerId: ReturnType<typeof setInterval> | null = null;
+
+const nextRefreshTime = computed(() => {
+  const next = new Date();
+  next.setHours(next.getHours() + 1, 0, 0, 0);
+  return `${next.getHours().toString().padStart(2, '0')}:00`;
+});
+
+function updateResourceNodes() {
+  const player = playerStore.player;
+  if (!player) return;
+  const region = getRegionById(player.currentMapData.currentRegionId);
+  if (!region?.nodeList) return;
+
+  resourceNodes.value = region.nodeList
+    .filter((n) => n.type === NodeType.Resource)
+    .map((n) => ({
+      id: n.id,
+      name: n.name,
+      available: isResourceNodeAvailable(n.id, player),
+    }));
+}
 
 // Boss 血条
 const hasBossNode = ref(false);
@@ -550,6 +595,10 @@ onMounted(() => {
   // Boss 血条初始化
   updateBossGauge();
 
+  // 资源节点状态初始化，每分钟检查刷新
+  updateResourceNodes();
+  resourceTimerId = setInterval(updateResourceNodes, 60_000);
+
   // 视图状态恢复/自动居中
   setTimeout(() => {
     if (player.currentMapData.viewState) {
@@ -724,6 +773,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  if (resourceTimerId) clearInterval(resourceTimerId);
+
   // 清理全局引用
   window.currentMapSvg = undefined;
   window.currentZoomBehavior = undefined;
@@ -739,19 +790,122 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.boss-gauge-container {
+.map-overlay-left {
   position: absolute;
   top: 10px;
   left: 10px;
   z-index: 15;
   pointer-events: none;
   width: min(260px, 40vw);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .boss-gauge {
   background: rgba(0, 0, 0, 0.7);
   border-radius: 5px;
   padding: 5px 10px 7px;
+}
+
+.resource-indicator {
+  border-radius: 6px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.resource-available {
+  background: linear-gradient(135deg, rgba(40, 30, 10, 0.85), rgba(60, 45, 15, 0.85));
+  border: 1px solid rgba(255, 193, 7, 0.5);
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.2), inset 0 0 12px rgba(255, 193, 7, 0.05);
+  animation: resource-glow 2.5s ease-in-out infinite;
+}
+
+.resource-empty {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+@keyframes resource-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(255, 193, 7, 0.15), inset 0 0 10px rgba(255, 193, 7, 0.03); }
+  50% { box-shadow: 0 0 12px rgba(255, 193, 7, 0.35), inset 0 0 14px rgba(255, 193, 7, 0.08); }
+}
+
+.resource-icon-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resource-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.resource-empty .resource-icon {
+  filter: grayscale(0.7) brightness(0.6);
+}
+
+.resource-sparkle {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  font-size: 10px;
+  color: #ffd54f;
+  animation: sparkle-blink 1.4s ease-in-out infinite;
+}
+
+@keyframes sparkle-blink {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.resource-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.resource-indicator-name {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resource-available .resource-indicator-name {
+  color: #ffe082;
+}
+
+.resource-empty .resource-indicator-name {
+  color: #adb5bd;
+}
+
+.resource-badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, #e6a817, #f9c846);
+  padding: 0 5px;
+  border-radius: 3px;
+  width: fit-content;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.resource-cooldown {
+  font-size: 9px;
+  color: #868e96;
 }
 
 .boss-gauge-header {

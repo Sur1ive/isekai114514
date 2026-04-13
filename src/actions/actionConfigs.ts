@@ -50,6 +50,7 @@ export enum ActionType {
   Smash4 = "Smash4",
   SoftSmash = "SoftSmash",
   CrossShimewaza = "CrossShimewaza",
+  Knock = "Knock",
 }
 
 export const NoHit: Hit = {
@@ -369,6 +370,21 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0.5, int: 0, con: 0, siz: 0.5, app: 0, dex: 0},
         messageGenerator: (actor: Creature, target: Creature) => {
           return `${actor.name}向${target.name}挥舞锐利的爪子`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Knock]: {
+    name: "冲撞",
+    description: "野兽的攻击方式",
+    rarity: Rarity.Common,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 0.5, int: 0, con: 0, siz: 1, app: 0, dex: 0.5 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}撞击了${target.name}`;
         },
       },
     ],

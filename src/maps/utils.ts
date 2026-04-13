@@ -6,6 +6,7 @@ import {
   TreasureNode,
   ToOtherRegionNode,
   EliteMonsterNode,
+  ResourceNode,
 } from "./Node";
 import { Player } from "../creatures/Player";
 import { Monster, applyVariant } from "../creatures/Monster";
@@ -146,6 +147,38 @@ function goToTreasureNode(node: TreasureNode, player: Player) {
   navigateToMap();
 }
 
+export function isResourceNodeAvailable(nodeId: string, player: Player): boolean {
+  const lastCollected = player.resourceNodeLastCollectedTime[nodeId];
+  if (!lastCollected) return true;
+  const currentHourStart = new Date();
+  currentHourStart.setMinutes(0, 0, 0);
+  return currentHourStart.getTime() > lastCollected;
+}
+
+function goToResourceNode(node: ResourceNode, player: Player) {
+  if (isResourceNodeAvailable(node.id, player)) {
+    for (const drop of node.guaranteedDropList) {
+      for (let i = 0; i < drop.quantity; i++) {
+        const item = generateItem(drop.item, drop.level);
+        player.pack.push(item);
+        item.showItemToast();
+      }
+    }
+    if (node.randomDropList.length > 0) {
+      const randomDrop = randomItemType(node.randomDropList);
+      if (randomDrop) {
+        const level = randomInt(randomDrop.minLevel, randomDrop.maxLevel);
+        const item = generateItem(randomDrop.item, level);
+        player.pack.push(item);
+        item.showItemToast();
+      }
+    }
+    player.resourceNodeLastCollectedTime[node.id] = Date.now();
+  }
+  player.goToNode(node.id);
+  navigateToMap();
+}
+
 function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
   player.goToNode(node.id);
   const region = node.region;
@@ -164,6 +197,12 @@ function goToOtherRegionNode(node: ToOtherRegionNode, player: Player) {
 
 export function goToNode(node: Node, player: Player) {
   player.currentMapData.goingToNodeId = node.id;
+
+  // 资源节点始终需要检查刷新状态，不走平滑过渡
+  if (node.type === NodeType.Resource) {
+    goToResourceNode(node as ResourceNode, player);
+    return;
+  }
 
   // 如果节点已访问且我们有可用的地图引用，执行平滑过渡
   if (
