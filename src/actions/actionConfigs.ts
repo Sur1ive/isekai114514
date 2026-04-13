@@ -165,6 +165,7 @@ export const actionConfigs: Record<ActionType, Action> = {
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `${actor.name}喝下了昏睡红茶，进入睡眠`;
         },
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
@@ -432,10 +433,11 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0.5, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了防御`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 1.5, int: 0, con: 1, siz: 0, app: 0, dex: 1 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 进行了反击`,
       },
@@ -526,12 +528,14 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0, int: 8, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 喷出了汹涌的火焰`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 5, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 喷出了灼热的火焰`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
@@ -566,24 +570,28 @@ export const actionConfigs: Record<ActionType, Action> = {
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 6 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 被花瓣包围了`,
+        continuous: true,
       },
       {
         category: HitCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 6 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name} 的身影消失了`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
         messageGenerator: (_actor: Creature, _target: Creature) =>
           `空气中只有残影`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
         messageGenerator: (_actor: Creature, _target: Creature) =>
           `空气中只有更多的残影`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
@@ -711,10 +719,11 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: HitCategory.Dodge,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 3 },
         messageGenerator: (actor: Creature, _target: Creature) => `${actor.name} 一个大跳`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        coeff: { str: 2, int: 0, con: 1, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, target: Creature) => `${actor.name} 从空中一拳打向 ${target.name}`,
       },
     ]
@@ -734,6 +743,7 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: HitCategory.Attack,
         coeff: { str: 1, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (_actor: Creature, _target: Creature) => `回旋的风聚成龙卷`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
@@ -785,11 +795,13 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (_actor: Creature, _target: Creature) => `第三鞭！`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
         messageGenerator: (_actor: Creature, _target: Creature) => `第四鞭！`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
