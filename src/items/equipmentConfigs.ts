@@ -24,6 +24,11 @@ export enum EquipmentType {
   DragonJadePlateArmor = "DragonJadePlateArmor",
   DragonJadeBoots = "DragonJadeBoots",
   DragonJadePendant = "DragonJadePendant",
+  Hammer = "Hammer",
+  LargeHammer = "LargeHammer",
+  IronAllergy = "IronAllergy",
+  GraniteColossus = "GraniteColossus",
+  Inheritance = "Inheritance",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -201,7 +206,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
   },
   [EquipmentType.MudKnife]: {
     name: "沼气短刀",
-    description: "刀身闻起来臭臭的",
+    description: "臭臭",
     rarity: Rarity.Rare,
     position: EquipmentPosition.Hand,
     extraActions: [
@@ -418,6 +423,144 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     armorGrowthCoeff: 0,
     piercingGrowthCoeff: 1,
     actionCoeff: {},
+  },
+  [EquipmentType.Hammer]: {
+    name: "大锤",
+    description: "大",
+    rarity: Rarity.Common,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.Smash1, weight: 1.5 },
+      { actionType: ActionType.Smash2, weight: 0.5 },
+    ],
+    ability: {
+      piercing: 35,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5,
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 0,
+        multiply: 1.1,
+      },
+      [HitCategory.Defend]: {
+        plus: 0,
+        multiply: 0.5,
+      },
+      [HitCategory.Dodge]: {
+        plus: 0,
+        multiply: 0.5,
+      },
+    },
+  },
+  [EquipmentType.LargeHammer]: {
+    name: "更大的锤",
+    description: "大就是好。一寸大，一寸强",
+    rarity: Rarity.Rare,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.Smash1, weight: 0.5 },
+      { actionType: ActionType.Smash2, weight: 1.4 },
+      { actionType: ActionType.Smash3, weight: 0.1 },
+    ],
+    ability: {
+      piercing: 40,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 5.5,
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 0,
+        multiply: 1.2,
+      },
+      [HitCategory.Defend]: {
+        plus: 0,
+        multiply: 0.4,
+      },
+      [HitCategory.Dodge]: {
+        plus: 0,
+        multiply: 0.4,
+      },
+    },
+  },
+  [EquipmentType.IronAllergy]: {
+    name: "急性铁中毒",
+    description: "让你的敌人患上急性铁中毒",
+    rarity: Rarity.Masterpiece,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.Smash2, weight: 1 },
+      { actionType: ActionType.Smash3, weight: 1 },
+      { actionType: ActionType.Smash4, weight: 0.05 },
+    ],
+    ability: {
+      piercing: 50,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 6,
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 0,
+        multiply: 1.4,
+      },
+      [HitCategory.Defend]: {
+        plus: 0,
+        multiply: 0,
+      },
+      [HitCategory.Dodge]: {
+        plus: 0,
+        multiply: 0,
+      },
+    },
+  },
+  [EquipmentType.GraniteColossus]: {
+    name: "花岗岩巨像",
+    description: "如果花岗岩巨像能当作锤子抡，那它就是锤子",
+    rarity: Rarity.Epic,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.Smash3, weight: 1 },
+      { actionType: ActionType.Smash4, weight: 0.1 },
+      { actionType: ActionType.NeverRetreat, weight: 1 },
+    ],
+    ability: {
+      piercing: 50,
+      armor: 20,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 6,
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 0,
+        multiply: 1.3,
+      },
+      [HitCategory.Dodge]: {
+        plus: 0,
+        multiply: 0,
+      },
+    },
+  },
+  [EquipmentType.Inheritance]: {
+    name: "传承",
+    description: "酋长我发现把锤子轻轻放到你头上我就会成为酋长，是不是说明锤子是传承的象征",
+    rarity: Rarity.Mythical,
+    position: EquipmentPosition.Hand,
+    extraActions: [
+      { actionType: ActionType.Smash3, weight: 1.7 },
+      { actionType: ActionType.Smash4, weight: 0.2 },
+      { actionType: ActionType.SoftSmash, weight: 0.1 },
+    ],
+    ability: {
+      piercing: 2147483647,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {
+      [HitCategory.Attack]: {
+        plus: 0,
+        multiply: 1.3,
+      },
+    },
   },
 };
 deepFreeze(equipmentConfigs);

@@ -44,6 +44,11 @@ export enum ActionType {
   ParkDestroyer = "ParkDestroyer",
   SneakAttack = "SneakAttack",
   RunAway = "RunAway",
+  Smash1 = "Smash1",
+  Smash2 = "Smash2",
+  Smash3 = "Smash3",
+  Smash4 = "Smash4",
+  SoftSmash = "SoftSmash",
 }
 
 export const NoHit: Hit = {
@@ -823,6 +828,81 @@ export const actionConfigs: Record<ActionType, Action> = {
         extraEffect: (_actor: Creature, target: Creature) => {
           target.addStatus(StatusType.Dizzy, 1);
         }
+      },
+    ],
+  },
+
+  [ActionType.Smash1]: {
+    name: "敲！",
+    description: "",
+    rarity: Rarity.Common,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 2, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}狠狠敲击了${target.name}`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Smash2]: {
+    name: "大力敲！！",
+    description: "小锤40！！",
+    rarity: Rarity.Rare,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 3.5, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}举起大锤狠狠砸向${target.name}`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Smash3]: {
+    name: "超级用力敲！！！！",
+    description: "大锤80！！！！",
+    rarity: Rarity.Masterpiece,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 5, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}双手高举巨锤，以千钧之势砸向${target.name}`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.Smash4]: {
+    name: "我他喵的锤鼠你！！！！！！！！",
+    description: "！！！！！！！！！！！！！",
+    rarity: Rarity.Epic,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 10, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, _target: Creature) => {
+          return `${actor.name}以崩山之力挥下庞然巨锤，大地为之龟裂，万物为之颤抖`;
+        },
+      },
+    ],
+  },
+
+  [ActionType.SoftSmash]: {
+    name: "轻轻敲醒沉睡的心灵",
+    description: "天地玄黄，宇宙洪荒。这一锤，连大道都破灭了",
+    rarity: Rarity.Mythical,
+    hits: [
+      {
+        category: HitCategory.Attack,
+        coeff: { str: 15, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
+        messageGenerator: (actor: Creature, target: Creature) => {
+          return `${actor.name}的一锤轻轻敲醒了${target.name}的灵魂`;
+        },
       },
     ],
   },
