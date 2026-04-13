@@ -34,8 +34,8 @@ export class Creature {
     armor: 0,
     piercing: 0,
   };
-  // 属性加点(每10级1点)
-  plusAbilityPoint: number = 1;
+  // 属性加点
+  plusAbilityPoint: number = 0;
   plusAbility: Ability = {
     str: 0,
     int: 0,
@@ -69,7 +69,7 @@ export class Creature {
     this.calculateAbility();
     this.calculateMaxHealth();
     this.health = this.getMaxHealth();
-    this.actions = creatureConfigs[this.type].actions;
+    this.actions = creatureConfigs[this.type].actions.map(a => ({ ...a }));
   }
 
   calculateMaxHealth() {

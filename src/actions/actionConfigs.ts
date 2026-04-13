@@ -4,6 +4,7 @@ import { StatusType } from "../creatures/status/statusConfigs";
 import { HitCategory } from "./types";
 import { Rarity } from "../types";
 import { capture } from "./actionUtils";
+import { deepFreeze } from "../utils/deepFreeze";
 
 export enum ActionType {
   Dazed = "Dazed",
@@ -838,3 +839,4 @@ export const actionConfigs: Record<ActionType, Action> = {
   //   ]
   // }
 };
+deepFreeze(actionConfigs);

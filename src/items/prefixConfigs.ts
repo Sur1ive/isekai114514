@@ -3,6 +3,7 @@ import { Prefix } from "./Prefix";
 import { EquipmentPosition } from "./types";
 import { HitCategory } from "../actions/types";
 import { ActionType } from "../actions/actionConfigs";
+import { deepFreeze } from "../utils/deepFreeze";
 
 export enum PrefixType {
   None = "None",
@@ -630,3 +631,4 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
     actionCoeff: {},
   },
 };
+deepFreeze(prefixConfigs);

@@ -50,8 +50,24 @@ const rarityNameMap: Record<number, string> = {
   [Rarity.Epic]: "史诗", [Rarity.Mythical]: "神话", [Rarity.Unique]: "独特",
 };
 
-const pfxMark = (val: number | undefined) =>
-  val ? `<span class="eq-pfx-mark">${val > 0 ? "▲" : "▼"}</span>` : "";
+const pfxMarkAbility = (val: number | undefined): string =>
+  !val ? "" : val > 0
+    ? `<span class="eq-pfx-mark eq-pfx-pos">▲</span>`
+    : `<span class="eq-pfx-mark eq-pfx-neg">▼</span>`;
+
+function pfxMarkCoeff(pc: { plus: number; multiply: number } | undefined): string {
+  if (!pc) return "";
+  const plusDir = pc.plus > 0 ? 1 : pc.plus < 0 ? -1 : 0;
+  const mulDir = pc.multiply > 1 ? 1 : pc.multiply < 1 ? -1 : 0;
+  if (plusDir === 0 && mulDir === 0) return "";
+  if (plusDir !== 0 && mulDir !== 0 && plusDir !== mulDir) {
+    return `<span class="eq-pfx-mark eq-pfx-mixed">◆</span>`;
+  }
+  const dir = plusDir || mulDir;
+  return dir > 0
+    ? `<span class="eq-pfx-mark eq-pfx-pos">▲</span>`
+    : `<span class="eq-pfx-mark eq-pfx-neg">▼</span>`;
+}
 
 export function generateEquipmentTooltipContent(equipment: Equipment): string {
   const rarityClass = Rarity[equipment.rarity];
@@ -74,7 +90,7 @@ export function generateEquipmentTooltipContent(equipment: Equipment): string {
           ${statsEntries.map(([k, v]) => {
             const sign = v > 0 ? "+" : "";
             const cls = v > 0 ? "eq-stat-pos" : "eq-stat-neg";
-            const mark = pfxMark(prefix.ability?.[k as keyof typeof prefix.ability]);
+            const mark = pfxMarkAbility(prefix.ability?.[k as keyof typeof prefix.ability]);
             return `<div class="eq-stat"><span class="eq-stat-label">${attrNameMap[k] || k}</span><span><span class="${cls}">${sign}${v}</span>${mark}</span></div>`;
           }).join("")}
         </div>
@@ -107,8 +123,8 @@ export function generateEquipmentTooltipContent(equipment: Equipment): string {
             const pc = prefix.actionCoeff?.[cat as keyof typeof prefix.actionCoeff];
             const parts: string[] = [];
             if (c.plus !== 0) parts.push(`<span class="${c.plus > 0 ? "eq-stat-pos" : "eq-stat-neg"}">${c.plus > 0 ? "+" : ""}${c.plus}</span>`);
-            if (c.multiply !== 1) parts.push(`<span class="eq-stat-pos">×${c.multiply}</span>`);
-            const mark = pc ? pfxMark(pc.plus !== 0 ? pc.plus : (pc.multiply !== 1 ? 1 : undefined)) : "";
+            if (c.multiply !== 1) parts.push(`<span class="${c.multiply > 1 ? "eq-stat-pos" : "eq-stat-neg"}">×${c.multiply}</span>`);
+            const mark = pfxMarkCoeff(pc);
             return `<div class="eq-stat"><span class="eq-stat-label">${hitCatNameMap[cat] || cat}</span><span>${parts.join(" ")}${mark}</span></div>`;
           }).join("")}
         </div>

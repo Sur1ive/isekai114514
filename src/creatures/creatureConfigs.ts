@@ -3,6 +3,7 @@ import type { CreatureData } from "./types";
 import { ActionType } from "../actions/actionConfigs";
 import { EquipmentType } from "../items/equipmentConfigs";
 import { StatusType } from "./status/statusConfigs";
+import { deepFreeze } from "../utils/deepFreeze";
 import dragon1 from "@/assets/dragon1.gif";
 import dragon2 from "@/assets/dragon2.gif";
 import dragon3 from "@/assets/dragon3.jpg";
@@ -422,3 +423,4 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     initStatus: [{ type: StatusType.WillEscape, duration: 10 }],
   },
 };
+deepFreeze(creatureConfigs);

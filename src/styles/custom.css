@@ -189,9 +189,19 @@
 
 .eq-pfx-mark {
   font-size: 9px;
-  color: #a78bfa;
   margin-left: 3px;
-  vertical-align: middle;
+}
+
+.eq-pfx-pos {
+  color: #9fa8da;
+}
+
+.eq-pfx-neg {
+  color: #7e57c2;
+}
+
+.eq-pfx-mixed {
+  color: #a78bfa;
 }
 
 .eq-action-prefix {

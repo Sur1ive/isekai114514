@@ -2,6 +2,7 @@ import { EquipmentPosition, EquipmentData } from "./types";
 import { HitCategory } from "../actions/types";
 import { ActionType } from "../actions/actionConfigs";
 import { Rarity } from "../types";
+import { deepFreeze } from "../utils/deepFreeze";
 
 export enum EquipmentType {
   Sword = "Sword",
@@ -419,3 +420,4 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     actionCoeff: {},
   },
 };
+deepFreeze(equipmentConfigs);

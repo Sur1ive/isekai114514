@@ -25,7 +25,7 @@ export class Monster extends Creature {
     individualStrength = individualStrength || 1;
 
     super(name, type, level, individualStrength);
-    this.dropItems = creatureConfigs[type].dropItems;
+    this.dropItems = creatureConfigs[type].dropItems.map(d => ({ ...d }));
     this.description = creatureConfigs[type].description;
     if (creatureConfigs[type].image) {
       this.image = creatureConfigs[type].image;

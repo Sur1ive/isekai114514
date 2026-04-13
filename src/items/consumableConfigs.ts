@@ -3,6 +3,7 @@ import { Rarity } from "../types";
 import { ConsumableData } from "./types";
 import { openChest, openSpecialChest } from "./consumableUtils";
 import { Consumable } from "./Consumable";
+import { deepFreeze } from "../utils/deepFreeze";
 import { Equipment } from "./Equipment";
 import { EquipmentType } from "./equipmentConfigs";
 import { StatusType } from "../creatures/status/statusConfigs";
@@ -120,7 +121,7 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
   [ConsumableType.GiftboxAndLetter]: {
     name: "礼物箱和一封信",
     rarity: Rarity.Mythical,
-    description: "一个礼物箱，上面还附了一封信，信上的字模糊不清",
+    description: "感谢游玩！",
     effect: (target: Creature, _level: number) => {
       for (let i = 0; i < 5; i++) {
         target.pack.push(new Consumable(ConsumableType.QuickRecoveryPotion));
@@ -159,3 +160,4 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
     },
   },
 };
+deepFreeze(consumableConfigs);

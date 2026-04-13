@@ -21,41 +21,35 @@ function handleHit(
 ): PointComparisonResult {
   let result = PointComparisonResult.Draw;
 
-  // 保存原始图标和category，因为 Capture 会被临时改为 Attack
   const originalPlayerHitIcon = getHitIcon(playerHit);
   const originalEnemyHitIcon = getHitIcon(enemyHit);
-  const originalPlayerCategory = playerHit.category;
 
-  if (playerHit.category === HitCategory.Capture) {
-    playerHit.category = HitCategory.Attack;
-  }
+  const effectivePlayerHit = playerHit.category === HitCategory.Capture
+    ? { ...playerHit, category: HitCategory.Attack }
+    : playerHit;
+  const pCat = effectivePlayerHit.category;
+  const eCat = enemyHit.category;
 
   if (
-    playerHit.category === HitCategory.Attack &&
-    enemyHit.category === HitCategory.Attack
+    pCat === HitCategory.Attack &&
+    eCat === HitCategory.Attack
   ) {
-    result = attackAgainstAttack(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstAttack(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
-    (playerHit.category === HitCategory.Attack &&
-      enemyHit.category === HitCategory.None) ||
-    (playerHit.category === HitCategory.None &&
-      enemyHit.category === HitCategory.Attack)
+    (pCat === HitCategory.Attack && eCat === HitCategory.None) ||
+    (pCat === HitCategory.None && eCat === HitCategory.Attack)
   ) {
-    result = attackAgainstNone(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstNone(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
-    (playerHit.category === HitCategory.Attack &&
-      enemyHit.category === HitCategory.Defend) ||
-    (playerHit.category === HitCategory.Defend &&
-      enemyHit.category === HitCategory.Attack)
+    (pCat === HitCategory.Attack && eCat === HitCategory.Defend) ||
+    (pCat === HitCategory.Defend && eCat === HitCategory.Attack)
   ) {
-    result = attackAgainstDefend(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstDefend(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
-    (playerHit.category === HitCategory.Dodge &&
-      enemyHit.category === HitCategory.Attack) ||
-    (playerHit.category === HitCategory.Attack &&
-      enemyHit.category === HitCategory.Dodge)
+    (pCat === HitCategory.Dodge && eCat === HitCategory.Attack) ||
+    (pCat === HitCategory.Attack && eCat === HitCategory.Dodge)
   ) {
-    result = attackAgainstDodge(player, enemy, playerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstDodge(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else {
     diceRolls.push({
       playerName: player.name,
@@ -87,8 +81,6 @@ function handleHit(
   } else if (result === PointComparisonResult.EnemyWin) {
     enemyHit.extraEffect?.(enemy, player);
   }
-  // 恢复被临时修改的 category，避免污染原始 Action 定义
-  playerHit.category = originalPlayerCategory;
   return result;
 }
 
@@ -99,6 +91,8 @@ export function handleAction(
   enemyAction: Action,
 ): DiceRollData[] {
   const diceRolls: DiceRollData[] = [];
+  const pHits = [...playerAction.hits];
+  const eHits = [...enemyAction.hits];
   player.addTempLog(
     player.name +
       "使用了" +
@@ -110,9 +104,9 @@ export function handleAction(
   );
 
   let i = 0;
-  while (playerAction.hits[i] || enemyAction.hits[i]) {
-    let playerHit = playerAction.hits[i] || NoHit;
-    let enemyHit = enemyAction.hits[i] || NoHit;
+  while (pHits[i] || eHits[i]) {
+    let playerHit = pHits[i] || NoHit;
+    let enemyHit = eHits[i] || NoHit;
 
     // 按照优先级从小往大处理OnHitStart status
     player.statuses.sort((a, b) => a.priority - b.priority).forEach((status) => {
@@ -143,11 +137,11 @@ export function handleAction(
 
     // 连续hit未命中会导致后续hit无法释放
     if (playerHit.continuous && result !== PointComparisonResult.PlayerWin) {
-      playerAction.hits.splice(i + 1);
+      pHits.splice(i + 1);
       player.addTempLog(player.name + "的连续hit中断");
     }
     if (enemyHit.continuous && result !== PointComparisonResult.EnemyWin) {
-      enemyAction.hits.splice(i + 1);
+      eHits.splice(i + 1);
       player.addTempLog(enemy.name + "的连续hit中断");
     }
     i++;
@@ -551,10 +545,12 @@ export function handlePetAction(
   damageMultiplier: number,
 ): DiceRollData[] {
   const diceRolls: DiceRollData[] = [];
+  const pHits = [...petAction.hits];
+  const eHits = [...enemyAction.hits];
   let i = 0;
-  while (petAction.hits[i] || enemyAction.hits[i]) {
-    const petHit = petAction.hits[i] || NoHit;
-    const enemyHit = enemyAction.hits[i] || NoHit;
+  while (pHits[i] || eHits[i]) {
+    const petHit = pHits[i] || NoHit;
+    const enemyHit = eHits[i] || NoHit;
     const result = petResolvePair(pet, enemy, petHit, enemyHit, damageMultiplier, diceRolls);
 
     if (diceRolls.length > 0) {
@@ -564,10 +560,10 @@ export function handlePetAction(
     }
 
     if (petHit.continuous && result !== PointComparisonResult.PlayerWin) {
-      petAction.hits.splice(i + 1);
+      pHits.splice(i + 1);
     }
     if (enemyHit.continuous && result !== PointComparisonResult.EnemyWin) {
-      enemyAction.hits.splice(i + 1);
+      eHits.splice(i + 1);
     }
     i++;
   }

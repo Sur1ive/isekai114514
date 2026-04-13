@@ -3,6 +3,7 @@ import { actionConfigs, ActionType, NoHit } from "../../actions/actionConfigs";
 import type { Action } from "../../actions/Action";
 import type { Creature } from "../Creature";
 import type { Hit } from "../../actions/Action";
+import { deepFreeze } from "../../utils/deepFreeze";
 import { Player } from "../Player";
 
 export enum StatusType {
@@ -135,3 +136,4 @@ export const statusConfigs: Record<StatusType, StatusData> = {
     },
   },
 };
+deepFreeze(statusConfigs);

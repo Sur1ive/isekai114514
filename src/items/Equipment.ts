@@ -36,10 +36,12 @@ export class Equipment extends Item {
     this.armorGrowthCoeff = data.armorGrowthCoeff;
     this.piercingGrowthCoeff = data.piercingGrowthCoeff;
     this.position = data.position;
-    this.extraActions = data.extraActions;
+    this.extraActions = data.extraActions.map(a => ({ ...a }));
     this.randomExtraActionsWeight();
-    this.ability = data.ability;
-    this.actionCoeff = data.actionCoeff;
+    this.ability = { ...data.ability };
+    this.actionCoeff = Object.fromEntries(
+      Object.entries(data.actionCoeff).map(([k, v]) => [k, { ...v }]),
+    ) as EquipmentActionCoeff;
 
     if (!this.ability.armor) {
       this.ability.armor = 0;

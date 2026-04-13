@@ -24,7 +24,7 @@ export function showToast(
 ): void {
   const container = getToastContainer();
   const headerClass = options?.headerClass ?? "";
-  const delay = options?.delay ?? 5000;
+  const delay = options?.delay ?? 4000;
   const useWhiteClose = headerClass.includes("text-white");
 
   const wrapper = document.createElement("div");

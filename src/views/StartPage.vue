@@ -60,7 +60,7 @@
   <div v-else-if="step === 'name-input'">
     <h1>???</h1>
     <p>请输入你的名字</p>
-    <input v-model="playerName" type="text" :placeholder="defaultName" />
+    <input v-model="playerName" type="text" :placeholder="'吴田所'" />
     <button @click="confirmName">继续</button>
   </div>
 
@@ -185,7 +185,9 @@ function startGame() {
   const player = playerStore.player;
   if (!player) return;
 
-  player.pack.push(new Consumable(ConsumableType.GiftboxAndLetter));
+  const gift = new Consumable(ConsumableType.GiftboxAndLetter);
+  player.pack.push(gift);
+  gift.showItemToast();
   playerStore.save();
   router.push({ name: "main-menu" });
 }
