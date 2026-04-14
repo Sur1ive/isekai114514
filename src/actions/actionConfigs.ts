@@ -833,8 +833,9 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
         messageGenerator: (_actor: Creature, _target: Creature) => `第二鞭！`,
+        continuous: true,
       },
       {
         category: HitCategory.Attack,
@@ -844,13 +845,13 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
         messageGenerator: (_actor: Creature, _target: Creature) => `第四鞭！`,
         continuous: true,
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0.5 },
         messageGenerator: (_actor: Creature, _target: Creature) => `第五鞭！`,
       },
     ],

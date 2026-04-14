@@ -461,8 +461,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 5, growth: 0 },
       app: { base: 5, growth: 0 },
       dex: { base: 5, growth: 0.1 },
-      armor: { base: 0, growth: 0 },
-      piercing: { base: 0, growth: 0 },
+      armor: { base: 0, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Attack, weight: 0.5 },
@@ -491,8 +491,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 5, growth: 0 },
       app: { base: 5, growth: 0 },
       dex: { base: 5, growth: 0.1 },
-      armor: { base: 0, growth: 0 },
-      piercing: { base: 0, growth: 0 },
+      armor: { base: 0, growth: 5 },
+      piercing: { base: 0, growth: 5 },
     },
     actions: [
       { actionType: ActionType.Attack, weight: 0.5 },
