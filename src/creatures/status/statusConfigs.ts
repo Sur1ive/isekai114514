@@ -99,13 +99,13 @@ export const statusConfigs: Record<StatusType, StatusData> = {
     },
   },
   [StatusType.QuickRecovery]: {
-    name: "快速恢复",
-    description: "自动回复速度大幅度增加",
+    name: "泉涌",
+    description: "生命之泉快速回复",
     durationType: StatusDurationType.Second,
     category: StatusCategory.OnSecond,
     priority: 1,
     effect: (self: Creature, statusLevel?: number) => {
-      (self as Player).autoRecoverHpDot(statusLevel || 1);
+      (self as Player).growLifeSpring(statusLevel || 1);
     },
   },
   [StatusType.Escaped]: {

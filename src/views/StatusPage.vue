@@ -9,7 +9,7 @@
           <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
             <h4 class="card-title mb-0">{{ player.name }} 的属性</h4>
             <div>
-              <span class="badge bg-primary">可用加点: <span>{{ player.plusAbilityPoint }}</span></span>
+              <span class="badge bg-primary d-none">可用加点: <span>{{ player.plusAbilityPoint }}</span></span>
             </div>
           </div>
           <div class="card-body">
@@ -398,9 +398,9 @@ const attributeNameMap: Record<string, string> = {
 const attributeDescMap: Record<string, string> = {
   str: "影响具有力量系数的动作。大部分的攻击动作都具有力量系数。",
   dex: "影响具有敏捷系数的动作，一部分迅捷的攻击动作，以及大部分闪避动作都具有敏捷系数。",
-  con: "影响具有体质系数的动作，同时影响生命值上限和自然回复生命值的速度。",
+  con: "影响具有体质系数的动作，同时影响生命值上限。",
   int: "影响具有智力系数的动作，同时影响成功判断敌人动作的概率。",
-  siz: "影响具有体型系数的动作。",
+  siz: "影响具有体型系数的动作，同时影响生命值上限。",
   app: "暂时没用",
   armor: "护甲值决定对伤害的减免程度。",
   piercing: "穿刺值决定攻击时无视目标护甲的能力。",

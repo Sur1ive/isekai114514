@@ -72,8 +72,12 @@ export class Creature {
     this.actions = creatureConfigs[this.type].actions.map(a => ({ ...a }));
   }
 
+  maxHealthFormula(con: number, siz: number): number {
+    return con * 10 + siz * 5;
+  }
+
   calculateMaxHealth() {
-    this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
+    this.maxHealth = this.maxHealthFormula(this.ability.con, this.ability.siz);
   }
 
   calculateAbility() {
@@ -105,7 +109,7 @@ export class Creature {
     // }
     this.calculateAbility();
     const oldMaxHealth = this.maxHealth;
-    this.maxHealth = this.ability.con * 10 + this.ability.siz * 5;
+    this.calculateMaxHealth();
     this.recoverHp(this.maxHealth - oldMaxHealth);
     this.levelUpUniqueEquipment();
   }
@@ -239,7 +243,7 @@ export class Creature {
 
   getMaxHealth(): number {
     const ability = this.getAbility();
-    return ability.con * 10 + ability.siz * 5;
+    return this.maxHealthFormula(ability.con, ability.siz);
   }
 
   // 获取装备的额外行动列表

@@ -119,7 +119,7 @@ function reconstructPlayer(plainPlayer: Record<string, any>): Player {
   const playerProps = [
     "log", "capturedMonster", "activePetIndex", "exp",
     "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList",
-    "resourceNodeLastCollectedTime", "persistedBoss"
+    "resourceNodeLastCollectedTime", "persistedBoss", "lifeSpring"
   ];
 
   playerProps.forEach(prop => {
@@ -188,12 +188,11 @@ function reconstructPlayer(plainPlayer: Record<string, any>): Player {
   // 清除状态。不保存的时候清除是为了保留secondStatus
   player.clearStatus();
 
-  // 按照时间回血
+  // 离线期间：泉水增长 + 宠物回血
   const saveTime = localStorage.getItem("saveTime");
   if (saveTime) {
     const timeDiff = (Date.now() - JSON.parse(saveTime)) / 1000;
-    player.autoRecoverHpDot(timeDiff);
-    // 宠物离线回血：每10分钟(600秒)恢复1%最大生命
+    player.growLifeSpring(timeDiff);
     for (const pet of player.capturedMonster) {
       const petRecover = pet.getMaxHealth() * 0.01 * (timeDiff / 600);
       pet.recoverHp(petRecover);

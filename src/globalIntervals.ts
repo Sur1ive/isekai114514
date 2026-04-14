@@ -1,35 +1,38 @@
 import { Player } from "./creatures/Player";
 import { saveGame } from "./save";
 
-let recoverInterval = -1;
+let tickInterval = -1;
 let saveInterval = -1;
 let secondStatusInterval = -1;
-let lastRecoverTime = 0;
+let lastTickTime = 0;
 let visibilityHandler: (() => void) | null = null;
 
-function doRecover(player: Player, onTick?: () => void) {
-  if (!player.isAtHome) return;
-
+function doTick(player: Player, onTick?: () => void) {
   const now = Date.now();
-  const elapsed = (now - lastRecoverTime) / 1000;
-  lastRecoverTime = now;
+  const elapsed = (now - lastTickTime) / 1000;
+  lastTickTime = now;
 
   if (elapsed <= 0) return;
 
-  player.autoRecoverHpDot(elapsed);
-  for (const pet of player.capturedMonster) {
-    pet.recoverHp(pet.getMaxHealth() * 0.01 * (elapsed / 600));
-    if (pet.isFainted && pet.health >= pet.getMaxHealth() * 0.3) {
-      pet.isFainted = false;
+  // 泉水始终增长，不受 isAtHome 限制
+  player.growLifeSpring(elapsed);
+
+  if (player.isAtHome) {
+    // 宠物回血：每10分钟(600秒)恢复1%最大HP
+    for (const pet of player.capturedMonster) {
+      pet.recoverHp(pet.getMaxHealth() * 0.01 * (elapsed / 600));
+      if (pet.isFainted && pet.health >= pet.getMaxHealth() * 0.3) {
+        pet.isFainted = false;
+      }
     }
+    onTick?.();
   }
-  onTick?.();
 }
 
 // player指向的对象发生改变（新建，加载或者remake）时，需要调用此函数
 export function setIntervals(player: Player, onTick?: () => void) {
-  if (recoverInterval !== -1) {
-    clearInterval(recoverInterval);
+  if (tickInterval !== -1) {
+    clearInterval(tickInterval);
   }
   if (saveInterval !== -1) {
     clearInterval(saveInterval);
@@ -41,10 +44,10 @@ export function setIntervals(player: Player, onTick?: () => void) {
     document.removeEventListener("visibilitychange", visibilityHandler);
   }
 
-  lastRecoverTime = Date.now();
+  lastTickTime = Date.now();
 
-  recoverInterval = setInterval(() => {
-    doRecover(player, onTick);
+  tickInterval = setInterval(() => {
+    doTick(player, onTick);
   }, 1000);
 
   saveInterval = setInterval(() => {
@@ -62,7 +65,7 @@ export function setIntervals(player: Player, onTick?: () => void) {
 
   visibilityHandler = () => {
     if (document.visibilityState === "visible") {
-      doRecover(player, onTick);
+      doTick(player, onTick);
       if (player.isAtHome) {
         saveGame(player);
       }

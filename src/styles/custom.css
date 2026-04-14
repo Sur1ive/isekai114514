@@ -520,6 +520,166 @@
   color: #dc3545;
 }
 
+/* 生命之泉 */
+.life-spring-card {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e8f5fe 0%, #f0f9ff 100%);
+  border: 1px solid #b3e0f7;
+}
+
+.life-spring-icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.life-spring-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.life-spring-amount {
+  font-size: 12px;
+  font-weight: 600;
+  color: #546e7a;
+}
+
+.life-spring-rate {
+  font-size: 10px;
+  color: #039be5;
+  margin-left: 4px;
+}
+
+.life-spring-bar {
+  height: 10px;
+  background-color: #cce5f6;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.life-spring-bar-fill {
+  background-color: #42a5f5 !important;
+}
+
+.life-spring-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 14px;
+  color: #fff;
+  background-color: #42a5f5;
+  border-color: #42a5f5;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.life-spring-btn:hover:not(:disabled) {
+  background-color: #1e88e5;
+  border-color: #1e88e5;
+  color: #fff;
+}
+
+.life-spring-btn:disabled {
+  opacity: 0.35;
+  color: #78909c;
+  background-color: #cfd8dc;
+  border-color: #cfd8dc;
+}
+
+/* 主菜单操作按钮 */
+.menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s;
+  color: #fff;
+}
+
+.menu-btn:active {
+  transform: scale(0.97);
+}
+
+.menu-btn-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.menu-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.menu-btn-sub {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.menu-btn-go {
+  background: linear-gradient(135deg, #43a047, #66bb6a);
+  box-shadow: 0 2px 8px rgba(67, 160, 71, 0.3);
+  padding: 16px 18px;
+  font-size: 17px;
+}
+
+.menu-btn-go:hover {
+  box-shadow: 0 4px 14px rgba(67, 160, 71, 0.45);
+  color: #fff;
+}
+
+.menu-btn-secondary {
+  background: linear-gradient(135deg, #455a64, #607d8b);
+  box-shadow: 0 2px 6px rgba(69, 90, 100, 0.25);
+  font-size: 14px;
+  padding: 10px 14px;
+  justify-content: center;
+}
+
+.menu-btn-secondary:hover {
+  box-shadow: 0 3px 10px rgba(69, 90, 100, 0.4);
+  color: #fff;
+}
+
+.menu-btn-misc {
+  background: linear-gradient(135deg, #5c6bc0, #7986cb);
+  box-shadow: 0 2px 6px rgba(92, 107, 192, 0.25);
+  font-size: 13px;
+  padding: 8px 12px;
+  justify-content: center;
+}
+
+.menu-btn-misc:hover {
+  box-shadow: 0 3px 10px rgba(92, 107, 192, 0.4);
+  color: #fff;
+}
+
+.menu-btn-danger {
+  background: linear-gradient(135deg, #b71c1c, #e53935);
+  box-shadow: 0 2px 6px rgba(183, 28, 28, 0.25);
+  font-size: 13px;
+  padding: 8px 12px;
+  justify-content: center;
+}
+
+.menu-btn-danger:hover {
+  box-shadow: 0 3px 10px rgba(183, 28, 28, 0.4);
+  color: #fff;
+}
+
 /* 主界面宠物卡片 */
 .main-pet-card {
   width: 90px;

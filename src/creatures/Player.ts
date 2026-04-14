@@ -4,6 +4,9 @@ import type { Monster } from "./Monster";
 import { CurrentMapData } from "../maps/CurrentMapData";
 
 export class Player extends Creature {
+  static readonly LIFE_SPRING_MAX = 300;
+  static readonly LIFE_SPRING_REFILL_SECONDS = 3600; // 30分钟回满
+
   log: string[] = [];
   tempLog: string[] = [];
   capturedMonster: Monster[] = [];
@@ -12,6 +15,7 @@ export class Player extends Creature {
   isAtHome: boolean = true;
   exp: number = 0;
   isPlayer: boolean = true;
+  lifeSpring: number = Player.LIFE_SPRING_MAX;
   currentMapData: CurrentMapData = {
     currentRegionId: "ruin",
     currentNodeId: null,
@@ -70,22 +74,22 @@ export class Player extends Creature {
     `;
   }
 
+  // 多态：玩家的生命值上限计算公式与怪物不同
+  maxHealthFormula(con: number, siz: number): number {
+    return con * 15 + siz * 5;
+  }
+
   getHealthDisplay(): string {
-    const ability = this.getAbility();
     const maxHealth = this.getMaxHealth();
     const percent = Math.min(100, (this.health / maxHealth) * 100);
-    const regen = ((ability.con / 5) * maxHealth) / 900;
     return `
     <div class="progress" style="height: 20px; position: relative; background-color: #444;">
-      <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: ${percent}%;"
+      <div class="progress-bar bg-danger" role="progressbar" style="width: ${percent}%;"
            aria-valuenow="${this.health}" aria-valuemin="0" aria-valuemax="${maxHealth}">
       </div>
       <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
         <div style="text-align: center; line-height: 20px; font-size: 0.9rem; font-weight: bold; color: #fff;">
           hp: ${this.health.toFixed(1)} / ${maxHealth.toFixed(1)}
-        </div>
-        <div style="position: absolute; top: 0; right: 5px; height: 100%; display: flex; align-items: center; font-size: 0.9rem; font-weight: bold; color: #fff;">
-          +${regen.toFixed(2)}
         </div>
       </div>
     </div>
@@ -99,11 +103,19 @@ export class Player extends Creature {
     }
   }
 
-  autoRecoverHpDot(num: number = 1): void {
-    const ability = this.getAbility();
-    const maxHealth = this.getMaxHealth();
-    const amount = ((ability.con / 5) * maxHealth) / 900 * num;
-    this.recoverHp(amount);
+  growLifeSpring(elapsedSeconds: number): void {
+    if (this.lifeSpring >= Player.LIFE_SPRING_MAX) return;
+    const rate = Player.LIFE_SPRING_MAX / Player.LIFE_SPRING_REFILL_SECONDS;
+    this.lifeSpring = Math.min(Player.LIFE_SPRING_MAX, this.lifeSpring + rate * elapsedSeconds);
+  }
+
+  useLifeSpring(): number {
+    const missingHp = this.getMaxHealth() - this.health;
+    if (missingHp <= 0 || this.lifeSpring <= 0) return 0;
+    const healAmount = Math.min(missingHp, this.lifeSpring);
+    this.lifeSpring -= healAmount;
+    this.recoverHp(healAmount);
+    return healAmount;
   }
 
   addLog(log: string): void {
