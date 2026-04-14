@@ -177,7 +177,7 @@ export const actionConfigs: Record<ActionType, Action> = {
         category: HitCategory.Attack,
         coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 0 },
         messageGenerator: (actor: Creature, _target: Creature) => {
-          return `${actor.name}喝下了昏睡红茶，于睡眠中恢复了<span style="color: green">${actor.getAbility().con}</span>点生命值`;
+          return `${actor.name}喝下了昏睡红茶，于睡眠中恢复了<span style="color: green">${actor.getAbility().con / 2}</span>点生命值`;
         },
         extraEffect: (actor: Creature, _target: Creature) => {
           actor.recoverHp(actor.getAbility().con / 2);
