@@ -241,13 +241,13 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
   [PrefixType.RageCursed]: {
     name: "狂化诅咒的",
     position: EquipmentPosition.Hand,
-    rarity: Rarity.Rare,
+    rarity: Rarity.Masterpiece,
     extraActions: [],
     ability: {},
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 0,
-        multiply: 1.3,
+        multiply: 1.2,
       },
       [HitCategory.Dodge]: {
         plus: 0,
@@ -620,7 +620,7 @@ export const prefixConfigs: Record<PrefixType, Prefix> = {
     position: "AnyPosition",
     rarity: Rarity.Mythical,
     extraActions: [
-      { actionType: ActionType.GodStrike, weight: 0.1 },
+      { actionType: ActionType.GodStrike, weight: 0.05 },
     ],
     ability: {
       con: 1,
