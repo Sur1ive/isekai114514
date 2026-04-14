@@ -257,7 +257,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       siz: { base: 15, growth: 0.1 },
       app: { base: 0, growth: 0 },
       dex: { base: 0, growth: 0 },
-      armor: { base: 75, growth: 5 },
+      armor: { base: 75, growth: 6 },
       piercing: { base: 0, growth: 5 },
     },
     actions: [
@@ -268,7 +268,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     ],
     dropItems: [
       { type: ConsumableType.WoodenChest, weight: 0.8 },
-      { type: ConsumableType.SilverChest, weight: 0.04 },
+      { type: ConsumableType.SilverChest, weight: 0.1 },
       { type: ConsumableType.GoldChest, weight: 0.002 },
     ],
   },
@@ -311,12 +311,14 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
       piercing: { base: 0, growth: 5.5 },
     },
     actions: [
-      { actionType: ActionType.SneakAttack, weight: 1 },
+      { actionType: ActionType.QuickAttack, weight: 0.5 },
       { actionType: ActionType.LightningFiveStrikes, weight: 1 },
+      { actionType: ActionType.SpinAttack, weight: 0.5 },
+      { actionType: ActionType.Dodge, weight: 1 },
     ],
     dropItems: [
       { type: ConsumableType.WoodenChest, weight: 0.8 },
-      { type: ConsumableType.SilverChest, weight: 0.04 },
+      { type: ConsumableType.SilverChest, weight: 0.1 },
       { type: ConsumableType.GoldChest, weight: 0.002 },
     ],
   },
@@ -481,7 +483,7 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
 
   [CreatureType.Mole]: {
     typeName: "摩尔",
-    description: "不是摩尔庄园里的那种摩尔",
+    description: "不是摩尔庄园里的那种摩尔。你在它身上嗅到了宝物的气息",
     abilityCoeff: {
       str: { base: 5, growth: 0.1 },
       int: { base: 5, growth: 0.1 },
@@ -504,8 +506,8 @@ export const creatureConfigs: Record<CreatureType, CreatureData> = {
     ],
     dropItems: [
       { type: ConsumableType.WoodenChest, weight: 0.8 },
-      { type: ConsumableType.SilverChest, weight: 0.04 },
-      { type: ConsumableType.GoldChest, weight: 0.002 },
+      { type: ConsumableType.SilverChest, weight: 0.15 },
+      { type: ConsumableType.GoldChest, weight: 0.003 },
     ],
   },
 };

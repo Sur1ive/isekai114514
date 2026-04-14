@@ -55,7 +55,7 @@ export const eastMarshForestDeepPathNode: NormalMonsterNode = {
   toNodeList: [],
   monsterList: [
     {
-      monster: CreatureType.Deer,
+      monster: CreatureType.Mole,
       maxLevel: 14,
       minLevel: 10,
       weight: 1,
@@ -76,7 +76,7 @@ export const eastMarshForestEliteNode: EliteMonsterNode = {
       maxLevel: 9,
       minLevel: 6,
       maxIndividualStrength: 1.2,
-      minIndividualStrength: 0.8,
+      minIndividualStrength: 1,
       weight: 1,
     },
   ],

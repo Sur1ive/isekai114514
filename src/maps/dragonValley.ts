@@ -11,22 +11,16 @@ export const dragonValleyTreasureNode: TreasureNode = {
   type: NodeType.Treasure,
   firstTimeTreasureList: [
     {
-      item: ConsumableType.SilverChest,
-      minLevel: 10,
-      maxLevel: 15,
-      weight: 0.95,
-    },
-    {
       item: ConsumableType.GoldChest,
       minLevel: 10,
       maxLevel: 15,
-      weight: 0.05,
+      weight: 1,
     },
     {
       item: ConsumableType.DiamondChest,
       minLevel: 10,
       maxLevel: 15,
-      weight: 0.002,
+      weight: 0.01,
     },
   ],
   repeatableTreasureList: [
