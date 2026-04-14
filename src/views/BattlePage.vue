@@ -357,7 +357,7 @@
             <h6 class="tut-title">其他机制</h6>
             <ul class="tut-list">
               <li><strong>连续动作 🔗</strong>：前一个动作命中后才会触发的动作，若前一个动作未命中则不会触发</li>
-              <li><strong>失衡</strong>：闪避成功时攻击方会失衡，失去同一个行动内的后续动作</li>
+              <li><strong>失衡</strong>：闪避成功时攻击方会失衡，失去同一个行动内的下一个动作</li>
               <li><strong>观察</strong>：根据智力属性之差，可能可以看穿敌方招式</li>
             </ul>
           </section>

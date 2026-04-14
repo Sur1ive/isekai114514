@@ -255,7 +255,7 @@ export const actionConfigs: Record<ActionType, Action> = {
       },
       {
         category: HitCategory.Attack,
-        coeff: { str: 3, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
+        coeff: { str: 3, int: 0, con: 0, siz: 0, app: 0, dex: 2 },
         messageGenerator: (actor: Creature, _target: Creature) => {
           return `${actor.name}借着前冲的力劈出强力一击`;
         },
@@ -270,7 +270,7 @@ export const actionConfigs: Record<ActionType, Action> = {
     hits: [
       {
         category: HitCategory.Dodge,
-        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4 },
+        coeff: { str: 0, int: 0, con: 0, siz: 0, app: 0, dex: 4.5 },
         messageGenerator: (actor: Creature, _target: Creature) =>
           `${actor.name}在敌人攻击的瞬间拔刀后退`,
         extraEffect: (actor: Creature, _target: Creature) => {

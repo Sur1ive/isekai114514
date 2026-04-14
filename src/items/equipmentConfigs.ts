@@ -30,6 +30,8 @@ export enum EquipmentType {
   GraniteColossus = "GraniteColossus",
   Inheritance = "Inheritance",
   JudoGlove = "JudoGlove",
+  YuanGodBless = "YuanGodBless",
+  Xinyi = "Xinyi",
 }
 
 export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
@@ -285,7 +287,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Epic,
     position: EquipmentPosition.Hand,
     extraActions: [
-      { actionType: ActionType.HorizontalSlash, weight: 1 },
+      { actionType: ActionType.Repent, weight: 1 },
       { actionType: ActionType.DragonBreath, weight: 0.1 },
     ],
     ability: {
@@ -585,5 +587,39 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       },
     },
   },
+
+  [EquipmentType.YuanGodBless]: {
+    name: "远神的祝福",
+    description: "神说，要有祝福，于是就有了祝福",
+    rarity: Rarity.Epic,
+    position: EquipmentPosition.Accessory,
+    extraActions: [
+      { actionType: ActionType.GodStrike, weight: 0.05 },
+    ],
+    ability: {
+      con: 2,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 0,
+    actionCoeff: {},
+  },
+
+  [EquipmentType.Xinyi]: {
+    name: "馨艺",
+    description: "隐藏着一些原本属于你的力量",
+    rarity: Rarity.Mythical,
+    position: EquipmentPosition.Accessory,
+    extraActions: [
+      { actionType: ActionType.ShredFlower, weight: 0.1 },
+    ],
+    ability: {
+      con: 2,
+      dex: 2,
+    },
+    armorGrowthCoeff: 0,
+    piercingGrowthCoeff: 1,
+    actionCoeff: {},
+  },
+
 };
 deepFreeze(equipmentConfigs);

@@ -51,7 +51,7 @@
           <button class="btn btn-primary w-100 py-3" @click="router.push({ name: 'map-list' })">快速旅行</button>
         </div>
         <div class="col-12 col-md-4">
-          <button class="btn btn-success w-100 py-3" @click="router.push({ name: 'status' })">状态</button>
+          <button class="btn btn-success w-100 py-3" @click="router.push({ name: 'status' })">状态/背包</button>
         </div>
         <div class="col-12 col-md-4">
           <button class="btn btn-danger w-100 py-3" @click="restart">秽土转生</button>
