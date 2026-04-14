@@ -388,7 +388,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Unique,
     position: EquipmentPosition.Body,
     extraActions: [
-      { actionType: ActionType.DragonBreath, weight: 0.1 },
+      { actionType: ActionType.DragonBreath, weight: 0.05 },
     ],
     ability: {
       armor: 10,
@@ -404,7 +404,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     rarity: Rarity.Unique,
     position: EquipmentPosition.Foot,
     extraActions: [
-      { actionType: ActionType.DragonBreath, weight: 0.1 },
+      { actionType: ActionType.DragonBreath, weight: 0.05 },
     ],
     ability: {
       dex: 2,
@@ -426,7 +426,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       int: 1,
     },
     armorGrowthCoeff: 0,
-    piercingGrowthCoeff: 1,
+    piercingGrowthCoeff: 0,
     actionCoeff: {},
   },
   [EquipmentType.Hammer]: {
