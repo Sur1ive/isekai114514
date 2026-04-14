@@ -7,14 +7,62 @@ import { EquipmentBar } from "./creatures/types";
 import { CreatureType } from "./creatures/creatureConfigs";
 import { Monster } from "./creatures/Monster";
 
+function encodeSave(jsonStr: string): string {
+  return "ISK1:" + btoa(unescape(encodeURIComponent(jsonStr)));
+}
+
+function decodeSave(code: string): string {
+  const payload = code.startsWith("ISK1:") ? code.slice(5) : code;
+  return decodeURIComponent(escape(atob(payload)));
+}
+
+function showEmergencyBackup(context: string) {
+  const raw = localStorage.getItem("playerData");
+  if (!raw) return;
+  const code = encodeSave(raw);
+  console.error(`[${context}] 存档应急备份码已生成，请复制保存：`);
+  console.error(code);
+  try {
+    navigator.clipboard.writeText(code);
+    alert(`${context}出错！存档备份码已复制到剪贴板，请粘贴保存以备恢复。\n\n也可在控制台(F12)中查看。`);
+  } catch {
+    alert(`${context}出错！请打开控制台(F12)复制存档备份码以备恢复。`);
+  }
+}
+
 export function saveGame(player: Player) {
   // 不保存仅在开始流程中存在的满状态野兽仙贝
   if (player.type === CreatureType.FullPowerPlayer114514) {
     return;
   }
-  const plainPlayer = instanceToPlain(player);
-  localStorage.setItem("playerData", JSON.stringify(plainPlayer));
-  localStorage.setItem("saveTime", JSON.stringify(Date.now()));
+  try {
+    const plainPlayer = instanceToPlain(player);
+    const json = JSON.stringify(plainPlayer);
+    localStorage.setItem("playerData", json);
+    localStorage.setItem("saveTime", JSON.stringify(Date.now()));
+  } catch (e) {
+    console.error("saveGame failed", e);
+    showEmergencyBackup("保存");
+  }
+}
+
+export function exportSave(): string | null {
+  const raw = localStorage.getItem("playerData");
+  if (!raw) return null;
+  return encodeSave(raw);
+}
+
+export function importSave(code: string): boolean {
+  try {
+    const json = decodeSave(code);
+    JSON.parse(json);
+    localStorage.setItem("playerData", json);
+    localStorage.setItem("saveTime", JSON.stringify(Date.now()));
+    return true;
+  } catch (e) {
+    console.error("importSave failed", e);
+    return false;
+  }
 }
 
 export function loadPlayer(): Player | null {
@@ -23,9 +71,27 @@ export function loadPlayer(): Player | null {
     console.log("No player data found");
     return null;
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const plainPlayer: Record<string, any> = JSON.parse(data);
 
+  let plainPlayer: Record<string, any>;
+  try {
+    plainPlayer = JSON.parse(data);
+  } catch (e) {
+    console.error("loadPlayer JSON parse failed", e);
+    showEmergencyBackup("读档");
+    return null;
+  }
+
+  try {
+    return reconstructPlayer(plainPlayer);
+  } catch (e) {
+    console.error("loadPlayer reconstruct failed", e);
+    showEmergencyBackup("读档");
+    return null;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function reconstructPlayer(plainPlayer: Record<string, any>): Player {
   // 不使用player = plainToInstance(Player, plainPlayer);，而是new一个Player，然后手动复原必要的属性，以应对版本更新
   // 即便某个属性读取失败，也不会影响其他属性
   const player = new Player(plainPlayer.name, plainPlayer.type);
