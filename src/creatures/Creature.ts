@@ -143,7 +143,10 @@ export class Creature {
       this.removeEquipment(equipment.position);
     }
     this.equipments[equipment.position] = equipment;
-    this.pack.splice(this.pack.indexOf(equipment), 1);
+    const idx = this.pack.indexOf(equipment);
+    if (idx !== -1) {
+      this.pack.splice(idx, 1);
+    }
     if (this.health > this.getMaxHealth()) {
       this.health = this.getMaxHealth();
     }
@@ -160,7 +163,10 @@ export class Creature {
   }
 
   discardItem(item: Item): void {
-    this.pack.splice(this.pack.indexOf(item), 1);
+    const idx = this.pack.indexOf(item);
+    if (idx !== -1) {
+      this.pack.splice(idx, 1);
+    }
   }
 
   loseHp(amount: number) {

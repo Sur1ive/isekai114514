@@ -490,41 +490,37 @@ function initTippyInstances() {
     const tooltipContent = generateItemTooltipContent(item);
     const isConsumable = item instanceof Consumable;
 
-    const instance = tippy(el, {
-      theme: "game",
-      content: `
+    const contentEl = document.createElement("div");
+    contentEl.innerHTML = `
         ${tooltipContent}
         <button class="use-item-btn btn btn-success btn-sm mt-1">${isConsumable ? "使用" : "装备"}</button>
         <button class="discard-item-btn btn btn-danger btn-sm mt-1">丢弃</button>
-      `,
-      allowHTML: true,
+    `;
+    contentEl.querySelector(".use-item-btn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (item instanceof Consumable) {
+        item.useItem(player.value!);
+        player.value!.addLog(`${player.value!.name} 使用了 ${item.getName()}`);
+      } else if (item instanceof Equipment) {
+        player.value!.wearEquipment(item);
+      }
+      playerStore.save();
+      refreshPage();
+    });
+    contentEl.querySelector(".discard-item-btn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      player.value!.discardItem(item);
+      playerStore.save();
+      refreshPage();
+    });
+
+    const instance = tippy(el, {
+      theme: "game",
+      content: contentEl,
       interactive: true,
       trigger: "click",
       hideOnClick: true,
       appendTo: document.body,
-      onShown(inst) {
-        const useBtn = inst.popper.querySelector(".use-item-btn");
-        const discardBtn = inst.popper.querySelector(".discard-item-btn");
-
-        useBtn?.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (item instanceof Consumable) {
-            item.useItem(player.value!);
-            player.value!.addLog(`${player.value!.name} 使用了 ${item.getName()}`);
-          } else if (item instanceof Equipment) {
-            player.value!.wearEquipment(item);
-          }
-          playerStore.save();
-          refreshPage();
-        });
-
-        discardBtn?.addEventListener("click", (e) => {
-          e.stopPropagation();
-          player.value!.discardItem(item);
-          playerStore.save();
-          refreshPage();
-        });
-      },
     });
 
     tippyInstances.push(instance);
@@ -538,26 +534,25 @@ function initTippyInstances() {
       const el = document.querySelector(`[data-equip-pos="${position}"]`) as HTMLElement;
       if (!el) continue;
 
-      const instance = tippy(el, {
-        theme: "game",
-        content: `
+      const equipContentEl = document.createElement("div");
+      equipContentEl.innerHTML = `
           ${tooltipContent}
           <button class="remove-equip-btn btn btn-primary btn-sm mt-1">卸下</button>
-        `,
-        allowHTML: true,
+      `;
+      equipContentEl.querySelector(".remove-equip-btn")?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        player.value!.removeEquipment(position as EquipmentPosition);
+        playerStore.save();
+        refreshPage();
+      });
+
+      const instance = tippy(el, {
+        theme: "game",
+        content: equipContentEl,
         interactive: true,
         trigger: "click",
         hideOnClick: true,
         appendTo: document.body,
-        onShown(inst) {
-          const btn = inst.popper.querySelector(".remove-equip-btn");
-          btn?.addEventListener("click", (e) => {
-            e.stopPropagation();
-            player.value!.removeEquipment(position as EquipmentPosition);
-            playerStore.save();
-            refreshPage();
-          });
-        },
       });
 
       tippyInstances.push(instance);

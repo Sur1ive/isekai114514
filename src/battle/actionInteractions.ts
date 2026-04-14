@@ -27,29 +27,32 @@ function handleHit(
   const effectivePlayerHit = playerHit.category === HitCategory.Capture
     ? { ...playerHit, category: HitCategory.Attack }
     : playerHit;
+  const effectiveEnemyHit = enemyHit.category === HitCategory.Capture
+    ? { ...enemyHit, category: HitCategory.Attack }
+    : enemyHit;
   const pCat = effectivePlayerHit.category;
-  const eCat = enemyHit.category;
+  const eCat = effectiveEnemyHit.category;
 
   if (
     pCat === HitCategory.Attack &&
     eCat === HitCategory.Attack
   ) {
-    result = attackAgainstAttack(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstAttack(player, enemy, effectivePlayerHit, effectiveEnemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
     (pCat === HitCategory.Attack && eCat === HitCategory.None) ||
     (pCat === HitCategory.None && eCat === HitCategory.Attack)
   ) {
-    result = attackAgainstNone(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstNone(player, enemy, effectivePlayerHit, effectiveEnemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
     (pCat === HitCategory.Attack && eCat === HitCategory.Defend) ||
     (pCat === HitCategory.Defend && eCat === HitCategory.Attack)
   ) {
-    result = attackAgainstDefend(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstDefend(player, enemy, effectivePlayerHit, effectiveEnemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else if (
     (pCat === HitCategory.Dodge && eCat === HitCategory.Attack) ||
     (pCat === HitCategory.Attack && eCat === HitCategory.Dodge)
   ) {
-    result = attackAgainstDodge(player, enemy, effectivePlayerHit, enemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
+    result = attackAgainstDodge(player, enemy, effectivePlayerHit, effectiveEnemyHit, diceRolls, originalPlayerHitIcon, originalEnemyHitIcon);
   } else {
     diceRolls.push({
       playerName: player.name,
