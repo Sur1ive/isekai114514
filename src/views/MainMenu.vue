@@ -129,7 +129,7 @@ onMounted(() => {
     return;
   }
   player.value.isAtHome = true;
-  player.value.clearCurrentMapDataWithoutBoss();
+  player.value.clearCurrentMapData();
   playerStore.save();
   playerStore.updateTitle();
 

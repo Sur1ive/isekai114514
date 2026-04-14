@@ -749,10 +749,14 @@ function handleContinue() {
       router.push({ name: "main-menu" });
     } else {
       // Win
-      player.currentMapData.boss.shift();
-      if (player.currentMapData.boss.length > 0) {
+      const bossNodeId = player.currentMapData.bossNodeId;
+      const bossList = bossNodeId ? player.persistedBoss[bossNodeId] : undefined;
+      if (bossList) {
+        bossList.shift();
+      }
+      if (bossList && bossList.length > 0) {
         // 下一阶段 Boss
-        const nextBoss = player.currentMapData.boss[0] as Monster;
+        const nextBoss = bossList[0] as Monster;
         enemyObj = nextBoss;
         bossHpSnapshot = nextBoss.health;
         prevEnemyHp.value = nextBoss.health;
@@ -762,6 +766,9 @@ function handleContinue() {
         battleResult.value = null;
         prepareNextTurn();
         return;
+      }
+      if (bossNodeId) {
+        delete player.persistedBoss[bossNodeId];
       }
       if (player.currentMapData.goingToNodeId) {
         player.goToNode(player.currentMapData.goingToNodeId);

@@ -257,9 +257,9 @@ function updateBossGauge() {
   bossNodeName.value = bossNode.name;
   bossTotalStages.value = bossNode.bossStageList.length;
 
-  const bossList = player.currentMapData.boss;
+  const bossList = player.persistedBoss[bossNode.id] || [];
   bossSpawned.value = bossList.length > 0;
-  bossCleared.value = !bossSpawned.value && player.currentMapData.visitedNodeIdList.includes(bossNode.id);
+  bossCleared.value = !bossSpawned.value && player.unlockedNodeIdList.includes(bossNode.id);
 
   if (bossSpawned.value) {
     bossRemainingStages.value = bossList.length;

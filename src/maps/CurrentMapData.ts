@@ -1,11 +1,9 @@
-import { Monster } from "../creatures/Monster";
-
 export interface CurrentMapData {
   currentRegionId: string;
   currentNodeId: string | null;
   goingToNodeId: string | null;
   visitedNodeIdList: string[];
-  boss: Monster[];
+  bossNodeId?: string;
   viewState?: {
     x: number;
     y: number;

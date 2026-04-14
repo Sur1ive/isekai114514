@@ -105,7 +105,10 @@ function goToBossNode(node: BossNode, player: Player) {
     navigateToMap();
     return;
   }
-  if (player.currentMapData.boss.length === 0) {
+
+  let bossList = player.persistedBoss[node.id];
+  if (!bossList || bossList.length === 0) {
+    bossList = [];
     bossStageList.forEach((bossStage) => {
       const bossLevel = randomInt(bossStage.minLevel, bossStage.maxLevel);
       const individualStrength = randomInt(
@@ -114,10 +117,14 @@ function goToBossNode(node: BossNode, player: Player) {
       );
       const boss = new Monster(bossStage.monster, bossLevel, individualStrength);
       applyVariant(boss);
-      player.currentMapData.boss.push(boss);
+      bossList.push(boss);
     });
+    player.persistedBoss[node.id] = bossList;
   }
-  const boss = player.currentMapData.boss[0] as Monster;
+
+  player.currentMapData.bossNodeId = node.id;
+
+  const boss = bossList[0] as Monster;
   console.log(boss);
   const playerStore = usePlayerStore();
   playerStore.save();

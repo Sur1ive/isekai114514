@@ -8,6 +8,7 @@ export class Player extends Creature {
   tempLog: string[] = [];
   capturedMonster: Monster[] = [];
   activePetIndex: number = -1;
+  persistedBoss: Record<string, Monster[]> = {};
   isAtHome: boolean = true;
   exp: number = 0;
   isPlayer: boolean = true;
@@ -16,7 +17,6 @@ export class Player extends Creature {
     currentNodeId: null,
     goingToNodeId: null,
     visitedNodeIdList: [],
-    boss: [],
   };
   unlockedRegionIdList: string[] = ["ruin"];
   unlockedNodeIdList: string[] = [];
@@ -135,15 +135,10 @@ export class Player extends Creature {
     this.tempLog = [];
   }
 
-  clearCurrentMapDataWithoutBoss() {
+  clearCurrentMapData() {
     this.currentMapData.currentNodeId = null;
     this.currentMapData.goingToNodeId = null;
     this.currentMapData.visitedNodeIdList = [];
-  }
-
-  clearCurrentMapData() {
-    this.clearCurrentMapDataWithoutBoss();
-    this.currentMapData.boss = [];
   }
 
   goToRegion(regionId: string) {

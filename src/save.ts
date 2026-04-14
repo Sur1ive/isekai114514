@@ -53,7 +53,7 @@ export function loadPlayer(): Player | null {
   const playerProps = [
     "log", "capturedMonster", "activePetIndex", "exp",
     "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList",
-    "resourceNodeLastCollectedTime"
+    "resourceNodeLastCollectedTime", "persistedBoss"
   ];
 
   playerProps.forEach(prop => {
@@ -83,13 +83,20 @@ export function loadPlayer(): Player | null {
     console.error("load player pack error", e);
   }
 
-  // 恢复currentMapData.boss和capturedMonster的Monster实例
+  // 恢复 persistedBoss 和 capturedMonster 的 Monster 实例
   try {
-    player.currentMapData.boss = player.currentMapData.boss.map((boss: Monster) => {
-      return plainToInstance(Monster, boss);
-    });
+    if (player.persistedBoss) {
+      for (const nodeId of Object.keys(player.persistedBoss)) {
+        player.persistedBoss[nodeId] = player.persistedBoss[nodeId].map((boss: Monster) => {
+          return plainToInstance(Monster, boss);
+        });
+      }
+    } else {
+      player.persistedBoss = {};
+    }
   } catch (e) {
-    console.error("load player currentMapData.boss error", e);
+    player.persistedBoss = {};
+    console.error("load player persistedBoss error", e);
   }
   try {
     player.capturedMonster = player.capturedMonster.map((monster: Monster) => {
