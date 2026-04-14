@@ -142,7 +142,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     extraActions: [
       { actionType: ActionType.HorizontalSlash, weight: 0.4 },
       { actionType: ActionType.StepSlash, weight: 0.4 },
-      { actionType: ActionType.Mikiri, weight: 0.15 },
+      { actionType: ActionType.Mikiri, weight: 0.2 },
     ],
     ability: {
       piercing: 40,
@@ -165,6 +165,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.HorizontalSlash, weight: 0.3 },
       { actionType: ActionType.StepSlash, weight: 0.3 },
       { actionType: ActionType.Mikiri, weight: 0.3 },
+      { actionType: ActionType.SpiritRoundSlash, weight: 0.1 },
     ],
     ability: {
       piercing: 40,
@@ -174,11 +175,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     piercingGrowthCoeff: 6,
     actionCoeff: {
       [HitCategory.Attack]: {
-        plus: 6,
+        plus: 4,
         multiply: 1,
       },
       [HitCategory.Dodge]: {
-        plus: 1,
+        plus: 4,
         multiply: 1,
       },
     },
@@ -190,6 +191,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     position: EquipmentPosition.Hand,
     extraActions: [
       { actionType: ActionType.Mikiri, weight: 1 },
+      { actionType: ActionType.SpiritRoundSlash, weight: 0.2 },
     ],
     ability: {
       piercing: 45,
@@ -199,11 +201,11 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 6,
-        multiply: 1.2,
+        multiply: 1,
       },
       [HitCategory.Dodge]: {
         plus: 6,
-        multiply: 1.2,
+        multiply: 1,
       },
     },
   },
@@ -474,7 +476,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 0,
-        multiply: 1.2,
+        multiply: 1.1,
       },
       [HitCategory.Defend]: {
         plus: 0,
@@ -504,7 +506,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 0,
-        multiply: 1.4,
+        multiply: 1.2,
       },
       [HitCategory.Defend]: {
         plus: 0,
@@ -535,7 +537,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
     actionCoeff: {
       [HitCategory.Attack]: {
         plus: 0,
-        multiply: 1.3,
+        multiply: 1.2,
       },
       [HitCategory.Dodge]: {
         plus: 0,

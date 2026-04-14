@@ -620,6 +620,7 @@
 .menu-btn-text {
   display: flex;
   flex-direction: column;
+  align-items: center;
   line-height: 1.3;
 }
 
@@ -634,6 +635,8 @@
   box-shadow: 0 2px 8px rgba(67, 160, 71, 0.3);
   padding: 16px 18px;
   font-size: 17px;
+  justify-content: center;
+  text-align: center;
 }
 
 .menu-btn-go:hover {

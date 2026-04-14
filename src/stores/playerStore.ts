@@ -4,6 +4,8 @@ import { Player } from "@/creatures/Player";
 import { loadPlayer, saveGame, exportSave, importSave } from "@/save";
 import { setIntervals } from "@/globalIntervals";
 import { CreatureType } from "@/creatures/creatureConfigs";
+import { Equipment } from "@/items/Equipment";
+import { EquipmentType } from "@/items/equipmentConfigs";
 
 function exposeDebug(getPlayer: () => Player | null) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,7 +15,8 @@ function exposeDebug(getPlayer: () => Player | null) {
       console.log(
         "%c可用函数：\n" +
         "  _exportSave()\n" +
-        "  _importSave(code: string)",
+        "  _importSave(code: string)\n" +
+        "  _giveEquip(type: string, level?: number)",
       );
       return getPlayer();
     },
@@ -38,6 +41,23 @@ function exposeDebug(getPlayer: () => Player | null) {
     } else {
       console.error("存档导入失败，请检查备份码是否正确");
     }
+  };
+  w._giveEquip = (typeOrName: string, level?: number) => {
+    const p = getPlayer();
+    if (!p) { console.log("没有玩家"); return; }
+    const entry = Object.entries(EquipmentType).find(
+      ([k, v]) => k.toLowerCase() === typeOrName.toLowerCase() || v.toLowerCase() === typeOrName.toLowerCase()
+    );
+    if (!entry) {
+      console.log("%c可用装备类型：", "color: #e67e22; font-weight: bold;");
+      console.log(Object.keys(EquipmentType).join(", "));
+      return;
+    }
+    const equip = new Equipment(entry[1] as EquipmentType, level ?? p.level);
+    p.pack.push(equip);
+    saveGame(p);
+    console.log(`%c已获得: ${equip.getName()} (Lv.${equip.level})`, "color: #2ecc71; font-weight: bold;");
+    return equip;
   };
 }
 
