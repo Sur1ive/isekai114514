@@ -391,6 +391,7 @@ export const equipmentConfigs: Record<EquipmentType, EquipmentData> = {
       { actionType: ActionType.DragonBreath, weight: 0.05 },
     ],
     ability: {
+      con: 1,
       armor: 10,
     },
     armorGrowthCoeff: 4,

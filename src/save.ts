@@ -119,7 +119,7 @@ function reconstructPlayer(plainPlayer: Record<string, any>): Player {
   const playerProps = [
     "log", "capturedMonster", "activePetIndex", "exp",
     "currentMapData", "unlockedRegionIdList", "unlockedNodeIdList",
-    "resourceNodeLastCollectedTime", "persistedBoss", "lifeSpring"
+    "resourceNodeLastCollectedTime", "persistedBoss", "lifeSpring", "flags"
   ];
 
   playerProps.forEach(prop => {

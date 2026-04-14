@@ -1,4 +1,5 @@
 import type { Creature } from "../creatures/Creature";
+import { Player } from "../creatures/Player";
 import { Rarity } from "../types";
 import { ConsumableData } from "./types";
 import { openChest, openSpecialChest } from "./consumableUtils";
@@ -135,8 +136,24 @@ export const consumableConfigs: Record<ConsumableType, ConsumableData> = {
   [ConsumableType.DragonScaleChest]: {
     name: "龙鳞宝箱",
     rarity: Rarity.Unique,
-    description: "覆盖着坚硬龙鳞的宝箱，表面还残留着龙息的余温。或许能开出龙玉套装",
+    description: "覆盖着坚硬龙鳞的宝箱，表面还残留着龙息的余温。有概率开出龙玉套装三件中的一件",
     effect: (target: Creature, level: number) => {
+      const dragonJadePool: { type: EquipmentType; weight: number }[] = [
+        { type: EquipmentType.DragonJadePlateArmor, weight: 5 },
+        { type: EquipmentType.DragonJadeBoots, weight: 5 },
+        { type: EquipmentType.DragonJadePendant, weight: 2 },
+      ];
+      const isFirst = !(target as Player).flags?.dragonScaleChestOpened;
+      if (isFirst) {
+        (target as Player).flags.dragonScaleChestOpened = true;
+        const totalWeight = dragonJadePool.reduce((s, e) => s + e.weight, 0);
+        let roll = Math.random() * totalWeight;
+        const picked = dragonJadePool.find(e => (roll -= e.weight) < 0) ?? dragonJadePool[0];
+        const item = new Equipment(picked.type, target.level);
+        item.showItemToast();
+        target.pack.push(item);
+        return;
+      }
       const roll = Math.random();
       if (roll < 0.05) {
         const item = new Equipment(EquipmentType.DragonJadePlateArmor, target.level);

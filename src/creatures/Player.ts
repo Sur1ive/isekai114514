@@ -24,6 +24,7 @@ export class Player extends Creature {
   unlockedRegionIdList: string[] = ["ruin"];
   unlockedNodeIdList: string[] = [];
   resourceNodeLastCollectedTime: Record<string, number> = {};
+  flags: Record<string, boolean> = {};
 
   constructor(name: string, type: CreatureType) {
     // 为了使用class-transformer保存，设定默认值，默认值并没有意义
