@@ -41,9 +41,9 @@ export class Monster extends Creature {
 
   getPetDamageMultiplier(): number {
     switch (this.variant) {
-      case "veteran": return 0.25;
-      case "mutant": return 0.3;
-      default: return 0.2;
+      case "veteran": return 0.7;
+      case "mutant": return 0.6;
+      default: return 0.5;
     }
   }
 

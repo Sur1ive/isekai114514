@@ -18,9 +18,9 @@ function doTick(player: Player, onTick?: () => void) {
   player.growLifeSpring(elapsed);
 
   if (player.isAtHome) {
-    // 宠物回血：每10分钟(600秒)恢复1%最大HP
+    // 宠物回血：每6秒恢复1%最大HP
     for (const pet of player.capturedMonster) {
-      pet.recoverHp(pet.getMaxHealth() * 0.01 * (elapsed / 600));
+      pet.recoverHp(pet.getMaxHealth() * 0.01 * (elapsed / 6));
       if (pet.isFainted && pet.health >= pet.getMaxHealth() * 0.3) {
         pet.isFainted = false;
       }

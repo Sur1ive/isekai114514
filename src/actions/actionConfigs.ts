@@ -865,9 +865,9 @@ export const actionConfigs: Record<ActionType, Action> = {
       {
         category: HitCategory.Attack,
         coeff: { str: 0.5, int: 0, con: 0, siz: 0, app: 0, dex: 1 },
-        messageGenerator: (actor: Creature, target: Creature) => `${actor.name} 来！骗！来！偷袭！，${target.name}被击晕`,
+        messageGenerator: (actor: Creature, target: Creature) => `${actor.name} 来！骗！来！偷袭！，${target.name}失去平衡`,
         extraEffect: (_actor: Creature, target: Creature) => {
-          target.addStatus(StatusType.Dizzy, 1);
+          target.addStatus(StatusType.Unbalance, 1);
         }
       },
     ],
