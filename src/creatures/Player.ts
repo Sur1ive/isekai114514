@@ -4,7 +4,7 @@ import type { Monster } from "./Monster";
 import { CurrentMapData } from "../maps/CurrentMapData";
 
 export class Player extends Creature {
-  static readonly LIFE_SPRING_MAX = 1000;
+  static readonly LIFE_SPRING_MAX = 400;
   static readonly LIFE_SPRING_REFILL_SECONDS = 3600;
   log: string[] = [];
   tempLog: string[] = [];
