@@ -9,6 +9,10 @@ play：
 - https://surlive.net/isekai114514/
 - https://sur1ive.github.io/isekai114514/ (如果上面的挂了可以试试这个，但是国内可能没法直连)
 
+PV：
+- https://surlive.net/isekai114514/pv/ （纯 HTML 动画 + 浏览器实时合成配乐，源码在 `public/pv/`）
+- 导出 MP4：`node scripts/render-pv.cjs pv.mp4`（需要 playwright 和 ffmpeg）
+
 
 <img src="src/assets/game2.png">
 <img src="src/assets/game1.png">

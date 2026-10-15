@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>异世界野兽先辈 PV</title>
+<meta name="description" content="异世界野兽先辈 官方宣传 PV（纯 HTML 动画 + 实时合成配乐）">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "WenQuanYi Zen Hei", sans-serif;
+  --fun: "ZCOOL KuaiLe", "Noto Sans SC", sans-serif;
+  --gold: linear-gradient(180deg, #fff6d5 0%, #ffd77a 35%, #e0a12a 60%, #fff0b8 80%, #b97a12 100%);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; background: #000; overflow: hidden; color: #fff; font-family: var(--sans); }
+#viewport { position: fixed; inset: 0; background: #000; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; background: #000; }
+#world { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; overflow: hidden; display: none; }
+.layer { position: absolute; inset: 0; }
+.fill { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.bg { position: absolute; inset: -3%; background-size: cover; background-position: center; }
+.abs { position: absolute; }
+.vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.75) 100%); pointer-events: none; }
+#flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+#grain { position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+/* ---------- S0 studio ---------- */
+.studio { font-family: var(--serif); font-weight: 900; font-size: 92px; letter-spacing: .12em; color: #f3e6c4; }
+.studio span { display: inline-block; }
+.studio-bar { height: 2px; margin: 34px 0 26px; background: linear-gradient(90deg, transparent, #d9b45a, transparent); width: 0; }
+.studio-sub { font-size: 26px; letter-spacing: .6em; color: #a99a7a; padding-left: .6em; }
+
+/* ---------- S1 truck ---------- */
+.night { background: linear-gradient(180deg, #03040a 0%, #0b1020 52%, #151827 56%, #0c0d12 100%); }
+.stars { position: absolute; inset: 0 0 50% 0; background-image:
+  radial-gradient(2px 2px at 10% 20%, #fff8 50%, transparent 51%), radial-gradient(2px 2px at 30% 60%, #fff6 50%, transparent 51%),
+  radial-gradient(2px 2px at 55% 15%, #fff9 50%, transparent 51%), radial-gradient(2px 2px at 75% 45%, #fff5 50%, transparent 51%),
+  radial-gradient(2px 2px at 88% 25%, #fff8 50%, transparent 51%), radial-gradient(2px 2px at 42% 35%, #fff4 50%, transparent 51%); }
+.road { position: absolute; inset: 0; background: #22242c; clip-path: polygon(47% 55%, 53% 55%, 100% 100%, 0 100%); }
+.dash { position: absolute; background: #e9d27a; border-radius: 3px; }
+.truck { position: absolute; left: 960px; top: 560px; width: 560px; height: 440px; }
+.tk-cab { position: absolute; inset: 0; background: linear-gradient(180deg, #3a3f49, #22262e); border-radius: 46px 46px 14px 14px; box-shadow: 0 0 0 6px #14161b inset; }
+.tk-glass { position: absolute; left: 50px; right: 50px; top: 40px; height: 150px; border-radius: 22px; background: linear-gradient(160deg, #3c5b84 0%, #172338 55%, #0c1220 100%); }
+.tk-grill { position: absolute; left: 150px; right: 150px; top: 230px; height: 120px; border-radius: 10px; background: repeating-linear-gradient(180deg, #0c0e12 0 12px, #4b515d 12px 18px); }
+.tk-light { position: absolute; top: 250px; width: 96px; height: 96px; border-radius: 50%; background: radial-gradient(circle, #fff 0 38%, #fff3c4 55%, #ffd35a 75%); box-shadow: 0 0 60px 30px rgba(255,236,170,.85), 0 0 180px 90px rgba(255,220,120,.35); }
+.tk-light.l { left: 34px; } .tk-light.r { right: 34px; }
+.tk-bumper { position: absolute; left: -20px; right: -20px; bottom: -10px; height: 54px; border-radius: 10px; background: linear-gradient(180deg, #8a909b, #3a3e46); }
+.tk-glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 62%, rgba(255,255,255,1) 0%, rgba(255,240,190,.75) 25%, rgba(255,220,140,0) 60%); opacity: 0; }
+.cine-top { position: absolute; left: 0; right: 0; top: 140px; text-align: center; font-family: var(--serif); font-weight: 700; font-size: 56px; letter-spacing: .14em; text-shadow: 0 4px 30px #000; }
+.cine-top.b { top: 230px; font-size: 64px; }
+.dlg { position: absolute; left: 960px; top: 760px; width: 760px; height: 260px; background: #f8f9fa; color: #212529; border-radius: 14px; box-shadow: 0 20px 80px rgba(0,0,0,.6); padding: 28px 40px; }
+.dlg-h { font-size: 40px; font-weight: 900; }
+.dlg-p { font-size: 26px; margin-top: 10px; color: #495057; }
+.dlg-btns { position: absolute; left: 0; right: 0; bottom: 34px; display: flex; justify-content: center; gap: 40px; }
+.gbtn { width: 220px; height: 66px; font: 700 28px var(--sans); color: #fff; background: #0d6efd; border: 0; border-radius: 10px; box-shadow: 0 6px 0 #0a4fb6; }
+.gbtn.press { transform: translateY(5px); box-shadow: 0 1px 0 #0a4fb6; background: #0b5ed7; }
+.cursor { position: absolute; left: 0; top: 0; width: 46px; height: 60px; }
+.after { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; }
+.after-h { font-size: 84px; font-weight: 900; letter-spacing: .06em; }
+.after-n { margin-top: 34px; font-size: 30px; color: #8a8f98; }
+
+/* ---------- S2 awakening ---------- */
+.lid { position: absolute; left: -5%; right: -5%; background: #000; }
+.lid.top { top: 0; border-bottom-left-radius: 50% 80px; border-bottom-right-radius: 50% 80px; }
+.lid.bot { bottom: 0; border-top-left-radius: 50% 80px; border-top-right-radius: 50% 80px; }
+.sub { position: absolute; left: 50%; bottom: 120px; white-space: nowrap; text-align: center; font-family: var(--serif); font-weight: 700; font-size: 50px; line-height: 1.55; letter-spacing: .08em; text-shadow: 0 2px 4px #000, 0 0 40px rgba(0,0,0,.9); }
+.sub b { color: #ffd77a; }
+.sub.big { bottom: auto; top: 50%; font-size: 120px; font-weight: 900; letter-spacing: .2em; }
+
+/* ---------- S3 hero ---------- */
+.hero-bg { background: radial-gradient(circle at 30% 52%, #4a2a08 0%, #1b0f05 40%, #050505 75%); }
+.rays { position: absolute; left: 560px; top: 560px; width: 3200px; height: 3200px; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255,200,90,.28) 0deg 5deg, transparent 5deg 15deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 60%); mask-image: radial-gradient(circle, #000 0%, transparent 60%); }
+.spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #ffd77a; box-shadow: 0 0 12px #ffb02e; }
+.horse { position: absolute; left: 560px; top: 560px; width: 470px; filter: drop-shadow(0 30px 40px rgba(0,0,0,.7)); }
+.hero-info { position: absolute; left: 960px; top: 250px; width: 900px; }
+.hero-tag { display: inline-block; font-size: 30px; font-weight: 700; color: #1b0f05; background: #ffd77a; padding: 4px 18px; border-radius: 6px; letter-spacing: .2em; }
+.hero-name { font-family: var(--serif); font-weight: 900; font-size: 190px; line-height: 1.2; letter-spacing: .04em; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 0 #4a2a08) drop-shadow(0 10px 30px rgba(0,0,0,.8)); }
+.hero-en { font-size: 34px; letter-spacing: .7em; color: #e9cf8d; margin-top: -6px; }
+.hero-desc { font-family: var(--serif); font-size: 52px; font-weight: 700; margin-top: 34px; }
+.hero-stats { display: flex; gap: 16px; margin-top: 34px; }
+.hero-stats span { display: inline-block; font-size: 28px; padding: 8px 18px; border: 2px solid #ffd77a88; border-radius: 8px; background: #0008; }
+.hero-stats b { color: #ffd77a; margin-left: 6px; }
+.hero-note { font-size: 28px; color: #b9a98a; margin-top: 20px; }
+
+/* ---------- S4 world ---------- */
+.panel { position: absolute; inset: 0; overflow: hidden; }
+.grad-bottom { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.25) 40%, transparent 60%), linear-gradient(90deg, rgba(0,0,0,.5), transparent 50%); }
+.map-tx { position: absolute; left: 130px; bottom: 140px; }
+.map-tx > div { will-change: transform; }
+.map-reg { font-size: 34px; letter-spacing: .3em; color: #e8dcc0; }
+.map-name { font-family: var(--serif); font-weight: 900; font-size: 150px; line-height: 1.25; text-shadow: 0 6px 40px rgba(0,0,0,.8); }
+.map-line { height: 5px; width: 0; background: linear-gradient(90deg, #ffd77a, transparent); margin: 8px 0 22px; }
+.map-nodes { font-size: 30px; color: #d8d8d8; letter-spacing: .08em; }
+.ow-tag { position: absolute; left: 130px; top: 90px; font-size: 30px; font-weight: 900; letter-spacing: .4em; color: #ffd77a; }
+.ow-tag span { margin-left: 20px; color: #fff; letter-spacing: .2em; font-weight: 700; }
+.ow-cnt { position: absolute; right: 130px; top: 84px; font-size: 32px; letter-spacing: .1em; color: #ccc; font-variant-numeric: tabular-nums; }
+.ow-cnt b { font-size: 56px; color: #fff; }
+.ow-foot { position: absolute; right: 130px; bottom: 60px; font-size: 24px; color: #bbb; }
+
+/* ---------- S5 battle ---------- */
+.battle-bg { background: radial-gradient(circle at 50% 40%, #1d2433 0%, #0a0d14 70%); }
+.battle-bg::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(#ffffff08 1px, transparent 1px), linear-gradient(90deg, #ffffff08 1px, transparent 1px); background-size: 60px 60px; }
+.bt-small { font-size: 44px; letter-spacing: .6em; color: #ffd77a; padding-left: .6em; }
+.bt-big { font-family: var(--serif); font-weight: 900; font-size: 190px; letter-spacing: .06em; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 8px 30px rgba(0,0,0,.9)); }
+.bt-sub { font-size: 30px; letter-spacing: .8em; color: #9aa4b2; padding-left: .8em; }
+.arena { position: absolute; inset: 0; }
+.ar-acts { position: absolute; left: 0; right: 0; top: 90px; text-align: center; font-size: 72px; font-weight: 900; }
+.ar-acts .vs { font-size: 44px; color: #888; margin: 0 40px; }
+.pc { color: #5cb8ff; } .ec { color: #ff6b6b; }
+.ar-head { position: absolute; left: 0; right: 0; top: 200px; text-align: center; font-size: 32px; color: #c9d1d9; letter-spacing: .1em; }
+.ar-side { position: absolute; top: 270px; width: 520px; display: flex; flex-direction: column; align-items: center; }
+.ar-side.L { left: 300px; } .ar-side.R { right: 300px; }
+.ar-por { width: 230px; height: 230px; border-radius: 50%; overflow: hidden; background: #2a3344; border: 5px solid #ffffff30; display: flex; align-items: center; justify-content: center; }
+.ar-por img { width: 100%; height: 100%; object-fit: cover; }
+.ar-side.L .ar-por img { object-fit: contain; width: 80%; }
+.ar-name { font-size: 40px; font-weight: 900; margin: 18px 0; white-space: nowrap; }
+.dice { width: 200px; height: 200px; border-radius: 28px; background: linear-gradient(160deg, #2d3648, #151a24); border: 4px solid #48536b; display: flex; align-items: center; justify-content: center; font-size: 120px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.dice.win { border-color: #ffd77a; box-shadow: 0 0 60px #ffb02e, 0 0 0 4px #ffd77a inset; color: #ffd77a; }
+.dice.lose { opacity: .45; }
+.hp { margin-top: 30px; width: 440px; height: 26px; border-radius: 13px; background: #000a; border: 2px solid #ffffff30; overflow: hidden; }
+.hp-f { height: 100%; width: 100%; background: linear-gradient(90deg, #2fbf71, #8be28b); }
+.hp-t { margin-top: 10px; font-size: 26px; color: #c9d1d9; font-variant-numeric: tabular-nums; }
+.dmg { position: absolute; top: 40px; left: 50%; font-size: 110px; font-weight: 900; color: #ff4d4d; text-shadow: 0 0 20px #000, 0 4px 0 #6b0000; opacity: 0; white-space: nowrap; }
+.ar-vs { position: absolute; left: 960px; top: 600px; font-size: 90px; font-weight: 900; font-style: italic; color: #ffffff40; }
+.skbg { position: absolute; inset: 0; opacity: 0; }
+.sk-tag { position: absolute; left: 100px; top: 80px; font-size: 34px; font-weight: 900; letter-spacing: .3em; color: #ffd77a; opacity: 0; }
+.sk { position: absolute; left: 960px; top: 540px; white-space: nowrap; font-family: var(--serif); font-weight: 900; font-size: 170px; text-shadow: 0 8px 0 rgba(0,0,0,.5), 0 0 60px rgba(0,0,0,.6); opacity: 0; }
+.sk.final { font-family: var(--sans); font-size: 108px; color: #ffe14d; text-shadow: 0 6px 0 #b3001b, 0 0 50px #ff2a2a; }
+
+/* ---------- S6 gear ---------- */
+.gear-bg { background: radial-gradient(circle at 50% 45%, #2b1c4a 0%, #0f0b1c 70%); }
+.hdr { position: absolute; left: 0; right: 0; top: 70px; text-align: center; }
+.hdr-big { font-family: var(--serif); font-weight: 900; font-size: 84px; letter-spacing: .2em; }
+.hdr-sub { font-size: 28px; color: #b8b0d0; letter-spacing: .4em; margin-top: 4px; }
+.card { position: absolute; width: 300px; height: 430px; border-radius: 18px; background: linear-gradient(170deg, #26213a, #120f1d); border: 3px solid var(--c); box-shadow: 0 0 40px color-mix(in srgb, var(--c) 45%, transparent), 0 30px 60px rgba(0,0,0,.6); padding: 22px; text-align: center; }
+.card-rar { font-size: 22px; font-weight: 900; letter-spacing: .3em; color: var(--c); }
+.card-ico { width: 150px; height: 150px; margin: 22px auto; border-radius: 50%; border: 3px solid var(--c); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 900; font-size: 90px; color: var(--c); background: radial-gradient(circle, color-mix(in srgb, var(--c) 25%, transparent), transparent 70%); }
+.card-ico.empty { border-style: dashed; }
+.card-n { font-size: 32px; font-weight: 900; line-height: 1.3; }
+.card-d { font-size: 22px; color: #c7c0dc; margin-top: 14px; line-height: 1.5; }
+.chest-w { position: absolute; display: flex; flex-direction: column; align-items: center; }
+.chest { position: relative; width: 160px; height: 130px; }
+.ch-glow { position: absolute; left: 50%; top: 50%; width: 420px; height: 420px; margin: -210px 0 0 -210px; border-radius: 50%; background: radial-gradient(circle, var(--glow) 0%, transparent 65%); }
+.ch-lid { position: absolute; left: 0; right: 0; top: 0; height: 52px; border-radius: 40px 40px 6px 6px; background: var(--wood); border: 7px solid var(--trim); }
+.ch-body { position: absolute; left: 0; right: 0; top: 48px; bottom: 0; border-radius: 4px 4px 10px 10px; background: var(--wood); border: 7px solid var(--trim); }
+.ch-lock { position: absolute; left: 50%; top: -14px; width: 30px; height: 38px; margin-left: -15px; border-radius: 6px; background: var(--trim); border: 3px solid #0006; }
+.ch-n { margin-top: 26px; font-size: 26px; font-weight: 700; white-space: nowrap; }
+.gem { position: absolute; width: 18px; height: 18px; transform: rotate(45deg); box-shadow: 0 0 10px currentColor; }
+.slime { position: absolute; left: 0; top: 0; width: 260px; height: 210px; }
+.slime-b { position: absolute; inset: 0; border-radius: 50% 50% 42% 42% / 62% 62% 38% 38%; background: radial-gradient(circle at 35% 30%, #c8ffb0 0%, #5fd35a 35%, #2f9c3a 100%); opacity: .88; box-shadow: inset -20px -20px 40px #1d6b26; }
+.slime-c { position: absolute; left: 80px; top: 80px; width: 100px; height: 80px; transform: scale(.7); }
+.slime-eye { position: absolute; top: 50px; width: 22px; height: 30px; border-radius: 50%; background: #10220f; }
+.speed { position: absolute; left: 230px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #fff8, transparent); }
+.cap { position: absolute; left: 0; right: 0; text-align: center; font-family: var(--fun); font-size: 70px; color: #b6ff9e; text-shadow: 0 4px 0 #134d18, 0 0 30px #000; }
+
+/* ---------- S7 bestiary ---------- */
+.best-bg { background: radial-gradient(circle at 50% 40%, #3b2a17 0%, #140d06 75%); }
+.grid { position: absolute; inset: 0; transform-origin: 0 0; }
+.mcard { position: absolute; width: 380px; height: 290px; border-radius: 16px; background: linear-gradient(170deg, #f1e3c4, #d9c49a); color: #3a2a17; padding: 22px 26px; box-shadow: 0 20px 40px rgba(0,0,0,.6); border: 4px solid #8a6a3a; }
+.m-av { position: absolute; right: 22px; top: 22px; width: 96px; height: 96px; border-radius: 50%; background: #3a2a17; color: #f1e3c4; font-family: var(--serif); font-weight: 900; font-size: 56px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.m-av img { width: 80%; }
+.m-lv { font-size: 20px; color: #8a6a3a; font-weight: 700; letter-spacing: .2em; }
+.m-n { font-size: 44px; font-weight: 900; margin-top: 6px; padding-right: 100px; white-space: nowrap; }
+.m-d { font-size: 26px; line-height: 1.5; margin-top: 50px; font-family: var(--serif); }
+.stamp { position: absolute; right: 18px; bottom: 26px; font-family: var(--serif); font-weight: 900; font-size: 46px; color: #d62020; border: 6px solid #d62020; padding: 0 14px; border-radius: 10px; opacity: 0; }
+
+/* ---------- S8 boss ---------- */
+.warn-bg { background: radial-gradient(circle, #4a0000 0%, #000 70%); }
+.warn-band { position: absolute; left: 0; right: 0; height: 90px; background: repeating-linear-gradient(-45deg, #ff2a2a 0 34px, #000 34px 68px); }
+.warn-band.t { top: 150px; } .warn-band.b { bottom: 150px; }
+.warn-txt { font-size: 230px; font-weight: 900; font-style: italic; letter-spacing: .1em; color: #ff2a2a; text-shadow: 0 0 60px #ff0000; }
+.warn-sub { font-size: 44px; letter-spacing: .5em; color: #ffb3b3; margin-top: 10px; }
+.gob-bg { background: radial-gradient(circle at 70% 50%, #2c4a1a 0%, #0c1406 70%); }
+.gob-img { position: absolute; left: 1080px; top: 150px; width: 700px; height: 760px; object-fit: cover; border-radius: 24px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+.boss-tx { position: absolute; left: 130px; top: 330px; width: 920px; }
+.boss-tag { display: inline-block; font-size: 32px; font-weight: 900; background: #d62020; padding: 4px 18px; border-radius: 6px; letter-spacing: .3em; }
+.boss-name { font-family: var(--serif); font-weight: 900; font-size: 92px; line-height: 1.25; margin-top: 18px; text-shadow: 0 6px 30px #000; }
+.boss-desc { font-size: 32px; color: #d6d6d6; margin-top: 18px; line-height: 1.5; }
+.boss-hp { margin-top: 34px; width: 760px; height: 22px; background: #000a; border: 2px solid #fff4; border-radius: 11px; overflow: hidden; }
+.boss-hp i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #b3001b, #ff5c5c); }
+.drg-img { position: absolute; left: 960px; top: 430px; image-rendering: pixelated; border-radius: 16px; box-shadow: 0 0 0 6px #ffd77a, 0 0 80px 20px rgba(255,200,90,.55); }
+.drg-name { position: absolute; left: 0; right: 0; top: 760px; text-align: center; }
+.drg-n { font-family: var(--serif); font-weight: 900; font-size: 120px; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 30px #000); }
+.drg-n.red { background: linear-gradient(180deg, #ffd0d0, #ff3030 60%, #8a0000); -webkit-background-clip: text; background-clip: text; }
+.drg-hp { width: 1100px; height: 24px; margin: 10px auto 0; background: #000a; border: 2px solid #fff4; border-radius: 12px; overflow: hidden; }
+.drg-hp i { display: block; height: 100%; background: linear-gradient(90deg, #b3001b, #ff5c5c); }
+.tip { position: absolute; left: 0; right: 0; bottom: 40px; text-align: center; font-size: 26px; color: #ccc; }
+
+/* ---------- S9 parody ---------- */
+.metal { background: radial-gradient(circle at 50% 30%, #3a3f47 0%, #15171b 70%);
+  background-image: radial-gradient(circle at 50% 30%, #3a3f47 0%, #15171b 70%), repeating-linear-gradient(90deg, #ffffff05 0 2px, transparent 2px 6px); }
+.p-title { position: absolute; left: 0; right: 0; top: 30px; text-align: center; font-weight: 900; font-size: 84px; letter-spacing: .06em; background: linear-gradient(180deg, #fff, #9aa3ad 55%, #e6eaee); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 4px 0 #000); }
+.p-title small { display: block; font-size: 34px; font-weight: 700; letter-spacing: 0; }
+.pn { position: absolute; width: 800px; height: 290px; border-radius: 16px; background: linear-gradient(180deg, #2a2e35, #16181c); border: 4px solid #8f979f; box-shadow: 0 0 0 3px #000 inset, 0 20px 50px rgba(0,0,0,.6); overflow: hidden; }
+.pn.ok { border-color: #4cff7a; box-shadow: 0 0 50px #2bff6a88, 0 0 0 3px #000 inset; background: linear-gradient(180deg, #1d3a24, #0f1b12); }
+.pn-lab { position: absolute; left: 22px; top: 14px; font-size: 30px; font-weight: 700; }
+.pn-ico { position: absolute; left: 260px; top: 30px; width: 190px; height: 170px; display: flex; align-items: center; justify-content: center; }
+.pn-big { position: absolute; left: 40px; bottom: 22px; font-size: 70px; font-weight: 900; text-shadow: 0 5px 0 #000, 0 0 20px #000; }
+.pn-mark { position: absolute; right: 50px; top: 50px; font-size: 180px; font-weight: 900; line-height: 1; }
+.pn-mark.x { color: #ff2a2a; text-shadow: 0 6px 0 #6b0000, 0 0 30px #ff000088; }
+.pn-mark.v { color: #43ff6e; text-shadow: 0 6px 0 #0b5c1d, 0 0 30px #00ff4c88; }
+.p-bottom { position: absolute; left: 0; right: 0; top: 850px; text-align: center; font-size: 116px; font-weight: 900; letter-spacing: .04em; background: linear-gradient(180deg, #fff, #b9c0c7 60%, #fff); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 0 #000) drop-shadow(0 0 20px #000); }
+.map-ico { width: 180px; height: 130px; border-radius: 8px; background: linear-gradient(135deg, #e8d3a1, #b8925a); box-shadow: inset 0 0 20px #6b4a1f; }
+
+/* ---------- S10 reviews ---------- */
+.sunset { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(40,20,80,.55), rgba(255,120,60,.25) 55%, rgba(0,0,0,.6)); }
+.rv { position: absolute; width: 270px; text-align: center; }
+.rv-s { font-size: 104px; font-weight: 900; font-style: italic; line-height: 1; text-shadow: 0 5px 20px rgba(0,0,0,.7); }
+.rv-o { display: inline-block; margin-top: 6px; padding: 6px 24px; font-size: 26px; font-weight: 900; color: #0b2230; background: linear-gradient(90deg, #4fd2e6, #2a9bc0); transform: skewX(-14deg); box-shadow: 0 6px 20px rgba(0,0,0,.5); white-space: nowrap; }
+.rv-title { position: absolute; left: 0; right: 0; top: 50px; text-align: center; font-family: var(--serif); font-weight: 900; font-size: 104px; background: linear-gradient(180deg, #ffe08a, #ff8a1f 60%, #c2410c); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 0 #4a1a00) drop-shadow(0 0 30px #000); }
+.rock { position: absolute; left: 760px; top: 720px; width: 400px; height: 200px; background: linear-gradient(180deg, #6e4a3a, #2b1a14); clip-path: polygon(12% 0, 88% 6%, 100% 100%, 0 100%); }
+.rv-horse { position: absolute; left: 960px; top: 560px; width: 300px; }
+.bubble { position: absolute; padding: 10px 20px; background: #fff; color: #111; border-radius: 16px; font-size: 30px; font-weight: 900; white-space: nowrap; }
+.steam { position: absolute; left: 960px; top: 960px; display: flex; align-items: stretch; height: 92px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.7); background: #111; }
+.st-bad { display: flex; align-items: center; gap: 14px; padding: 0 30px; background: #a83232; font-size: 44px; font-weight: 900; }
+.st-price { position: relative; display: flex; align-items: center; padding: 0 34px; font-size: 48px; color: #8a8a8a; font-weight: 700; }
+.st-strike { position: absolute; left: 24px; top: 50%; height: 5px; background: #e03131; width: 0; }
+.st-free { display: flex; align-items: center; padding: 0 40px; background: #5bd648; color: #111; font-size: 56px; font-weight: 900; }
+
+/* ---------- S11 finale ---------- */
+.god { position: absolute; left: 960px; top: -200px; width: 3600px; height: 3600px; border-radius: 50%; background: repeating-conic-gradient(from 160deg, rgba(255,230,170,.16) 0deg 3deg, transparent 3deg 9deg); -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 55%); mask-image: radial-gradient(circle, #000 0%, transparent 55%); }
+.logo { position: absolute; left: 960px; top: 400px; white-space: nowrap; font-family: var(--serif); font-weight: 900; font-size: 196px;
+  background: linear-gradient(100deg, #b97a12 0%, #ffd77a 20%, #fff6d5 30%, #e0a12a 42%, #ffd77a 60%, #fff 70%, #b97a12 85%); background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.logo-wrap { position: absolute; inset: 0; filter: drop-shadow(0 8px 0 #3a2205) drop-shadow(0 0 40px rgba(0,0,0,.8)); }
+.logo-en { position: absolute; left: 960px; top: 545px; font-size: 34px; letter-spacing: 1em; color: #f3e6c4; white-space: nowrap; }
+.logo-aaa { position: absolute; left: 960px; top: 610px; font-size: 54px; font-weight: 700; color: #fff; white-space: nowrap; text-shadow: 0 4px 20px #000; }
+.pill { position: absolute; left: 960px; top: 720px; padding: 12px 46px; border-radius: 999px; background: linear-gradient(90deg, #ffd77a, #ff9f1c); color: #2b1600; font-size: 46px; font-weight: 900; white-space: nowrap; box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+.url { position: absolute; left: 960px; top: 830px; font-size: 44px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; text-shadow: 0 3px 20px #000; }
+.url small { display: block; text-align: center; font-size: 28px; color: #ddd; margin-top: 8px; font-weight: 400; }
+.wish { position: absolute; left: 960px; top: 985px; font-size: 26px; color: #e8e2d0; white-space: nowrap; text-shadow: 0 2px 10px #000; }
+.peek { position: absolute; left: 1640px; top: 760px; width: 230px; }
+.end { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; }
+.end-t { font-size: 56px; font-weight: 900; letter-spacing: .1em; }
+.end-g { font-family: var(--fun); font-size: 40px; color: #888; margin-top: 24px; }
+
+/* ---------- player UI ---------- */
+#ui { position: fixed; inset: 0; pointer-events: none; font-family: var(--sans); }
+#start { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: radial-gradient(circle at 50% 40%, #2a1b08cc, #000e 70%); pointer-events: auto; }
+#start h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(36px, 7vw, 84px); letter-spacing: .06em; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; text-align: center; padding: 0 16px; }
+#start p { color: #bbb; font-size: clamp(14px, 2vw, 18px); text-align: center; padding: 0 16px; }
+#playBig { pointer-events: auto; font: 900 clamp(18px, 3vw, 26px) var(--sans); color: #2b1600; background: linear-gradient(90deg, #ffd77a, #ff9f1c); border: 0; border-radius: 999px; padding: 16px 48px; cursor: pointer; box-shadow: 0 10px 40px rgba(255,160,40,.35); }
+#playBig:disabled { opacity: .6; cursor: progress; }
+#bar { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 16px 12px; display: flex; align-items: center; gap: 12px; background: linear-gradient(0deg, rgba(0,0,0,.8), transparent); pointer-events: auto; transition: opacity .3s; }
+#bar.hide { opacity: 0; }
+#bar button { background: none; border: 0; color: #fff; font-size: 20px; width: 36px; height: 36px; cursor: pointer; border-radius: 6px; }
+#bar button:hover { background: #fff2; }
+#seek { flex: 1; accent-color: #ffb02e; min-width: 0; }
+#time { font-size: 13px; color: #ddd; font-variant-numeric: tabular-nums; white-space: nowrap; }
+body.capture #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage"><div id="world"></div><div id="flash"></div><div id="grain"></div></div></div>
+<div id="ui">
+  <div id="start">
+    <h1>异世界野兽先辈</h1>
+    <p>官方宣传 PV · 约 88 秒 · 有声音，建议戴耳机</p>
+    <button id="playBig" disabled>正在合成配乐…</button>
+  </div>
+  <div id="bar" class="hide">
+    <button id="pp" aria-label="播放/暂停">▶</button>
+    <input id="seek" type="range" min="0" max="88" step="0.01" value="0" aria-label="进度">
+    <span id="time">0:00 / 1:28</span>
+    <button id="fs" aria-label="全屏">⛶</button>
+  </div>
+</div>
+<script>
+"use strict";
+const DUR = 88;
+const CAPTURE = new URLSearchParams(location.search).has("capture");
+if (CAPTURE) document.body.classList.add("capture");
+
+/* ================= helpers ================= */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, p) => a + (b - a) * p;
+const fract = (x) => x - Math.floor(x);
+const rnd = (n) => fract(Math.sin(n * 127.1 + 311.7) * 43758.5453);
+const E = {
+  lin: (p) => p,
+  in: (p) => p * p * p,
+  out: (p) => 1 - Math.pow(1 - p, 3),
+  io: (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2),
+  back: (p) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); },
+};
+const prog = (t, a, b, e = E.lin) => e(clamp((t - a) / (b - a)));
+// keyframes: [[time, value, ease?], ...]
+function kf(t, fr, def = E.io) {
+  if (t <= fr[0][0]) return fr[0][1];
+  for (let i = 1; i < fr.length; i++) {
+    if (t <= fr[i][0]) {
+      const [a, va] = fr[i - 1], [b, vb, e] = fr[i];
+      return va + (vb - va) * (e || def)((t - a) / (b - a || 1));
+    }
+  }
+  return fr[fr.length - 1][1];
+}
+function $(tag, cls, parent, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const A = (parent, cls, html, css) => { const e = $("div", cls, parent, html); if (css) Object.assign(e.style, css); return e; };
+// set transform / opacity / filter. c: true → center on (left,top); "x" → center horizontally
+function st(el, p) {
+  let tr = "";
+  if (p.per) tr += `perspective(${p.per}px) `;
+  if (p.c === true) tr += "translate(-50%,-50%) ";
+  else if (p.c === "x") tr += "translateX(-50%) ";
+  if (p.x || p.y) tr += `translate(${p.x || 0}px,${p.y || 0}px) `;
+  if (p.s != null) tr += `scale(${p.s}) `;
+  if (p.sx != null || p.sy != null) tr += `scale(${p.sx ?? 1},${p.sy ?? 1}) `;
+  if (p.r) tr += `rotate(${p.r}deg) `;
+  if (p.ry) tr += `rotateY(${p.ry}deg) `;
+  el.style.transform = tr;
+  if (p.o != null) el.style.opacity = clamp(p.o);
+  if (p.blur != null || p.br != null) {
+    let f = "";
+    if (p.blur) f += `blur(${p.blur}px) `;
+    if (p.br != null) f += `brightness(${p.br}) `;
+    el.style.filter = f;
+  }
+}
+const inout = (t, a, b, fi = 0.3, fo = 0.3) => prog(t, a, a + fi) * (1 - prog(t, b - fo, b));
+function setText(el, s) { if (el._t !== s) { el.innerHTML = s; el._t = s; } }
+
+/* ================= scenes ================= */
+const world = document.getElementById("world");
+const scenes = [];
+function scene(start, end, build) {
+  const el = A(world, "scene");
+  const s = { start, end, el };
+  s.update = build(el);
+  scenes.push(s);
+}
+const img = (parent, cls, src) => { const i = $("img", cls, parent); i.src = src; i.alt = ""; return i; };
+const ASSET = (n) => "assets/" + n;
+
+/* S0 0–3.5 studio */
+scene(0, 3.5, (el) => {
+  const wrap = A(el, "fill");
+  const line = A(wrap, "studio");
+  const spans = [..."大鹅 自主研发"].map((c) => $("span", null, line, c === " " ? "&nbsp;&nbsp;" : c));
+  const bar = A(wrap, "studio-bar");
+  const sub = A(wrap, "studio-sub", "A BIG GOOSE PRODUCTION");
+  return (lt) => {
+    spans.forEach((s, i) => { const p = prog(lt, 0.3 + i * 0.12, 0.8 + i * 0.12, E.out); st(s, { o: p, y: (1 - p) * 24, blur: (1 - p) * 10 }); });
+    bar.style.width = prog(lt, 1.0, 1.9, E.io) * 560 + "px";
+    st(sub, { o: prog(lt, 1.4, 2.0) });
+    st(wrap, { o: 1 - prog(lt, 2.8, 3.4) });
+  };
+});
+
+/* S1 3.5–10 truck-kun */
+scene(3.5, 10, (el) => {
+  el.classList.add("night");
+  A(el, "stars");
+  A(el, "road");
+  const dashes = [...Array(9)].map(() => A(el, "dash"));
+  const truck = A(el, "truck", '<div class="tk-cab"><div class="tk-glass"></div><div class="tk-grill"></div><div class="tk-light l"></div><div class="tk-light r"></div><div class="tk-bumper"></div></div>');
+  const glow = A(el, "tk-glow");
+  const t1 = A(el, "cine-top", "那一天，");
+  const t2 = A(el, "cine-top b", "一辆卡车正在向你快速驶来");
+  const dlg = A(el, "dlg", '<div class="dlg-h">躲避大卡车</div><div class="dlg-p">一辆卡车正在向你快速驶来，请选择躲避方向</div><div class="dlg-btns"><button class="gbtn">向左躲避</button><button class="gbtn">向右躲避</button></div>');
+  const btnL = dlg.querySelector(".gbtn");
+  const cursor = A(el, "cursor", '<svg viewBox="0 0 46 60" width="46" height="60"><path d="M3 3 L3 50 L15 39 L23 57 L31 53 L23 36 L40 36 Z" fill="#fff" stroke="#000" stroke-width="3" stroke-linejoin="round"/></svg>');
+  const after = A(el, "after", '<div class="after-h">躲避失败，你嗝屁了</div><div class="after-n">＊两个选项的结果完全相同</div>');
+  const [aH, aN] = after.children;
+  return (lt) => {
+    dashes.forEach((d, i) => {
+      const p = fract(i / 9 + lt * 0.55);
+      const w = 3 + p * 26, h = 4 + p * 80;
+      Object.assign(d.style, { left: 960 - w / 2 + "px", top: 594 + p * p * 486 + "px", width: w + "px", height: h + "px", opacity: Math.min(1, p * 3) });
+    });
+    const k = kf(lt, [[0, 0.1], [4.85, 3.2, E.in]]);
+    st(truck, { c: true, s: k, y: (k - 0.1) * 70 });
+    st(glow, { o: kf(lt, [[0, 0.1], [4.0, 0.45], [4.85, 1, E.in]]) });
+    st(t1, { o: inout(lt, 0.3, 2.9, 0.5, 0.4) });
+    st(t2, { o: inout(lt, 1.0, 2.9, 0.5, 0.4), y: (1 - prog(lt, 1.0, 1.5, E.out)) * 24 });
+    const dp = prog(lt, 2.6, 2.95, E.back);
+    const shake = lt > 4.35 && lt < 4.85 ? Math.sin(lt * 95) * 10 : 0;
+    st(dlg, { c: true, s: 0.85 + 0.15 * dp, o: prog(lt, 2.6, 2.8), x: shake });
+    const cp = prog(lt, 3.3, 3.95, E.io);
+    const press = lt > 4.05 && lt < 4.25;
+    st(cursor, { x: lerp(1500, 850, cp), y: lerp(1010, 815, cp), s: press ? 0.85 : 1, o: prog(lt, 3.2, 3.4) });
+    btnL.classList.toggle("press", press);
+    st(after, { o: lt > 4.85 ? 1 - prog(lt, 6.1, 6.5) : 0 });
+    st(aH, { o: prog(lt, 5.1, 5.4), s: kf(lt, [[5.1, 1.15], [5.4, 1, E.out]]) });
+    st(aN, { o: prog(lt, 5.6, 5.9) });
+  };
+});
+
+/* S2 10–18 awakening + lore */
+scene(10, 18, (el) => {
+  const b1 = A(el, "bg"); b1.style.backgroundImage = `url(${ASSET("ruin.jpg")})`;
+  const b2 = A(el, "bg"); b2.style.backgroundImage = `url(${ASSET("centerMarshForest.jpg")})`;
+  A(el, "vignette");
+  const lidT = A(el, "lid top"), lidB = A(el, "lid bot");
+  const subs = [
+    [0.7, 2.75, "你睁开了眼睛，看到了陌生的天花板。"],
+    [2.85, 4.95, "一百年前，异界来客<b>「远野」</b>率领野兽大军，<br>自极北之地<b>「下北泽」</b>南下……"],
+    [5.05, 6.95, "为了对抗远野，人类从异世界召唤了勇者——"],
+  ].map(([a, b, h]) => ({ a, b, e: A(el, "sub", h) }));
+  const big = A(el, "sub big", "那就是你。");
+  return (lt) => {
+    const blur = kf(lt, [[0, 16], [2.2, 0]]);
+    st(b1, { s: kf(lt, [[0, 1.18], [5.5, 1.05, E.out]]), blur, br: 0.5, o: 1 - prog(lt, 4.6, 5.4) });
+    st(b2, { s: kf(lt, [[4.6, 1.02], [8, 1.14, E.lin]]), br: kf(lt, [[4.6, 0.45], [7.6, 0.9]]), o: prog(lt, 4.6, 5.4) });
+    const lid = kf(lt, [[0, 545], [0.3, 545], [0.8, 380, E.out], [1.05, 470], [1.8, 0, E.io]]);
+    lidT.style.height = lidB.style.height = lid + "px";
+    subs.forEach((s) => st(s.e, { c: "x", o: inout(lt, s.a, s.b), y: (1 - prog(lt, s.a, s.a + 0.5, E.out)) * 16 }));
+    st(big, { c: true, o: inout(lt, 7.0, 8.0, 0.25, 0.15), s: kf(lt, [[7.0, 1.4], [7.35, 1, E.out], [8, 1.04, E.lin]]) });
+  };
+});
+
+/* S3 18–22 hero reveal */
+scene(18, 22, (el) => {
+  el.classList.add("hero-bg");
+  const inner = A(el, "layer");
+  const rays = A(inner, "rays");
+  const sparks = [...Array(40)].map(() => A(inner, "spark"));
+  const horse = img(inner, "horse", ASSET("player.webp"));
+  const info = A(inner, "hero-info",
+    '<div class="hero-tag">主人公</div><div class="hero-name">野兽先辈</div><div class="hero-en">YAJU SENPAI</div>' +
+    '<div class="hero-desc">24岁，是学生</div><div class="hero-stats">' +
+    ["力量", "智力", "体质", "敏捷", "外貌"].map((s) => `<span>${s}<b>5</b></span>`).join("") +
+    '</div><div class="hero-note">（全都很普通）</div>');
+  const [tag, name, en, desc, stats, note] = info.children;
+  const chips = [...stats.children];
+  return (lt) => {
+    st(rays, { c: true, r: lt * 14, s: 1 + prog(lt, 0, 0.5, E.out) * 0.25, o: 0.9 });
+    sparks.forEach((s, i) => {
+      const a = rnd(i) * Math.PI * 2, d = fract(lt * (0.25 + rnd(i + 50) * 0.45) + rnd(i + 9));
+      const r = 80 + d * 1200;
+      st(s, { x: 560 + Math.cos(a) * r, y: 560 + Math.sin(a) * r, s: 0.5 + rnd(i + 3) * 1.5, o: (1 - d) * prog(lt, 0, 0.2) });
+    });
+    const hp = prog(lt, 0, 0.32, E.out);
+    st(horse, { c: true, s: lerp(3.4, 1, hp) * (1 + 0.015 * Math.sin(lt * 7)), o: prog(lt, 0, 0.06), y: Math.sin(lt * 3) * 8 });
+    const sl = (e, a, dx = 80) => { const p = prog(lt, a, a + 0.4, E.out); st(e, { o: p, x: (1 - p) * dx }); };
+    sl(tag, 0.3); sl(name, 0.42, 140); sl(en, 0.7); sl(desc, 0.95); sl(note, 2.2, 30);
+    chips.forEach((c, i) => { const p = prog(lt, 1.35 + i * 0.1, 1.6 + i * 0.1, E.back); st(c, { o: prog(lt, 1.35 + i * 0.1, 1.45 + i * 0.1), s: p }); });
+    const ex = prog(lt, 3.7, 4.0, E.in);
+    st(inner, { o: 1 - ex, s: 1 + ex * 0.15, blur: ex * 14 });
+  };
+});
+
+/* S4 22–32 open world montage */
+const MAPS = [
+  ["centerMarshForest", "池沼森林中部", "黄金平原", "溪谷入口 · 山洞 · 爬山好累 · 一飞冲天啊我"],
+  ["northwestMarshForest", "池沼森林西北部", "黑森林", "黑森林入口 · 黑森林中央 · 地下城入口"],
+  ["eastMarshForest", "池沼森林东部", "风和日丽的森林", "林间小径 · 摩尔的领地 · 树洞巢穴中的宝箱"],
+  ["ruin", "池沼森林", "遗迹", "遗迹走廊 · 哥布林的藏宝室 · 遗迹深处的房间"],
+  ["dragonValley", "池沼森林最北端", "龙之溪谷", "龙之溪谷入口 · 龙之财宝 · 龙 (boss)"],
+];
+scene(22, 32, (el) => {
+  const panels = MAPS.map(([im, reg, nm, nodes]) => {
+    const p = A(el, "panel");
+    const bg = A(p, "bg"); bg.style.backgroundImage = `url(${ASSET(im + ".jpg")})`;
+    A(p, "grad-bottom");
+    const tx = A(p, "map-tx", `<div class="map-reg">${reg}</div><div class="map-name">${nm}</div><div class="map-line"></div><div class="map-nodes">${nodes}</div>`);
+    return { p, bg, tx: [...tx.children] };
+  });
+  const tag = A(el, "ow-tag", "OPEN WORLD<span>开放世界</span>");
+  const cnt = A(el, "ow-cnt");
+  const foot = A(el, "ow-foot", "＊广阔：约 5 张地图");
+  return (lt) => {
+    panels.forEach((P, i) => {
+      const u = lt - 2 * i;
+      const vis = (u >= -0.15 || i === 0) && (u < 2 || i === 4);
+      P.p.style.opacity = vis ? 1 : 0;
+      if (!vis) return;
+      const inP = i === 0 ? 1 : prog(u, -0.15, 0.12, E.out);
+      const outP = i === 4 ? 0 : prog(u, 1.85, 2.0, E.in);
+      st(P.p, { x: (1 - inP) * 200 - outP * 200, blur: (1 - inP) * 12 + outP * 12 });
+      st(P.bg, { s: 1.06 + u * 0.035, x: -u * 20 * (i % 2 ? -1 : 1) });
+      const [reg, nm, line, nodes] = P.tx;
+      st(reg, { o: prog(u, 0.1, 0.4), y: (1 - prog(u, 0.1, 0.4, E.out)) * 20 });
+      st(nm, { o: prog(u, 0.18, 0.5), x: (1 - prog(u, 0.18, 0.6, E.out)) * -60 });
+      line.style.width = prog(u, 0.3, 0.9, E.out) * 520 + "px";
+      st(nodes, { o: prog(u, 0.5, 0.85) });
+    });
+    setText(cnt, `<b>0${Math.min(4, Math.floor(lt / 2)) + 1}</b> / 05`);
+    st(tag, { o: prog(lt, 0, 0.4) });
+    st(foot, { o: prog(lt, 1, 1.5) });
+  };
+});
+
+/* S5 32–42 dice battle + skill barrage */
+const SKILLS = ["横斩", "踏前斩", "见切", "气刃大回旋", "登龙", "十字绞", "†你改悔罢†", "闪电五连鞭", "乌鸦坐飞机", "龙卷风击毁停车场"];
+const SKCOL = ["#1d3a8a", "#7a1020", "#0d5c46", "#5b1a7a"];
+scene(32, 42, (el) => {
+  el.classList.add("battle-bg");
+  const title = A(el, "fill", '<div class="bt-small">独创</div><div class="bt-big">拼点战斗系统</div><div class="bt-sub">CLASH · DICE · BATTLE</div>');
+  const arena = A(el, "arena",
+    '<div class="ar-acts"><span class="pc">迅击</span><span class="vs">VS</span><span class="ec">劈砍</span></div>' +
+    '<div class="ar-head"></div><div class="ar-vs">VS</div>' +
+    `<div class="ar-side L"><div class="ar-por"><img src="${ASSET("player.webp")}" alt=""></div><div class="ar-name pc">野兽先辈</div><div class="dice">0</div><div class="hp"><div class="hp-f"></div></div><div class="hp-t"></div><div class="dmg"></div></div>` +
+    `<div class="ar-side R"><div class="ar-por"><img src="${ASSET("goblinLeader1.png")}" alt=""></div><div class="ar-name ec">受到惊吓的哥布林首领</div><div class="dice">0</div><div class="hp"><div class="hp-f"></div></div><div class="hp-t"></div><div class="dmg"></div></div>` +
+    '<div class="sub">命运，交给骰子。</div>');
+  const head = arena.querySelector(".ar-head");
+  const vs = arena.querySelector(".ar-vs");
+  const cap = arena.querySelector(".sub");
+  const side = (sel) => { const s = arena.querySelector(sel); return { s, por: s.querySelector(".ar-por"), dice: s.querySelector(".dice"), hp: s.querySelector(".hp-f"), hpt: s.querySelector(".hp-t"), dmg: s.querySelector(".dmg") }; };
+  const P = side(".L"), Q = side(".R");
+  const skbg = A(el, "skbg");
+  const sktag = A(el, "sk-tag", "招式 40+ 种");
+  const sk = A(el, "sk");
+  // rolls: rolling window, result time, values, damage target
+  const R = [
+    { a: 1.3, b: 2.5, p: 17, e: 9, tgt: Q, dmg: 12 },
+    { a: 3.4, b: 4.6, p: 6, e: 14, tgt: P, dmg: 9 },
+  ];
+  return (lt) => {
+    st(title, { o: prog(lt, 0, 0.08) * (1 - prog(lt, 0.95, 1.15)), s: kf(lt, [[0, 1.6], [0.22, 1, E.out], [1.1, 1.05, E.lin]]) });
+    st(arena, { o: prog(lt, 1.0, 1.3) * (1 - prog(lt, 6.3, 6.5)) });
+    if (lt < 6.6) {
+      setText(head, lt < 3.3 ? "第 1 / 2 次拼点" : "第 2 / 2 次拼点");
+      st(vs, { c: true });
+      const r = lt < 3.3 ? R[0] : R[1];
+      [[P, r.p, r.p > r.e], [Q, r.e, r.e > r.p]].forEach(([S, v, win], k) => {
+        let txt = "—", cls = "dice";
+        if (lt >= r.a && lt < r.b) txt = 1 + Math.floor(rnd(Math.floor(lt * 18) * 3 + k * 77) * 20);
+        else if (lt >= r.b) { txt = v; cls += win ? " win" : " lose"; }
+        setText(S.dice, String(txt));
+        if (S.dice.className !== cls) S.dice.className = cls;
+        const bump = lt >= r.b ? kf(lt, [[r.b, 1.25], [r.b + 0.25, win ? 1.08 : 1, E.out]]) : 1;
+        st(S.dice, { s: bump });
+      });
+      // damage + hp
+      const hpOf = (S, max, hits) => { let hp = max; hits.forEach((h) => { if (h.tgt === S) hp -= h.dmg * prog(lt, h.b + 0.05, h.b + 0.5, E.out); }); return hp; };
+      [[P, 129], [Q, 41]].forEach(([S, max]) => {
+        const hp = hpOf(S, max, R);
+        S.hp.style.width = (hp / max) * 100 + "%";
+        setText(S.hpt, `${Math.round(hp)} / ${max}`);
+        const hit = R.find((h) => h.tgt === S && lt >= h.b && lt < h.b + 1.0);
+        if (hit) {
+          const u = lt - hit.b;
+          setText(S.dmg, "-" + hit.dmg);
+          st(S.dmg, { c: "x", o: inout(u, 0, 1.0, 0.05, 0.3), y: -u * 90, s: kf(u, [[0, 1.8], [0.15, 1, E.out]]) });
+          st(S.por, { x: u < 0.35 ? Math.sin(u * 120) * 14 * (1 - u / 0.35) : 0 });
+        } else st(S.dmg, { o: 0 });
+      });
+      st(cap, { c: "x", o: inout(lt, 5.0, 6.3, 0.3, 0.2) });
+    }
+    // barrage
+    const bt = lt - 6.5;
+    st(sktag, { o: bt >= 0 ? 1 : 0 });
+    if (bt < 0) { st(sk, { o: 0 }); skbg.style.opacity = 0; return; }
+    const i = Math.floor(bt / 0.25);
+    if (i < SKILLS.length) {
+      const u = bt - i * 0.25;
+      setText(sk, SKILLS[i]); sk.className = "sk";
+      sk.style.color = i % 2 ? "#ffe9a8" : "#fff";
+      skbg.style.background = `radial-gradient(circle, ${SKCOL[i % 4]} 0%, #05060a 75%)`;
+      skbg.style.opacity = 1;
+      st(sk, { c: true, o: 1, x: (rnd(i) - 0.5) * 500, y: (rnd(i + 20) - 0.5) * 380, r: (rnd(i + 40) - 0.5) * 16, s: kf(u, [[0, 1.5], [0.08, 1, E.out], [0.25, 0.96, E.lin]]) });
+    } else {
+      const u = bt - 2.5;
+      setText(sk, "我他喵的锤鼠你！！！！！！！！"); sk.className = "sk final";
+      skbg.style.background = "radial-gradient(circle, #8a0010 0%, #120004 75%)";
+      st(sk, { c: true, o: 1 - prog(u, 0.85, 1.0), s: kf(u, [[0, 2.2], [0.14, 1, E.out], [1, 1.08, E.lin]]) });
+    }
+  };
+});
+
+/* S6 42–50 gear + chests */
+const CARDS = [
+  { rar: "传说", c: "#f5b301", g: "刀", n: "太刀「三日月宗近」", d: "天下五剑之一，刀身如同新月一般美丽" },
+  { rar: "史诗", c: "#b06cff", g: "剑", n: "「弑龙者」", d: "握着它，仿佛能感受到龙的气息" },
+  { rar: "稀有", c: "#3fa9ff", g: "锤", n: "更大的锤", d: "大就是好。<br>一寸大，一寸强" },
+  { rar: "？？？", c: "#9aa4b2", g: "", n: "心中的太刀", d: "你看不见它，<br>但它确实在你手中" },
+  { rar: "神器", c: "#ff5ca8", g: "裙", n: "女装", d: "外貌 +1919810" },
+];
+const CHESTS = [
+  ["破烂的木宝箱", "#5f5244", "#3b332b", "transparent"],
+  ["木质的宝箱", "#8a5a2b", "#5e3b1a", "rgba(255,200,120,.15)"],
+  ["银色装饰的宝箱", "#6d4a2c", "#d5dce3", "rgba(220,235,255,.3)"],
+  ["黄金镶边的宝箱", "#7a3e12", "#f5c542", "rgba(255,210,80,.45)"],
+  ["华丽的宝石宝箱", "#3a1f5c", "#f5c542", "rgba(220,120,255,.6)"],
+];
+scene(42, 50, (el) => {
+  el.classList.add("gear-bg");
+  const h1 = A(el, "hdr", '<div class="hdr-big">传说装备</div><div class="hdr-sub">词缀 · 套装 · 随机掉落</div>');
+  const h2 = A(el, "hdr", '<div class="hdr-big">开宝箱！</div><div class="hdr-sub">从破烂木箱到华丽宝石箱</div>');
+  const cards = CARDS.map((c, i) => {
+    const e = A(el, "card", `<div class="card-rar">${c.rar}</div><div class="card-ico${c.g ? "" : " empty"}">${c.g}</div><div class="card-n">${c.n}</div><div class="card-d">${c.d}</div>`);
+    e.style.setProperty("--c", c.c);
+    e.style.left = 960 + (i - 2) * 340 - 150 + "px";
+    e.style.top = 330 + Math.abs(i - 2) * 26 + "px";
+    return e;
+  });
+  const chests = CHESTS.map(([n, wood, trim, glow], i) => {
+    const w = A(el, "chest-w");
+    const sc = 0.75 + i * 0.12;
+    w.innerHTML = `<div class="chest" style="--wood:${wood};--trim:${trim};--glow:${glow};transform:scale(${sc})"><div class="ch-glow"></div><div class="ch-lid"></div><div class="ch-body"><div class="ch-lock"></div></div></div><div class="ch-n">${n}</div>`;
+    if (i === 4) {
+      const body = w.querySelector(".ch-body");
+      [["#ff4d6d", 20, 30], ["#4dd2ff", 70, 18], ["#7dff7a", 110, 34]].forEach(([c, l, t]) => { const g = A(body, "gem"); Object.assign(g.style, { left: l + "px", top: t + "px", background: c, color: c }); });
+    }
+    if (i === 0) w.querySelector(".chest").style.transform += " rotate(-4deg)";
+    w.style.left = 960 + (i - 2) * 340 - 130 + "px";
+    w.style.top = "430px";
+    w.style.width = "260px";
+    return w;
+  });
+  const more = A(el, "cap", "还有……", { top: "770px", color: "#fff", textShadow: "0 0 30px #000" });
+  const cap = A(el, "cap", "谁家史莱姆跑这么快！？", { top: "200px" });
+  const slime = A(el, "slime");
+  [[40, 90], [70, 50], [100, 130]].forEach(([t, w]) => A(slime, "speed", null, { top: t + "px", width: w * 3 + "px" }));
+  const mini = A(slime, "slime-c", '<div class="chest" style="--wood:#8a5a2b;--trim:#f5c542;--glow:transparent"><div class="ch-lid"></div><div class="ch-body"><div class="ch-lock"></div></div></div>');
+  A(slime, "slime-b");
+  A(slime, "slime-eye", null, { left: "70px" }); A(slime, "slime-eye", null, { left: "120px" });
+  return (lt) => {
+    st(h1, { o: inout(lt, 0, 3.9, 0.3, 0.3), y: (1 - prog(lt, 0, 0.4, E.out)) * -30 });
+    st(h2, { o: inout(lt, 4.0, 8.1, 0.25, 0.2) });
+    cards.forEach((e, i) => {
+      const a = 0.2 + i * 0.45, p = prog(lt, a, a + 0.45, E.back), q = prog(lt, 3.5 + i * 0.06, 3.9 + i * 0.06, E.in);
+      st(e, { y: (1 - p) * 420 - q * 800, r: (i - 2) * 4 + (1 - p) * 24, o: prog(lt, a, a + 0.15) * (1 - q) });
+    });
+    chests.forEach((w, i) => {
+      const a = 4.0 + i * 0.45, p = prog(lt, a, a + 0.35, E.back);
+      st(w, { s: p, o: prog(lt, a, a + 0.1) * (1 - prog(lt, 7.8, 8.0)), y: Math.sin((lt - a) * 4 + i) * 6 });
+      const g = w.querySelector(".ch-glow"); st(g, { r: lt * 40, s: 0.9 + 0.1 * Math.sin(lt * 5 + i) });
+    });
+    st(more, { o: inout(lt, 6.3, 6.75, 0.15, 0.1) });
+    st(cap, { o: inout(lt, 6.65, 8.0, 0.15, 0.2), s: kf(lt, [[6.65, 1.3], [6.85, 1, E.out]]) });
+    const sp = prog(lt, 6.7, 7.6, E.lin);
+    const hop = Math.abs(Math.sin(lt * 15));
+    st(slime, { x: lerp(2150, -450, sp), y: 700 - hop * 70, sx: 1 + (1 - hop) * 0.15, sy: 1 - (1 - hop) * 0.15, o: sp > 0 && sp < 1 ? 1 : 0 });
+    st(mini, { s: 0.7 });
+  };
+});
+
+/* S7 50–56 bestiary */
+const MON = [
+  ["史", "史莱姆", "武器打上去没有什么手感"],
+  ["狼", "孤狼", "对于普通人来说，<br>它是一种危险的生物"],
+  ["岩", "废弃的岩石魔像", "布满裂痕和苔藓，<br>仍然无比坚硬"],
+  ["", "马 (?)", "看起来好像不是普通的马"],
+  ["鹿", "鹿", "这倒是提醒我了"],
+  ["草", "草", "建国以后不许成精！"],
+  ["摩", "摩尔", "不是摩尔庄园里的那种摩尔"],
+  ["?", "???", "好像并不来自于这个世界"],
+];
+scene(50, 56, (el) => {
+  el.classList.add("best-bg");
+  const hdr = A(el, "hdr", '<div class="hdr-big" style="color:#f1e3c4">怪物图鉴</div><div class="hdr-sub" style="color:#c9b48a">BESTIARY</div>');
+  const grid = A(el, "grid");
+  const cards = MON.map(([g, n, d], i) => {
+    const col = i % 4, row = Math.floor(i / 4);
+    const c = A(grid, "mcard", `<div class="m-lv">LV ${[3, 7, 15, 12, 5, 1, 9, 50][i]}</div><div class="m-n"${n.length > 4 ? ' style="font-size:32px"' : ""}>${n}</div><div class="m-av">${g}</div><div class="m-d">${d}</div>`);
+    if (!g) img(c.querySelector(".m-av"), null, ASSET("player.webp"));
+    c.style.left = 960 + (col - 1.5) * 410 - 190 + "px";
+    c.style.top = 600 + (row - 0.5) * 320 - 145 + "px";
+    return c;
+  });
+  const stamp = A(cards[5], "stamp", "成精了");
+  return (lt) => {
+    st(hdr, { o: prog(lt, 0, 0.4) * (1 - prog(lt, 3.6, 3.9)) });
+    const z = prog(lt, 3.6, 4.4, E.io), s = lerp(1, 2.0, z);
+    const cx = 960 - 0.5 * 410, cy = 600 + 160;
+    st(grid, { x: lerp(0, 960 - 2 * cx, z), y: lerp(0, 540 - 2 * cy, z), s });
+    cards.forEach((c, i) => {
+      const p = prog(lt, 0.3 + i * 0.3, 0.75 + i * 0.3, E.out);
+      st(c, { per: 1200, ry: (1 - p) * 90, o: (p > 0 ? 1 : 0) * (i === 5 ? 1 : 1 - z * 0.75) });
+    });
+    st(stamp, { o: prog(lt, 4.5, 4.55), s: kf(lt, [[4.5, 2.4], [4.62, 1, E.out]]), r: -12 });
+    el.style.opacity = 1 - prog(lt, 5.5, 6.0);
+  };
+});
+
+/* S8 56–66 bosses */
+scene(56, 66, (el) => {
+  // A: warning
+  const W = A(el, "layer warn-bg");
+  const bandT = A(W, "warn-band t"), bandB = A(W, "warn-band b");
+  const wf = A(W, "fill", '<div class="warn-txt">WARNING</div><div class="warn-sub">强大的敌人正在接近</div>');
+  // B: goblin leader
+  const G = A(el, "layer gob-bg");
+  const g1 = img(G, "gob-img", ASSET("goblinLeader1.png"));
+  const g2 = img(G, "gob-img", ASSET("goblinLeader2.jpg"));
+  const bt1 = A(G, "boss-tx", '<div class="boss-tag">BOSS</div><div class="boss-name">受到惊吓的<br>哥布林首领</div><div class="boss-desc">它看起来被后方出现的你吓了一大跳</div><div class="boss-hp"><i></i></div>');
+  const bt2 = A(G, "boss-tx", '<div class="boss-tag">BOSS</div><div class="boss-name" style="color:#ff8a8a">暴怒的<br>哥布林首领</div><div class="boss-desc">它难听地吼叫着，挥舞着武器向你冲来</div><div class="boss-hp"><i></i></div>');
+  // C: dragon
+  const D = A(el, "layer");
+  const dbg = A(D, "bg"); dbg.style.backgroundImage = `url(${ASSET("dragonValley.jpg")})`;
+  const red = A(D, "layer", null, { background: "radial-gradient(circle, rgba(255,0,0,.35), rgba(60,0,0,.85))" });
+  A(D, "vignette");
+  const l1 = A(D, "sub", "生态位的顶端。", { bottom: "auto", top: "380px" });
+  const l2 = A(D, "sub", "人类在它庞大的身躯面前，就像一只蝼蚁。", { bottom: "auto", top: "500px" });
+  const d1 = img(D, "drg-img", ASSET("dragon1.gif")); d1.style.width = "420px";
+  const d2 = img(D, "drg-img", ASSET("dragon2.gif")); d2.style.width = "430px"; d2.style.imageRendering = "auto";
+  const n1 = A(D, "drg-name", '<div class="boss-tag">BOSS</div><div class="drg-n">「池沼之主」龙</div><div class="drg-hp"><i style="width:100%"></i></div>');
+  const n2 = A(D, "drg-name", '<div class="boss-tag">BOSS · 第二阶段</div><div class="drg-n red">愤怒的龙</div><div class="drg-hp"><i style="width:62%"></i></div>');
+  const tip = A(D, "tip", "Tips：你并不需要一次性击败 Boss，对其造成 20% 最大生命值以上的伤害即可永久削减其生命值");
+  return (lt) => {
+    // A 0–1.5
+    W.style.opacity = lt < 1.5 ? 1 : 0;
+    if (lt < 1.5) {
+      bandT.style.backgroundPosition = lt * 300 + "px 0"; bandB.style.backgroundPosition = -lt * 300 + "px 0";
+      st(wf, { o: Math.sin(lt * 16) > -0.3 ? 1 : 0.35, s: kf(lt, [[0, 1.3], [0.2, 1, E.out]]) });
+    }
+    // B 1.5–4.5
+    G.style.opacity = lt >= 1.5 && lt < 4.5 ? 1 : 0;
+    if (lt >= 1.5 && lt < 4.5) {
+      const u = lt - 1.5, ang = u >= 1.7;
+      const ip = prog(u, 0, 0.35, E.out);
+      const sh = ang && u < 2.3 ? Math.sin(u * 110) * 16 * (2.3 - u) : 0;
+      st(g1, { x: (1 - ip) * 900, o: ang ? 0 : 1 });
+      st(g2, { x: sh, o: ang ? 1 : 0, s: kf(u, [[1.7, 1.15], [1.9, 1, E.out]]) });
+      st(bt1, { o: ang ? 0 : prog(u, 0.15, 0.45), x: (1 - prog(u, 0.15, 0.5, E.out)) * -60 });
+      st(bt2, { o: ang ? 1 : 0, x: sh * 0.5 });
+      G.style.opacity = 1 - prog(u, 2.75, 3.0);
+    }
+    // C 4.5–10
+    D.style.opacity = lt >= 4.5 ? 1 : 0;
+    if (lt >= 4.5) {
+      const u = lt - 4.5;
+      const rev = u >= 2.5, ang = u >= 4.1;
+      st(dbg, { s: 1.05 + u * 0.02, br: rev ? 0.75 : kf(u, [[0, 0], [0.6, 0.32]]), blur: rev ? 0 : 3 });
+      st(red, { o: ang ? 1 : 0 });
+      st(l1, { c: "x", o: inout(u, 0.3, 2.4, 0.4, 0.2) });
+      st(l2, { c: "x", o: inout(u, 1.2, 2.4, 0.4, 0.2) });
+      const dp = prog(u, 2.5, 2.85, E.back);
+      st(d1, { c: true, s: dp * (1 + 0.03 * Math.sin(u * 4)), o: rev && !ang ? 1 : 0, y: Math.sin(u * 2) * 10 });
+      st(n1, { o: rev && !ang ? prog(u, 2.7, 3.0) : 0, y: (1 - prog(u, 2.7, 3.1, E.out)) * 40 });
+      const sh = ang ? Math.sin(u * 90) * 18 * Math.max(0, 1 - (u - 4.1) / 0.9) : 0;
+      st(d2, { c: true, o: ang ? 1 : 0, x: sh, s: kf(u, [[4.1, 1.35], [4.3, 1, E.out]]) });
+      st(n2, { o: ang ? 1 : 0, x: -sh });
+      st(tip, { o: prog(u, 4.7, 5.0) });
+      D.style.opacity = 1 - prog(u, 5.2, 5.5);
+    }
+  };
+});
+
+/* S9 66–72 "we have a horse" */
+const PANELS = [
+  ["1. 超真实3D引擎", "超真实3D引擎", '<svg viewBox="0 0 100 100" width="170" height="170"><g fill="none" stroke="#cfd6df" stroke-width="1.6"><polygon points="50,6 88,28 88,72 50,94 12,72 12,28"/><path d="M50,6 L50,50 L88,28 M50,50 L88,72 M50,50 L50,94 M50,50 L12,72 M50,50 L12,28 M12,28 L88,28 M12,72 L88,72"/></g></svg>'],
+  ["2. 宏大的世界观", "宏大的世界观", '<div class="map-ico"><svg viewBox="0 0 180 130" width="180" height="130"><g fill="none" stroke="#6b4a1f" stroke-width="3"><path d="M20 90 Q50 40 80 70 T150 40"/><circle cx="60" cy="45" r="10"/><path d="M120 90 l10 -20 l10 20 z"/></g></svg></div>'],
+  ["3. 酣畅淋漓的战斗", "酣畅淋漓的战斗", '<svg viewBox="0 0 100 100" width="170" height="170"><circle cx="50" cy="50" r="34" fill="#ff8a1f" opacity=".45"/><g stroke-linecap="round"><line x1="18" y1="18" x2="78" y2="78" stroke="#bfe6ff" stroke-width="7"/><line x1="82" y1="18" x2="22" y2="78" stroke="#bfe6ff" stroke-width="7"/><line x1="68" y1="84" x2="84" y2="68" stroke="#8a5a2b" stroke-width="9"/><line x1="32" y1="84" x2="16" y2="68" stroke="#8a5a2b" stroke-width="9"/></g></svg>'],
+  ["4. 一匹马", "一匹马", ""],
+];
+scene(66, 72, (el) => {
+  el.classList.add("metal");
+  const title = A(el, "p-title", "异世界野兽先辈<small>(≧Д≦)&lt;aaa</small>");
+  const pos = [[140, 200], [980, 200], [140, 520], [980, 520]];
+  const pans = PANELS.map(([lab, big, ico], i) => {
+    const p = A(el, "pn" + (i === 3 ? " ok" : ""), `<div class="pn-lab">${lab}</div><div class="pn-ico">${ico}</div><div class="pn-big">${big}</div><div class="pn-mark ${i === 3 ? "v" : "x"}">${i === 3 ? "✓" : "✕"}</div>`);
+    if (i === 3) img(p.querySelector(".pn-ico"), null, ASSET("player.webp")).style.width = "140px";
+    p.style.left = pos[i][0] + "px"; p.style.top = pos[i][1] + "px";
+    return { p, m: p.querySelector(".pn-mark") };
+  });
+  const bottom = A(el, "p-bottom", "以上都没有，但是我们有一匹马");
+  return (lt) => {
+    st(title, { o: prog(lt, 0, 0.3) });
+    pans.forEach(({ p, m }, i) => {
+      const a = i * 1.0;
+      st(p, { o: prog(lt, a, a + 0.15), s: kf(lt, [[a, 0.9], [a + 0.2, 1, E.out]]) });
+      st(m, { o: prog(lt, a + 0.5, a + 0.52), s: kf(lt, [[a + 0.5, 2.6], [a + 0.62, 1, E.out]]), r: i === 3 ? 0 : -8 });
+    });
+    st(bottom, { o: prog(lt, 4.0, 4.05), s: kf(lt, [[4.0, 1.8], [4.15, 1, E.out], [6, 1.03, E.lin]]) });
+  };
+});
+
+/* S10 72–78 reviews (all outlets fictional) */
+const REVIEWS = [
+  ["0/10", "下北泽周刊"], ["0/10", "池沼游戏网"], ["0/10", "异世界时报"], ["0/5", "野兽学派评论"], ["0/10", "哥布林快报"], ["0/10", "史莱姆月刊"],
+  ["0/10", "远野 Daily"], ["0/5", "龙之溪谷观察"], ["0/10", "大卡车新闻"], ["0/10", "红茶杂志"], ["0/5", "1145 GAMES"], ["0/10", "摩尔庄园报"],
+];
+scene(72, 78, (el) => {
+  const bg = A(el, "bg"); bg.style.backgroundImage = `url(${ASSET("centerMarshForest.jpg")})`;
+  A(el, "sunset");
+  A(el, "rv-title", "异世界野兽先辈");
+  const xs = [90, 380, 1270, 1560], ys = [210, 450, 690];
+  const rvs = REVIEWS.map(([s, o], i) => {
+    const col = i % 4, row = Math.floor(i / 4);
+    const r = A(el, "rv", `<div class="rv-s">${s}</div><div class="rv-o">${o}</div>`);
+    r.style.left = xs[col] + "px"; r.style.top = ys[row] + "px";
+    return r;
+  });
+  A(el, "rock");
+  const horse = img(el, "rv-horse", ASSET("player.webp"));
+  const bub = A(el, "bubble", "(≧Д≦)&lt;aaa", { left: "1020px", top: "395px" });
+  const steam = A(el, "steam", '<div class="st-bad"><svg width="44" height="44" viewBox="0 0 24 24"><path fill="#fff" d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>差评如潮</div><div class="st-price">$69.99<div class="st-strike"></div></div><div class="st-free">免费</div>');
+  const strike = steam.querySelector(".st-strike"), free = steam.querySelector(".st-free");
+  return (lt) => {
+    st(bg, { s: 1.08 + lt * 0.01, blur: 3, br: 0.75 });
+    rvs.forEach((r, i) => { const a = 0.3 + i * 0.18; st(r, { o: prog(lt, a, a + 0.05), s: kf(lt, [[a, 1.8], [a + 0.15, 1, E.out]]) }); });
+    st(horse, { c: true, y: Math.sin(lt * 3) * 6 });
+    st(bub, { o: prog(lt, 1.5, 1.7), s: kf(lt, [[1.5, 0.5], [1.7, 1, E.back]]) });
+    st(steam, { c: true, o: prog(lt, 3.4, 3.6), y: (1 - prog(lt, 3.4, 3.7, E.out)) * 80 });
+    strike.style.width = prog(lt, 4.2, 4.45, E.out) * 170 + "px";
+    st(free, { s: kf(lt, [[4.6, 1], [4.7, 1.25, E.out], [4.9, 1, E.out]]) });
+    el.style.opacity = 1 - prog(lt, 5.8, 6.0);
+  };
+});
+
+/* S11 78–88 finale */
+scene(78, 88, (el) => {
+  const bg = A(el, "bg"); bg.style.backgroundImage = `url(${ASSET("centerMarshForest.jpg")})`;
+  const god = A(el, "god");
+  A(el, "vignette");
+  const lw = A(el, "logo-wrap");
+  const logo = A(lw, "logo", "异世界野兽先辈");
+  const en = A(el, "logo-en", "ISEKAI YAJU SENPAI");
+  const aaa = A(el, "logo-aaa", "(≧Д≦)&lt;aaa");
+  const pill = A(el, "pill", "现已上线 · 免费游玩");
+  const url = A(el, "url", "▶ surlive.net/isekai114514<small>github.com/Sur1ive/isekai114514 &nbsp;★ 求 Star</small>");
+  const wish = A(el, "wish", "如果真有人玩 or 能多几个 Star 的话，就更新新装备、新地图、新敌人、新机制 blabla");
+  const peek = img(el, "peek", ASSET("player.webp"));
+  const bub = A(el, "bubble", "求 Star (≧Д≦)", { left: "1470px", top: "700px" });
+  const end = A(el, "end", '<div class="end-t">目前进度：咕了</div><div class="end-g">咕咕咕</div>');
+  const [endT, endG] = end.children;
+  return (lt) => {
+    st(bg, { s: 1.05 + lt * 0.012, br: kf(lt, [[0, 1.3], [0.8, 0.55]]) });
+    st(god, { c: true, r: lt * 3, o: 0.9 });
+    const lp = prog(lt, 0, 1.3, E.out);
+    st(logo, { c: true, o: lp, s: lerp(1.25, 1, lp), blur: (1 - lp) * 18 });
+    logo.style.letterSpacing = lerp(0.5, 0.08, lp) + "em";
+    logo.style.backgroundPosition = lerp(110, -40, prog(lt, 1.3, 2.4, E.io)) + "% 0";
+    st(en, { c: true, o: prog(lt, 1.6, 2.2) });
+    st(aaa, { c: true, o: prog(lt, 2.0, 2.3), s: kf(lt, [[2.0, 1.4], [2.25, 1, E.out]]) });
+    st(pill, { c: true, o: prog(lt, 3.0, 3.2), s: kf(lt, [[3.0, 0.6], [3.3, 1, E.back]]) });
+    st(url, { c: "x", o: prog(lt, 4.0, 4.4), y: (1 - prog(lt, 4.0, 4.5, E.out)) * 30 });
+    st(wish, { c: "x", o: prog(lt, 5.5, 6.0) });
+    const pk = prog(lt, 6.5, 6.9, E.back);
+    st(peek, { y: (1 - pk) * 360, r: -8 + Math.sin(lt * 5) * 3 });
+    st(bub, { o: prog(lt, 7.0, 7.2), s: kf(lt, [[7.0, 0.5], [7.25, 1, E.back]]) });
+    st(end, { o: prog(lt, 8.8, 9.2) });
+    st(endT, { o: prog(lt, 9.2, 9.45) });
+    st(endG, { o: prog(lt, 9.4, 9.5) });
+  };
+});
+
+/* ================= global FX ================= */
+const flashEl = document.getElementById("flash");
+const FLASH = [[8.35, 1.0, "#fff"], [18, 0.6, "#fff"], [32, 0.25, "#fff"], [41, 0.35, "#fff"], [57.5, 0.3, "#fff"], [59.2, 0.3, "#f33"], [63, 0.9, "#fff"], [64.6, 0.35, "#f22"], [70, 0.3, "#fff"], [78, 1.0, "#fff"]];
+const SHAKE = [[8.35, 0.5, 30], [18, 0.45, 18], [32, 0.2, 8], [34.5, 0.25, 8], [36.6, 0.25, 8], [41, 0.9, 22], [57.5, 0.3, 12], [59.2, 0.6, 20], [63, 0.8, 26], [64.6, 1.2, 22], [70, 0.3, 14], [78, 0.4, 10], [86, 0.5, 8]];
+function render(t) {
+  for (const s of scenes) {
+    const on = t >= s.start && t < s.end;
+    if (on !== s.on) { s.el.style.display = on ? "block" : "none"; s.on = on; }
+    if (on) s.update(t - s.start, t);
+  }
+  let fo = 0, fc = "#fff";
+  for (const [a, d, c] of FLASH) if (t >= a && t < a + d) { const o = Math.pow(1 - (t - a) / d, 2); if (o > fo) { fo = o; fc = c; } }
+  flashEl.style.opacity = fo; flashEl.style.background = fc;
+  let sx = 0, sy = 0;
+  for (const [a, d, amp] of SHAKE) if (t >= a && t < a + d) {
+    const k = amp * Math.pow(1 - (t - a) / d, 2), f = Math.floor(t * 60);
+    sx += (rnd(f) - 0.5) * 2 * k; sy += (rnd(f + 999) - 0.5) * 2 * k;
+  }
+  world.style.transform = sx || sy ? `translate(${sx}px,${sy}px)` : "";
+}
+
+/* ================= audio (synthesised offline) ================= */
+const N = (s) => { const m = /^([A-G])(b|#)?(-?\d)$/.exec(s); return 12 * (+m[3] + 1) + { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] === "b" ? -1 : m[2] === "#" ? 1 : 0); };
+const F = (s) => 440 * Math.pow(2, ((typeof s === "number" ? s : N(s)) - 69) / 12);
+const CH = { Dm: ["D3", "F3", "A3", "D4"], Bb: ["Bb2", "D3", "F3", "Bb3"], F: ["F2", "A2", "C3", "F3"], C: ["C3", "E3", "G3", "C4"], D: ["D3", "F#3", "A3", "D4"] };
+const ROOT = { Dm: "D2", Bb: "Bb1", F: "F2", C: "C2", D: "D2" };
+const MOTIF = { // [note, beats]
+  Dm: [["D4", 1], ["A3", 0.5], ["D4", 0.5], ["E4", 1], ["F4", 1]],
+  Bb: [["F4", 1.5], ["E4", 0.5], ["D4", 1], ["Bb3", 1]],
+  F: [["C4", 1], ["F4", 1], ["A4", 1], ["G4", 0.5], ["F4", 0.5]],
+  C: [["E4", 2], ["C4", 1], ["E4", 1]],
+};
+
+function buildAudio() {
+  const SR = 44100;
+  const ctx = new OfflineAudioContext(2, Math.ceil(SR * DUR), SR);
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -16; comp.knee.value = 8; comp.ratio.value = 5; comp.attack.value = 0.003; comp.release.value = 0.25;
+  comp.connect(ctx.destination);
+  const mus = ctx.createGain(); mus.connect(comp);
+  mus.gain.setValueAtTime(1, 86.6); mus.gain.linearRampToValueAtTime(0.0001, 87.6);
+  // reverb
+  const rev = ctx.createConvolver();
+  const ir = ctx.createBuffer(2, SR * 3, SR);
+  for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); }
+  rev.buffer = ir;
+  const rg = ctx.createGain(); rg.gain.value = 0.45; rev.connect(rg); rg.connect(mus);
+  const noise = ctx.createBuffer(1, SR * 2, SR);
+  { const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  const bus = (v, send, dest = mus) => { const g = ctx.createGain(); g.gain.value = v; g.connect(dest); if (send) { const s = ctx.createGain(); s.gain.value = send; g.connect(s); s.connect(rev); } return g; };
+  const B = { drum: bus(1, 0.06), bass: bus(1, 0), pad: bus(1, 0.6), brass: bus(1, 0.3), fx: bus(1, 0.45), chip: bus(1, 0.12), coo: bus(1, 0.3, comp) };
+
+  const osc = (type, f, t0, t1) => { const o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t0); o.start(t0); o.stop(t1 + 0.05); return o; };
+  const genv = (t0, a, peak, hold, rel) => { const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.linearRampToValueAtTime(peak, t0 + a); g.gain.setValueAtTime(peak, t0 + a + hold); g.gain.exponentialRampToValueAtTime(0.0001, t0 + a + hold + rel); return g; };
+  const nz = (t0, dur) => { const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true; s.start(t0, Math.random()); s.stop(t0 + dur + 0.05); return s; };
+  const filt = (type, f, q = 0.7) => { const b = ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; b.Q.value = q; return b; };
+  const chain = (...n) => { for (let i = 0; i < n.length - 1; i++) n[i].connect(n[i + 1]); return n[0]; };
+
+  const kick = (t, v = 0.9) => { const o = osc("sine", 160, t, t + 0.45); o.frequency.exponentialRampToValueAtTime(42, t + 0.12); chain(o, genv(t, 0.002, v, 0.02, 0.4), B.drum); };
+  const snare = (t, v = 0.45) => { chain(nz(t, 0.25), filt("highpass", 1500), genv(t, 0.001, v, 0, 0.2), B.drum); const o = osc("triangle", 210, t, t + 0.15); o.frequency.exponentialRampToValueAtTime(150, t + 0.1); chain(o, genv(t, 0.001, v * 0.5, 0, 0.1), B.drum); };
+  const hat = (t, v = 0.08, open = false) => chain(nz(t, 0.3), filt("highpass", 8000), genv(t, 0.001, v, 0, open ? 0.25 : 0.05), B.drum);
+  const crash = (t, v = 0.3) => chain(nz(t, 2.5), filt("highpass", 4000), genv(t, 0.001, v, 0, 2.2), B.fx);
+  const tom = (t, f = 90, v = 0.7) => { const o = osc("sine", f * 1.7, t, t + 0.6); o.frequency.exponentialRampToValueAtTime(f, t + 0.1); chain(o, genv(t, 0.002, v, 0, 0.55), B.fx); chain(nz(t, 0.1), filt("lowpass", 900), genv(t, 0.001, v * 0.4, 0, 0.08), B.fx); };
+  const boom = (t, v = 1) => { const o = osc("sine", 75, t, t + 1.8); o.frequency.exponentialRampToValueAtTime(28, t + 1.4); chain(o, genv(t, 0.004, v, 0, 1.7), B.fx); chain(nz(t, 1.2), filt("lowpass", 320), genv(t, 0.003, v * 0.7, 0, 1.1), B.fx); };
+  const impact = (t, v = 1) => { boom(t, v); crash(t, 0.32 * v); kick(t, v); };
+  const riser = (t0, t1, v = 0.3) => {
+    const n = nz(t0, t1 - t0), bp = filt("bandpass", 300, 3);
+    bp.frequency.setValueAtTime(300, t0); bp.frequency.exponentialRampToValueAtTime(7000, t1);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t1); g.gain.linearRampToValueAtTime(0.0001, t1 + 0.04);
+    chain(n, bp, g, B.fx);
+    const o = osc("sawtooth", 110, t0, t1); o.frequency.exponentialRampToValueAtTime(880, t1);
+    const g2 = ctx.createGain(); g2.gain.setValueAtTime(0.0001, t0); g2.gain.exponentialRampToValueAtTime(v * 0.12, t1); g2.gain.linearRampToValueAtTime(0.0001, t1 + 0.04);
+    chain(o, filt("lowpass", 2500), g2, B.fx);
+  };
+  const whoosh = (t, d = 0.35, v = 0.2) => { const bp = filt("bandpass", 500, 1.5); bp.frequency.setValueAtTime(500, t); bp.frequency.exponentialRampToValueAtTime(4000, t + d * 0.6); bp.frequency.exponentialRampToValueAtTime(700, t + d); chain(nz(t, d), bp, genv(t, d * 0.6, v, 0, d * 0.4), B.fx); };
+  const tick = (t, v = 0.12, f = 2400) => chain(osc("sine", f, t, t + 0.05), genv(t, 0.001, v, 0, 0.04), B.fx);
+  const pop = (t, f = 600, v = 0.18) => { const o = osc("sine", f, t, t + 0.12); o.frequency.exponentialRampToValueAtTime(f * 2, t + 0.08); chain(o, genv(t, 0.002, v, 0, 0.1), B.fx); };
+  const ding = (t, v = 0.15) => [1318.5, 1975.5, 2637].forEach((f, i) => chain(osc("sine", f, t, t + 1.4), genv(t, 0.002, v / (i + 1), 0, 1.3), B.fx));
+  const buzzer = (t, v = 0.12) => { [98, 104].forEach((f) => chain(osc("square", f, t, t + 0.45), filt("lowpass", 1400), genv(t, 0.005, v, 0.28, 0.1), B.fx)); kick(t, 0.6); };
+  const bass = (t, d, f, v = 0.16) => {
+    const lp = filt("lowpass", 1400, 2); lp.frequency.setValueAtTime(1400, t); lp.frequency.exponentialRampToValueAtTime(280, t + 0.15);
+    chain(osc("sawtooth", F(f), t, t + d + 0.1), lp, genv(t, 0.005, v, Math.max(0, d - 0.06), 0.08), B.bass);
+    chain(osc("sine", F(f), t, t + d + 0.1), genv(t, 0.005, v * 0.8, Math.max(0, d - 0.06), 0.08), B.bass);
+  };
+  const pad = (t, d, notes, v = 0.035) => notes.forEach((n) => [-7, 7].forEach((cents) => {
+    const o = osc("sawtooth", F(n), t, t + d + 1.1); o.detune.value = cents;
+    chain(o, filt("lowpass", 1300), genv(t, 0.45, v, Math.max(0, d - 0.45), 1.0), B.pad);
+  }));
+  const brass = (t, d, notes, v = 0.06) => notes.forEach((n) => [0, 6].forEach((cents) => {
+    const o = osc("sawtooth", F(n), t, t + d + 0.2); o.detune.value = cents;
+    const lp = filt("lowpass", 300, 1.2); lp.frequency.setValueAtTime(300, t); lp.frequency.exponentialRampToValueAtTime(2600, t + 0.06); lp.frequency.exponentialRampToValueAtTime(1500, t + 0.3);
+    chain(o, lp, genv(t, 0.02, v, Math.max(0, d - 0.02), 0.14), B.brass);
+  }));
+  const chip = (t, d, n, v = 0.045, type = "square") => chain(osc(type, F(n), t, t + d), genv(t, 0.004, v, d * 0.75, 0.05), B.chip);
+  const horn = (t, d, v = 0.13) => [N("Eb4"), N("G4")].forEach((m) => chain(osc("square", F(m), t, t + d + 0.1), filt("lowpass", 1800), genv(t, 0.02, v, d, 0.08), B.fx));
+  const roar = (t, d = 0.9, v = 0.5) => { const bp = filt("bandpass", 380, 1.2); chain(nz(t, d), bp, genv(t, 0.05, v, d * 0.4, d * 0.5), B.fx); const o = osc("sawtooth", 70, t, t + d); o.frequency.linearRampToValueAtTime(55, t + d); chain(o, filt("lowpass", 500), genv(t, 0.05, v * 0.5, d * 0.4, d * 0.5), B.fx); };
+  const siren = (t0, t1, v = 0.07) => { const o = osc("sawtooth", 600, t0, t1); for (let t = t0; t < t1; t += 0.5) { o.frequency.linearRampToValueAtTime(900, t + 0.25); o.frequency.linearRampToValueAtTime(600, t + 0.5); } chain(o, filt("lowpass", 2200), genv(t0, 0.05, v, t1 - t0 - 0.15, 0.1), B.fx); };
+  const rattle = (t0, t1) => { for (let t = t0; t < t1; t += 0.055 + Math.random() * 0.03) chain(nz(t, 0.03), filt("bandpass", 2500 + Math.random() * 2000, 4), genv(t, 0.001, 0.25, 0, 0.025), B.fx); };
+  const boing = (t) => { const o = osc("sine", 220, t, t + 0.4); o.frequency.exponentialRampToValueAtTime(640, t + 0.12); o.frequency.exponentialRampToValueAtTime(300, t + 0.35); chain(o, genv(t, 0.005, 0.25, 0.1, 0.25), B.fx); };
+  const coo = (t) => { const o = osc("sine", 420, t, t + 0.35); o.frequency.exponentialRampToValueAtTime(330, t + 0.28); chain(o, genv(t, 0.04, 0.18, 0.12, 0.15), B.coo); };
+  const slide = (t, d, a, b, v = 0.09) => { const o = osc("sawtooth", F(a), t, t + d); o.frequency.linearRampToValueAtTime(F(b), t + d); if (d > 0.4) { const l = osc("sine", 6, t, t + d), lg = ctx.createGain(); lg.gain.value = 6; l.connect(lg); lg.connect(o.frequency); } chain(o, filt("lowpass", 1100), genv(t, 0.02, v, d - 0.08, 0.06), B.fx); };
+
+  const groove = (T, opt = {}) => { // one bar starting at T
+    const v = opt.v ?? 1;
+    [0, 0.75, 1.0].forEach((x) => kick(T + x, 0.85 * v));
+    if (!opt.noSnare) [0.5, 1.5].forEach((x) => snare(T + x, 0.4 * v));
+    for (let i = 0; i < 8; i++) hat(T + i * 0.25, (i % 2 ? 0.05 : 0.08) * v, i === 7);
+  };
+  const bassBar = (T, ch, v = 0.15) => { for (let i = 0; i < 8; i++) bass(T + i * 0.25, 0.2, N(ROOT[ch]) + (i % 4 === 3 ? 12 : 0), v); };
+  const motif = (T, ch, oct = 0, v = 0.05) => { let x = 0; MOTIF[ch].forEach(([n, b]) => { brass(T + x * 0.5, b * 0.5 - 0.04, [N(n) + 12 * oct], v); x += b; }); };
+
+  /* --- 0–3.5 studio --- */
+  pad(0.2, 3.0, ["D3", "A3", "D4"], 0.03);
+  [..."大鹅 自主研发"].forEach((c, i) => c !== " " && tick(0.3 + i * 0.12, 0.08));
+  ding(1.4, 0.05);
+  /* --- 3.5–10 truck --- */
+  for (let t = 3.5, i = 0; t < 8.3; t += 0.25, i++) bass(t, 0.18, "D2", 0.05 + 0.13 * ((t - 3.5) / 4.8));
+  for (let t = 4; t < 8.3; t += 1) { kick(t, 0.5); kick(t + 0.22, 0.35); }
+  horn(5.0, 0.5); horn(6.6, 0.25); horn(7.0, 0.6);
+  riser(6.3, 8.35, 0.3);
+  tick(7.55, 0.25, 1600);
+  impact(8.35, 1.2);
+  /* --- 10–18 awakening --- */
+  boom(10.3, 0.35);
+  ["Dm", "Bb", "F", "C"].forEach((ch, i) => { pad(10 + i * 2, 2.1, CH[ch], 0.03); bass(10 + i * 2, 1.9, ROOT[ch], 0.08); if (i) tom(10 + i * 2, 70, 0.5); });
+  [16.0, 16.5, 17.0, 17.25, 17.5, 17.625, 17.75, 17.875].forEach((t, i) => tom(t, 80 + i * 6, 0.35 + i * 0.05));
+  [["A3", 14.0, 1], ["D4", 15.0, 0.5], ["E4", 15.5, 0.5], ["F4", 16.0, 1.5], ["E4", 17.5, 0.5]].forEach(([n, t, d]) => brass(t, d - 0.05, [n], 0.035));
+  riser(16.2, 18, 0.3); whoosh(17.6, 0.4, 0.15);
+  /* --- 18–22 hero --- */
+  impact(18, 1.2);
+  brass(18, 0.9, CH.Dm, 0.06); bass(18, 0.9, "D2", 0.18);
+  [19.5, 20.0, 21.0, 21.5].forEach((t, i) => { const ch = ["Bb", "F", "C", "C"][i]; brass(t, i === 1 ? 0.8 : 0.4, CH[ch], 0.05); bass(t, i === 1 ? 0.8 : 0.4, ROOT[ch], 0.16); });
+  [18, 19, 19.75, 20, 21].forEach((t) => kick(t, 0.8)); [19, 21].forEach((t) => snare(t, 0.45));
+  for (let t = 18; t < 22; t += 0.25) hat(t, 0.05);
+  pad(18, 2, CH.Dm, 0.025); pad(20, 2, CH.F, 0.025);
+  whoosh(21.7, 0.3, 0.2);
+  /* --- 22–32 world --- */
+  crash(22, 0.3);
+  ["Dm", "Bb", "F", "C", "Dm"].forEach((ch, b) => {
+    const T = 22 + b * 2;
+    groove(T); bassBar(T, ch); pad(T, 2, CH[ch], 0.022); motif(T, ch, 0, 0.05);
+    if (b) whoosh(T - 0.18, 0.3, 0.14);
+  });
+  /* --- 32–42 battle --- */
+  impact(32, 0.8); brass(32, 0.6, CH.Dm, 0.06);
+  ["Dm", "Bb", "F"].forEach((ch, b) => { const T = 32 + b * 2; groove(T, { v: 0.6, noSnare: b === 0 }); bassBar(T, ch, 0.1); pad(T, 2, CH[ch], 0.02); });
+  rattle(33.3, 34.5); rattle(35.4, 36.6);
+  ding(34.5, 0.12); snare(34.5, 0.5); boom(34.5, 0.35);
+  buzzer(36.6, 0.1); snare(36.6, 0.5); boom(36.6, 0.35);
+  pad(38, 2.5, CH.C, 0.025); bass(38, 0.5, "C2", 0.15);
+  for (let t = 38.0, i = 0; t < 41; t += 0.125, i++) snare(t, 0.06 + 0.3 * ((t - 38) / 3));
+  SKILLS.forEach((_, i) => { const t = 38.5 + i * 0.25; brass(t, 0.18, [CH.C[i % 4]].map((n) => N(n) + 12), 0.05); if (i % 2 === 0) kick(t, 0.7); });
+  riser(39.5, 41, 0.25);
+  impact(41, 1.2); brass(41, 0.9, ["D2", "A2", "D3", "F3"], 0.06);
+  /* --- 42–50 gear --- */
+  ["Dm", "Bb", "F", "C"].forEach((ch, b) => { const T = 42 + b * 2; groove(T, { v: 0.85 }); bassBar(T, ch, 0.13); pad(T, 2, CH[ch], 0.02); if (b < 2) motif(T, ch, 1, 0.04); });
+  CARDS.forEach((_, i) => pop(42.2 + i * 0.45, 500 + i * 80, 0.14));
+  whoosh(45.5, 0.4, 0.15);
+  CHESTS.forEach((_, i) => { pop(46 + i * 0.45, 700 + i * 120, 0.15); if (i >= 2) ding(46.05 + i * 0.45, 0.03 + i * 0.01); });
+  boing(48.65); whoosh(48.7, 0.8, 0.18);
+  for (let i = 0; i < 6; i++) chip(48.75 + i * 0.13, 0.1, N("C6") + i * 2, 0.04);
+  /* --- 50–56 bestiary --- */
+  ["Dm", "Bb", "F"].forEach((ch, b) => { const T = 50 + b * 2; groove(T, { v: 0.7 }); bassBar(T, ch, 0.12); pad(T, 2, CH[ch], 0.02); });
+  MON.forEach((_, i) => whoosh(50.3 + i * 0.3, 0.2, 0.06));
+  whoosh(53.6, 0.7, 0.15); tom(54.5, 70, 0.9); kick(54.5, 0.8);
+  pad(54, 2, CH.C, 0.02);
+  /* --- 56–66 boss --- */
+  siren(56, 57.45, 0.06);
+  pad(56, 10, ["D2", "Eb2", "A2"], 0.022);
+  impact(57.5, 1); brass(57.5, 0.6, ["D2", "D3", "F3"], 0.06);
+  [57.5, 58.25, 58.5, 59.0, 59.75, 60.0].forEach((t) => tom(t, 65, 0.6));
+  impact(59.2, 0.9); roar(59.2, 0.9, 0.35); brass(59.2, 0.7, ["D3", "Eb3", "A3"], 0.05);
+  [60.6, 61.6, 62.3, 62.7].forEach((t) => { kick(t, 0.6); kick(t + 0.2, 0.4); });
+  riser(61.4, 63, 0.4);
+  impact(63, 1.4); brass(63, 1.5, ["D2", "A2", "D3", "F3"], 0.07);
+  for (let t = 63.5; t < 64.5; t += 0.25) tom(t, 60 + ((t * 4) % 2) * 20, 0.5);
+  impact(64.6, 1.1); roar(64.6, 1.0, 0.4); brass(64.6, 1.0, ["D3", "Eb3", "A3", "D4"], 0.06);
+  [65.2, 65.5, 65.75].forEach((t, i) => tom(t, 60, 0.5 - i * 0.12));
+  /* --- 66–72 parody (chiptune) --- */
+  const CHIP = {
+    F: [["A4", 0.5], ["C5", 0.5], ["F5", 1], ["E5", 0.5], ["F5", 0.5], ["G5", 1]],
+    Dm: [["F5", 0.5], ["E5", 0.5], ["D5", 1], ["A4", 1], ["D5", 1]],
+    Bb: [["D5", 0.5], ["F5", 0.5], ["Bb5", 1], ["A5", 0.5], ["G5", 0.5], ["F5", 1]],
+    C: [["E5", 1], ["G5", 1], ["C5", 1]],
+  };
+  const chipBar = (T, ch, v = 1, until = Infinity) => {
+    const ok = (t) => t < until;
+    let x = 0; CHIP[ch].forEach(([n, b]) => { if (ok(T + x * 0.5)) chip(T + x * 0.5, b * 0.5 - 0.03, n, 0.035 * v); x += b; });
+    const r = N(ROOT[ch]) + 12;
+    for (let i = 0; i < 8; i++) if (ok(T + i * 0.25)) chip(T + i * 0.25, 0.2, r + (i % 2 ? 7 : 0), 0.05 * v, "triangle");
+    for (let i = 0; i < 4; i++) if (ok(T + i * 0.5)) { kick(T + i * 0.5, 0.45 * v); hat(T + i * 0.5 + 0.25, 0.05 * v); }
+  };
+  ["F", "Dm", "Bb"].forEach((ch, b) => chipBar(66 + b * 2, ch));
+  [66, 67, 68, 69].forEach((t) => whoosh(t - 0.05, 0.2, 0.1));
+  [66.5, 67.5, 68.5].forEach((t) => buzzer(t, 0.1));
+  ding(69.5, 0.2);
+  impact(70, 0.7); [N("F5"), N("A5"), N("C6"), N("F6")].forEach((m, i) => chip(70 + i * 0.07, 0.3, m, 0.05));
+  /* --- 72–78 reviews --- */
+  chipBar(72, "C", 0.8); chipBar(74, "F", 0.8, 75.35);
+  REVIEWS.forEach((_, i) => pop(72.3 + i * 0.18, 900 - i * 40, 0.1));
+  [["Bb3", 75.4, 0.25], ["A3", 75.65, 0.25], ["Ab3", 75.9, 0.25]].forEach(([n, t, d]) => slide(t, d, n, n));
+  slide(76.15, 0.45, "G3", "F#3");
+  ding(76.6, 0.18); chip(76.6, 0.08, "B5", 0.06); chip(76.68, 0.3, "E6", 0.06);
+  for (let i = 0; i < 5; i++) chip(76.9 + i * 0.2, 0.15, N(["C5", "E5", "G5", "C6", "E6"][i]), 0.03);
+  /* --- 78–88 finale --- */
+  impact(78, 1.2); riser(76.8, 78, 0.2);
+  ["Dm", "Bb", "F", "C"].forEach((ch, b) => {
+    const T = 78 + b * 2;
+    groove(T); bassBar(T, ch, 0.15); pad(T, 2, CH[ch], 0.025); motif(T, ch, 1, 0.045); brass(T, 1.8, CH[ch], 0.025);
+  });
+  [81, 82].forEach((t) => pop(t, 700, 0.1));
+  pop(84.5, 500, 0.15);
+  impact(86, 1.0); brass(86, 2.2, CH.D.concat(["D5"]), 0.05); pad(86, 2, CH.D, 0.03); bass(86, 1.8, "D2", 0.15);
+  coo(87.35); coo(87.65);
+  return ctx.startRendering();
+}
+
+function toWavBytes(buf) {
+  const ch = buf.numberOfChannels, len = buf.length, sr = buf.sampleRate;
+  const out = new DataView(new ArrayBuffer(44 + len * ch * 2));
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, "RIFF"); out.setUint32(4, 36 + len * ch * 2, true); ws(8, "WAVE"); ws(12, "fmt ");
+  out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, ch, true); out.setUint32(24, sr, true);
+  out.setUint32(28, sr * ch * 2, true); out.setUint16(32, ch * 2, true); out.setUint16(34, 16, true); ws(36, "data"); out.setUint32(40, len * ch * 2, true);
+  const data = [...Array(ch)].map((_, c) => buf.getChannelData(c));
+  let o = 44;
+  for (let i = 0; i < len; i++) for (let c = 0; c < ch; c++) { const s = clamp(data[c][i], -1, 1); out.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7fff, true); o += 2; }
+  return new Uint8Array(out.buffer);
+}
+
+/* ================= preload ================= */
+async function preload() {
+  const imgs = ["centerMarshForest.jpg", "northwestMarshForest.jpg", "eastMarshForest.jpg", "ruin.jpg", "dragonValley.jpg", "player.webp", "dragon1.gif", "dragon2.gif", "goblinLeader1.png", "goblinLeader2.jpg"];
+  const text = world.textContent + "0123456789/·…—！？";
+  const fonts = ['900 40px "Noto Serif SC"', '700 40px "Noto Serif SC"', '400 40px "Noto Sans SC"', '700 40px "Noto Sans SC"', '900 40px "Noto Sans SC"', '40px "ZCOOL KuaiLe"'];
+  await Promise.all([
+    ...imgs.map((n) => new Promise((r) => { const i = new Image(); i.onload = i.onerror = r; i.src = ASSET(n); })),
+    ...fonts.map((f) => document.fonts.load(f, text).catch(() => {})),
+  ]);
+  await document.fonts.ready;
+}
+
+/* ================= stage scaling ================= */
+const stage = document.getElementById("stage");
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  stage.style.transform = `scale(${s}) translate(-50%,-50%)`;
+}
+addEventListener("resize", fit); fit();
+
+/* ================= capture API (for video export) ================= */
+const ready = preload();
+window.PV = {
+  DUR, ready,
+  seek: (t) => render(t),
+  audioWavBase64: async () => {
+    const bytes = toWavBytes(await buildAudio());
+    let s = ""; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(s);
+  },
+};
+render(0);
+
+/* ================= interactive player ================= */
+if (!CAPTURE) {
+  const ui = { start: document.getElementById("start"), big: document.getElementById("playBig"), bar: document.getElementById("bar"), pp: document.getElementById("pp"), seek: document.getElementById("seek"), time: document.getElementById("time"), fs: document.getElementById("fs") };
+  let actx = null, src = null, buffer = null, playing = false, offset = 0, t0 = 0, hideTimer = 0;
+  const clock = () => (actx ? actx.currentTime : performance.now() / 1000);
+  const now = () => (playing ? offset + clock() - t0 : offset);
+  const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  Promise.all([ready, buildAudio().then((b) => (buffer = b)).catch(() => null)]).then(() => { ui.big.disabled = false; ui.big.textContent = "▶ 播放 PV"; });
+  function play() {
+    if (offset >= DUR - 0.05) offset = 0;
+    if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; actx = AC ? new AC() : null; }
+    if (actx) {
+      actx.resume();
+      if (buffer) {
+        // OfflineAudioContext buffers are portable across contexts
+        src = actx.createBufferSource(); src.buffer = buffer; src.connect(actx.destination); src.start(0, offset);
+      }
+    }
+    t0 = clock(); playing = true; ui.pp.textContent = "❚❚"; poke();
+  }
+  function pause() { offset = now(); if (src) { try { src.stop(); } catch (e) {} src = null; } playing = false; ui.pp.textContent = "▶"; poke(); }
+  function seekTo(t) { const was = playing; if (was) pause(); offset = clamp(t, 0, DUR); render(offset); if (was) play(); }
+  function poke() { ui.bar.classList.remove("hide"); clearTimeout(hideTimer); if (playing) hideTimer = setTimeout(() => ui.bar.classList.add("hide"), 2500); }
+  ui.big.onclick = () => { ui.start.style.display = "none"; play(); };
+  ui.pp.onclick = () => (playing ? pause() : play());
+  ui.seek.oninput = () => seekTo(+ui.seek.value);
+  ui.fs.onclick = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
+  addEventListener("mousemove", poke); addEventListener("touchstart", poke, { passive: true });
+  addEventListener("keydown", (e) => {
+    if (ui.start.style.display !== "none") return;
+    if (e.code === "Space") { e.preventDefault(); playing ? pause() : play(); }
+    else if (e.code === "ArrowRight") seekTo(now() + 5);
+    else if (e.code === "ArrowLeft") seekTo(now() - 5);
+    else if (e.code === "KeyF") ui.fs.onclick();
+  });
+  (function loop() {
+    let t = now();
+    if (playing && t >= DUR) { pause(); offset = DUR; t = DUR; }
+    render(Math.min(t, DUR - 0.001));
+    ui.seek.value = t; ui.time.textContent = `${fmt(t)} / ${fmt(DUR)}`;
+    requestAnimationFrame(loop);
+  })();
+}
+</script>
+</body>
+</html>
